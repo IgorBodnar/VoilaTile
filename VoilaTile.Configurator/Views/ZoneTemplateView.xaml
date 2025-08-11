@@ -1,0 +1,58 @@
+﻿<UserControl x:Class="VoilaTile.Configurator.Views.ZoneTemplateView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:VoilaTile.Configurator.ViewModels">
+    <Grid x:Name="RootGrid">
+        <Grid.LayoutTransform>
+            <ScaleTransform x:Name="CanvasScaleTransform" />
+        </Grid.LayoutTransform>
+
+        <Border BorderBrush="{StaticResource TextWhite}" BorderThickness="0.0015">
+            <Canvas Width="1" Height="1">
+
+                <!-- Vertical Dividers -->
+                <ItemsControl ItemsSource="{Binding VerticalDividers}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <Canvas />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Line
+                                X1="{Binding Position}"
+                                X2="{Binding Position}"
+                                Y1="{Binding BoundStart}"
+                                Y2="{Binding BoundEnd}"
+                                Stroke="{StaticResource TextWhite}"
+                                StrokeThickness="0.0015"/>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+
+                <!-- Horizontal Dividers -->
+                <ItemsControl ItemsSource="{Binding HorizontalDividers}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <Canvas />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Line
+                                X1="{Binding BoundStart}"
+                                X2="{Binding BoundEnd}"
+                                Y1="{Binding Position}"
+                                Y2="{Binding Position}"
+                                Stroke="{StaticResource TextWhite}"
+                                StrokeThickness="0.0015"/>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </Canvas>
+        </Border>
+    </Grid>
+</UserControl>
+

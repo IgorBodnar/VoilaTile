@@ -1,0 +1,27 @@
+﻿<UserControl x:Class="VoilaTile.Configurator.Views.CreateNewLayoutDialogView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="12"/>
+            <ColumnDefinition Width="240"/>
+        </Grid.ColumnDefinitions>
+
+        <TextBlock Grid.Column="0"
+                   Text="New Layout Name:"
+                   VerticalAlignment="Center"
+                   Foreground="{StaticResource TextWhite}" />
+
+        <TextBox Grid.Column="2"
+                 MinWidth="200"
+                 Margin="0"
+                 Background="{StaticResource BackgroundLightGray}"
+                 Foreground="{StaticResource TextWhite}"
+                 BorderThickness="0"
+                 Padding="6"
+                 Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" />
+
+    </Grid>
+</UserControl>
+

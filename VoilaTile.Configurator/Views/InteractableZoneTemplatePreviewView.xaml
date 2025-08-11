@@ -1,0 +1,192 @@
+﻿<UserControl x:Class="VoilaTile.Configurator.Views.InteractableZoneTemplatePreviewView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:VoilaTile.Configurator.ViewModels"
+             xmlns:views="clr-namespace:VoilaTile.Configurator.Views"
+             xmlns:converters="clr-namespace:VoilaTile.Configurator.Converters"
+             MinWidth="150"
+             MaxWidth="300"
+             HorizontalAlignment="Stretch">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <!-- Header with name and menu button -->
+        <Grid Margin="10,10,10,5">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Text="{Binding Name}"
+                       FontWeight="Bold"
+                       FontSize="14"
+                       Foreground="White"
+                       VerticalAlignment="Center">
+            </TextBlock>
+
+            <!-- Three-dot button -->
+            <Button Grid.Column="1"
+                    Width="24" Height="24"
+                    Padding="0"
+                    Margin="0,0,5,0"
+                    FontSize="16"
+                    Click="OnMenuButtonClick"
+                    Background="Transparent"
+                    Foreground="White"
+                    BorderBrush="{x:Null}"
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Right">
+
+                <Button.Template>
+                    <ControlTemplate>
+                        <TextBlock x:Name="buttonText" Text="‧ ‧ ‧"/>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="buttonText" Property="Foreground" Value="#e5383b"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Button.Template>
+            </Button>
+        </Grid>
+
+        <!-- Preview area -->
+        <Border x:Name="previewBorder"
+                Grid.Row="1"
+                BorderBrush="Gray"
+                BorderThickness="1"
+                CornerRadius="5"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Top"
+                MouseLeftButtonDown="OnClick"
+                ToolTip="Click to select for actions.&#x0a;Double click to apply to the currently active monitor.">
+            <Border.Style>
+                <Style TargetType="Border">
+                    <Setter Property="Background" Value="#22ffffff"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsHighlighted}" Value="True">
+                            <Setter Property="Background" Value="#66e5383b"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Border.Style>
+
+            <Viewbox Stretch="Fill">
+                <views:ZoneTemplateView DataContext="{Binding Template}" />
+            </Viewbox>
+        </Border>
+
+        <Grid x:Name="OverlayContainer"
+              Grid.Row="1"
+              Visibility="Collapsed"
+              Background="#fe1e1e1e"
+              IsHitTestVisible="False"
+              Width="{Binding ActualWidth, ElementName=previewBorder}">
+
+            <Border
+                BorderBrush="Gray"
+                BorderThickness="1"
+                CornerRadius="5">
+                <StackPanel>
+                    <Border Background="Transparent" Height="3"/>
+                    <Button 
+                        Command="{Binding RenameCommand}"
+                        Click="OnMenuItemClick"
+                        Visibility="{Binding IsDefault, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=invert}">
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <StackPanel x:Name="buttonPanel" Orientation="Horizontal" Background="#1e1e1e">
+                                    <Path x:Name="buttonIcon"
+                                          Data="M402.3 344.9l32-32c5-5 13.7-1.5 13.7 5.7V464c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V112c0-26.5 21.5-48 48-48h273.5c7.1 0 10.7 8.6 5.7 13.7l-32 32c-1.5 1.5-3.5 2.3-5.7 2.3H48v352h352V350.5c0-2.1.8-4.1 2.3-5.6zm156.6-201.8L296.3 405.7l-90.4 10c-26.2 2.9-48.5-19.2-45.6-45.6l10-90.4L432.9 17.1c22.9-22.9 59.9-22.9 82.7 0l43.2 43.2c22.9 22.9 22.9 60 .1 82.8zM460.1 174L402 115.9 216.2 301.8l-7.3 65.3 65.3-7.3L460.1 174zm64.8-79.7l-43.2-43.2c-4.1-4.1-10.8-4.1-14.8 0L436 82l58.1 58.1 30.9-30.9c4-4.2 4-10.8-.1-14.9z"
+                                          Fill="White"
+                                          Stretch="Uniform"
+                                          Width="16"
+                                          Height="16"
+                                          VerticalAlignment="Center"
+                                          Margin="10,10"/>
+                                    <TextBlock x:Name="buttonText"
+                                               Text="Rename"
+                                               Foreground="White"
+                                               FontSize="14"
+                                               TextAlignment="Center"
+                                               VerticalAlignment="Center"/>
+                                </StackPanel>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter TargetName="buttonText" Property="Foreground" Value="#e5383b"/>
+                                        <Setter TargetName="buttonIcon" Property="Fill" Value="#e5383b"/>
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Button.Template>
+                    </Button>
+                    <Button 
+                        Click="OnMenuItemClick"
+                        Command="{Binding CopyCommand}">
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <StackPanel x:Name="buttonPanel" Orientation="Horizontal" Background="#1e1e1e">
+                                    <Path x:Name="buttonIcon"
+                                          Data="M47.81 164.275C47.81 172.603 54.349 179.59 63.378 179.605C72.408 179.621 78.241 179.59 78.241 179.59S77.853 188.49 77.853 195.568C77.853 202.648 84.08 209.733 93.115 209.733S185.917 209.993 194.412 209.363C202.907 208.733 209.668 203.39 209.668 194.796C209.668 186.202 209.614 100.989 209.614 93.096C209.614 85.204 202.534 78.033 193.756 77.934C184.978 77.834 179.029 78.034 179.029 78.034S179.352 68.064 179.352 61.94C179.352 55.817 172.232 46.924 163.878 46.924S70.761 46.382 62.673 46.382C54.585 46.382 47.121 53.498 47.466 62.369C47.811 71.24 47.811 155.949 47.811 164.275zM93.87 192.762L93.802 94.598C93.802 93.502 94.696 92.608 95.801 92.614L191.356 93.124A2.007 2.007 0 0 1 193.354 95.134L193.29 192.417A2.01 2.01 0 0 1 191.28 194.424L95.88 194.75A1.9900000000000002 1.9900000000000002 0 0 1 93.87 192.762zM63.268 160.205L64.184 63.959A2.007 2.007 0 0 1 66.204 61.977L160.329 62.692A3.9760000000000004 3.9760000000000004 0 0 1 164.282 66.718L164.145 77.855S101.268 77.277 93.091 77.277S77.653 85.017 77.653 93.727C77.653 102.437 78.241 162.427 78.241 162.427C78.251 163.527 77.367 164.417 76.265 164.402L67.238 164.272A4.025 4.025 0 0 1 63.268 160.205z"
+                                          Fill="White"
+                                          Stretch="Uniform"
+                                          Width="16"
+                                          Height="16"
+                                          VerticalAlignment="Center"
+                                          Margin="10,10"/>
+                                    <TextBlock x:Name="buttonText"
+                                               Text="Copy"
+                                               Foreground="White"
+                                               FontSize="14"
+                                               TextAlignment="Center"
+                                               VerticalAlignment="Center"/>
+                                </StackPanel>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter TargetName="buttonText" Property="Foreground" Value="#e5383b"/>
+                                        <Setter TargetName="buttonIcon" Property="Fill" Value="#e5383b"/>
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Button.Template>
+                    </Button>
+                    <Button 
+                        Click="OnMenuItemClick"
+                        Command="{Binding DeleteCommand}"
+                        Visibility="{Binding IsDefault, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=invert}">
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <StackPanel x:Name="buttonPanel" Orientation="Horizontal" Background="#1e1e1e">
+                                    <Path x:Name="buttonIcon"
+                                          Data="M268 416h24a12 12 0 0 0 12-12V188a12 12 0 0 0-12-12h-24a12 12 0 0 0-12 12v216a12 12 0 0 0 12 12zM432 80h-82.41l-34-56.7A48 48 0 0 0 274.41 0H173.59a48 48 0 0 0-41.16 23.3L98.41 80H16A16 16 0 0 0 0 96v16a16 16 0 0 0 16 16h16v336a48 48 0 0 0 48 48h288a48 48 0 0 0 48-48V128h16a16 16 0 0 0 16-16V96a16 16 0 0 0-16-16zM171.84 50.91A6 6 0 0 1 177 48h94a6 6 0 0 1 5.15 2.91L293.61 80H154.39zM368 464H80V128h288zm-212-48h24a12 12 0 0 0 12-12V188a12 12 0 0 0-12-12h-24a12 12 0 0 0-12 12v216a12 12 0 0 0 12 12z"
+                                          Fill="White"
+                                          Stretch="Uniform"
+                                          Width="16"
+                                          Height="16"
+                                          VerticalAlignment="Center"
+                                          Margin="10,10"/>
+                                    <TextBlock x:Name="buttonText"
+                                               Text="Delete"
+                                               Foreground="White"
+                                               FontSize="14"
+                                               TextAlignment="Center"
+                                               VerticalAlignment="Center"/>
+                                </StackPanel>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter TargetName="buttonText" Property="Foreground" Value="#e5383b"/>
+                                        <Setter TargetName="buttonIcon" Property="Fill" Value="#e5383b"/>
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Button.Template>
+                    </Button>
+                </StackPanel>
+            </Border>
+        </Grid>
+    </Grid>
+</UserControl>
+

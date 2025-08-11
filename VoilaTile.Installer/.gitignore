@@ -1,0 +1,5 @@
+# Ignore the Output directory in this folder
+Output/
+
+# Ignore the installer secrets file
+installer.secrets.iss

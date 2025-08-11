@@ -1,0 +1,64 @@
+﻿<Window x:Class="VoilaTile.Configurator.Views.BaseDialogView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize"
+        WindowStyle="None"
+        SizeToContent="WidthAndHeight"
+        MinWidth="320"
+        Background="{StaticResource BackgroundDarkGrayOpaque}"
+        SnapsToDevicePixels="True"
+        UseLayoutRounding="True">
+    <StackPanel Orientation="Vertical" Background="{StaticResource BackgroundDarkGrayOpaque}">
+        <Border Background="{StaticResource BackgroundLightGray}">
+            <TextBlock Text="{Binding Title}"
+                       Margin="12,6"
+                       FontSize="16"
+                       Foreground="{StaticResource TextWhite}" />
+        </Border>
+        <Grid Grid.IsSharedSizeScope="True" Margin="10,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="16"/>
+                <!-- Gap -->
+                <RowDefinition Height="Auto"/>
+                <!-- Content -->
+                <RowDefinition Height="16"/>
+                <!-- Gap -->
+                <RowDefinition Height="32"/>
+                <!-- Buttons -->
+                <RowDefinition Height="8"/>
+                <!-- Gap -->
+            </Grid.RowDefinitions>
+
+            <!-- Content: bind to window's Body DP so the VM can be anything; DataTemplate maps VM->View -->
+            <ContentPresenter Grid.Row="1"
+                              Content="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=Body}" />
+
+            <!-- Buttons -->
+            <Grid Grid.Row="3">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="8" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <Button Grid.Column="0"
+                        Style="{StaticResource RoundedRectActionButton}"
+                        Background="{StaticResource BackgroundLightestGray}"
+                        Content="{Binding NegativeResponseText}"
+                        Click="OnNegativeClick"
+                        IsCancel="True"
+                        Visibility="{Binding ShowNegativeResponse, Converter={StaticResource BoolToVisibilityConverter}}"/>
+
+                <Button Grid.Column="2"
+                        Style="{StaticResource RoundedRectActionButton}"
+                        Background="{StaticResource AccentRed}"
+                        Content="{Binding PositiveResponseText}"
+                        Click="OnPositiveClick"
+                        IsDefault="True"
+                        Visibility="{Binding ShowPositiveResponse, Converter={StaticResource BoolToVisibilityConverter}}"/>
+            </Grid>
+        </Grid>
+    </StackPanel>
+</Window>
+

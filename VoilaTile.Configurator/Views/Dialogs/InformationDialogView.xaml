@@ -1,0 +1,16 @@
+﻿<UserControl x:Class="VoilaTile.Configurator.Views.InformationDialogView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+
+        <TextBlock Grid.Column="0"
+                   Text="{Binding Info}"
+                   VerticalAlignment="Center"
+                   Foreground="{StaticResource TextWhite}" />
+
+    </Grid>
+</UserControl>
+

@@ -1,0 +1,58 @@
+﻿<UserControl x:Class="VoilaTile.Configurator.Views.TitleLogo"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:VoilaTile.Configurator.Views"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid>
+        <Grid.Resources>
+            <ResourceDictionary xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+                <DrawingGroup x:Key="Decal">
+                    <DrawingGroup.ClipGeometry>
+                        <RectangleGeometry Rect="0.0,0.0,210.0,37.0"/>
+                    </DrawingGroup.ClipGeometry>
+                </DrawingGroup>
+                <DrawingImage Drawing="{StaticResource Decal}" x:Key="di_Decal"/>
+                <DrawingGroup x:Key="Layer_1">
+                    <DrawingGroup.ClipGeometry>
+                        <RectangleGeometry Rect="0.0,0.0,210.0,37.0"/>
+                    </DrawingGroup.ClipGeometry>
+                    <DrawingGroup Transform="1.06952,0.0,0.0,0.935001,0.0,0.0">
+                        <GeometryDrawing Brush="#ffffffff">
+                            <GeometryDrawing.Pen>
+                                <Pen Brush="#ff000000" Thickness="0.0" DashCap="Flat"/>
+                            </GeometryDrawing.Pen>
+                            <GeometryDrawing.Geometry>
+                                <PathGeometry Figures="M 81.7973 7.87647 L 72.759 32.2848 H 69.6101 L 60.7591 7.87647 h 3.18295 l 6.75739 19.353 q 0.323401 0.936163 0.493613 2.16168 h 0.06808 q 0.13617 -1.02127 0.561698 -2.19573 L 78.7164 7.87647 Z M 90.0015 32.6933 q -3.8638 0 -6.17867 -2.43402 q -2.29785 -2.45104 -2.29785 -6.48506 q 0 -4.39145 2.39998 -6.85952 q 2.39998 -2.46807 6.48506 -2.46807 q 3.89784 0 6.07655 2.39998 q 2.19573 2.39998 2.19573 6.65527 q 0 4.17018 -2.36594 6.68931 q -2.34892 2.50211 -6.31484 2.50211 z m 0.204254 -15.8977 q -2.68934 0 -4.25528 1.83828 q -1.56594 1.82126 -1.56594 5.03826 q 0 3.09785 1.58297 4.88507 q 1.58297 1.78722 4.23826 1.78722 q 2.70636 0 4.15316 -1.75318 q 1.46382 -1.75318 1.46382 -4.98719 q 0 -3.26806 -1.46382 -5.03826 q -1.4468 -1.7702 -4.15316 -1.7702 z m 15.7275 15.4892 h -2.79147 V 14.8551 h 2.79147 z m 2.50211 -26.3147 l -4.45954 5.58293 h -2.16168 l 3.79571 -5.58293 z m 5.94038 26.3147 h -2.79147 V 6.48074 h 2.79147 z m 18.1275 0 h -2.79146 v -2.72338 h -0.0681 q -1.82126 3.13189 -5.36166 3.13189 q -2.60423 0 -4.08507 -1.37871 q -1.46382 -1.37871 -1.46382 -3.65955 q 0 -4.88507 5.75315 -5.68506 l 5.22549 -0.731909 q 0 -4.44252 -3.59146 -4.44252 q -3.14892 0 -5.68507 2.14466 v -2.85955 q 2.5702 -1.63403 5.92336 -1.63403 q 6.14463 0 6.14463 6.50208 z m -2.79146 -8.81695 l -4.20423 0.578719 q -1.94041 0.272338 -2.92763 0.970205 q -0.98723 0.680845 -0.98723 2.43402 q 0 1.27659 0.90212 2.0936 q 0.91914 0.799994 2.43403 0.799994 q 2.07657 0 3.42124 -1.4468 q 1.3617 -1.46382 1.3617 -3.69359 z" FillRule="Nonzero"/>
+                            </GeometryDrawing.Geometry>
+                        </GeometryDrawing>
+                    </DrawingGroup>
+                    <DrawingGroup Transform="1.06952,0.0,0.0,0.935001,0.0,0.0">
+                        <GeometryDrawing Brush="#ffe5383b">
+                            <GeometryDrawing.Pen>
+                                <Pen Brush="#ffe53b3b" Thickness="0.0" DashCap="Flat"/>
+                            </GeometryDrawing.Pen>
+                            <GeometryDrawing.Geometry>
+                                <PathGeometry Figures="m 152.59 10.4637 h -7.04675 v 21.8211 h -2.85955 V 10.4637 H 135.654 V 7.87647 h 16.936 z m 4.88507 -0.03404 q -0.74893 0 -1.27659 -0.510634 q -0.52765 -0.510634 -0.52765 -1.29361 q 0 -0.782972 0.52765 -1.29361 q 0.52766 -0.527655 1.27659 -0.527655 q 0.76595 0 1.29361 0.527655 q 0.54467 0.510634 0.54467 1.29361 q 0 0.74893 -0.54467 1.27659 q -0.52766 0.527655 -1.29361 0.527655 z m 1.36169 21.8551 h -2.79147 V 14.8551 h 2.79147 z m 8.44249 0 h -2.79147 V 6.48074 h 2.79147 z m 19.6594 -8.01696 h -12.3063 q 0.0681 2.91062 1.56595 4.49358 q 1.49786 1.58297 4.11911 1.58297 q 2.94466 0 5.41273 -1.94041 v 2.62126 q -2.29786 1.66807 -6.07655 1.66807 q -3.69359 0 -5.80421 -2.36594 q -2.11062 -2.38296 -2.11062 -6.68931 q 0 -4.06805 2.29785 -6.62122 q 2.31488 -2.57019 5.73613 -2.57019 q 3.42125 0 5.29357 2.21275 q 1.87233 2.21275 1.87233 6.14463 z m -2.85955 -2.36594 q -0.017 -2.417 -1.17446 -3.76167 q -1.14042 -1.34467 -3.18296 -1.34467 q -1.97445 0 -3.35316 1.41275 q -1.37871 1.41275 -1.70212 3.69359 z" FillRule="Nonzero"/>
+                            </GeometryDrawing.Geometry>
+                        </GeometryDrawing>
+                    </DrawingGroup>
+                    <GeometryDrawing>
+                        <GeometryDrawing.Pen>
+                            <Pen Brush="#ffe53b3b" Thickness="1.6" DashCap="Flat"/>
+                        </GeometryDrawing.Pen>
+                        <GeometryDrawing.Geometry>
+                            <PathGeometry Figures="m 26.3023 16.5627 h 21.3005 v 11.1246 h -21.3005 z m 0 -10.6071 H 47.6028 V 27.7736 H 26.3023 Z M 10.6071 27.7735 h 38.8066 v 3.79442 H 10.6071 Z M 12.521 5.88605 H 47.6724 V 27.7086 H 12.521 Z" FillRule="Nonzero"/>
+                        </GeometryDrawing.Geometry>
+                    </GeometryDrawing>
+                </DrawingGroup>
+                <DrawingImage Drawing="{StaticResource Layer_1}" x:Key="di_Layer_1"/>
+            </ResourceDictionary>
+        </Grid.Resources>
+
+        <Image Source="{StaticResource di_Layer_1}"/>
+
+    </Grid>
+</UserControl>

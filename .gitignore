@@ -1,0 +1,11 @@
+# Ignore the output directories
+bin/
+obj/
+
+# Ignore private assets
+/private-assets/
+
+# Ignore non essentials
+.editorconfig
+.git
+.vs

@@ -1,0 +1,36 @@
+﻿<Window x:Class="VoilaTile.Configurator.Views.LayoutEditorWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:VoilaTile.Configurator.Views"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        ShowInTaskbar="False"
+        ResizeMode="NoResize"
+        Background="#99161A1D"
+        KeyDown="Window_KeyDown"
+        KeyUp="Window_KeyUp"
+        Loaded="Window_Loaded"
+        SizeChanged="Window_SizeChanged">
+
+    <Grid>
+        <!-- Zone label grid, bound to ViewModel definitions -->
+        <Grid x:Name="ZoneLabelGrid"
+              IsHitTestVisible="False"
+              Background="Transparent"/>
+
+        <!-- Layout editor canvas -->
+        <Border BorderBrush="White" BorderThickness="2" Background="Transparent">
+            <Canvas x:Name="RootCanvas" Background="Transparent">
+
+                <!-- Divider lines layer (drawn below) -->
+                <Canvas x:Name="DividerLinesLayer"
+                        IsHitTestVisible="False" />
+
+                <!-- Divider handles layer (drawn above lines) -->
+                <Canvas x:Name="DividerHandlesLayer"
+                        Background="Transparent" />
+            </Canvas>
+        </Border>
+    </Grid>
+</Window>
+

@@ -1,0 +1,82 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup />
+  <ItemGroup>
+    <ApplicationDefinition Update="App.xaml">
+      <SubType>Designer</SubType>
+    </ApplicationDefinition>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="Views\Dialogs\BaseDialogView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\LayoutEditor\DividerView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\Logos\TitleLogo.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\MonitorOverlayWindow.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\MonitorView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\Dialogs\RenameDialogView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\LayoutEditor\ZoneLabelView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="MainWindow.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\Dialogs\BaseDialogView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\Dialogs\CreateNewLayoutDialogView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\Dialogs\ConfirmationDialogView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\Dialogs\InformationDialogView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\LayoutEditor\DividerView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\LayoutEditor\EditorFloatingCard.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\LayoutEditor\LayoutEditorWindow.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\Logos\TitleLogo.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\MonitorOverlayWindow.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\Dialogs\RenameDialogView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\LayoutEditor\ZoneLabelView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\InteractableZoneTemplatePreviewView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\ZoneTemplatePreviewView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\ZoneTemplateView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\MonitorView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+</Project>

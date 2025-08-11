@@ -1,0 +1,32 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<SnapperTargetDir>$(MSBuildProjectDirectory)\..\VoilaTile.Snapper\bin\Release\net8.0-windows\publish</SnapperTargetDir>
+		<ConfiguratorTargetDir>$(MSBuildProjectDirectory)\..\VoilaTile.Configurator\bin\Release\net8.0-windows\publish</ConfiguratorTargetDir>
+		<InstallerOutputDir>$(MSBuildProjectDirectory)\Output</InstallerOutputDir>
+	</PropertyGroup>
+
+	<Target Name="PublishApps" BeforeTargets="Build">
+		<Exec Command="dotnet publish ..\VoilaTile.Snapper\VoilaTile.Snapper.csproj -c Release -r win-x86 -p:PublishSingleFile=true -p:SelfContained=true -p:IncludeNativeLibrariesForSelfExtract=true -o &quot;$(SnapperTargetDir)&quot;" />
+		<Exec Command="dotnet publish ..\VoilaTile.Configurator\VoilaTile.Configurator.csproj -c Release -r win-x86 -p:PublishSingleFile=true -p:SelfContained=true -p:IncludeNativeLibrariesForSelfExtract=true -o &quot;$(ConfiguratorTargetDir)&quot;" />
+	</Target>
+
+	<Target Name="BuildInstaller" AfterTargets="Build">
+		<Exec Command="&quot;C:\Program Files (x86)\Inno Setup 6\ISCC.exe&quot; installer.iss" />
+	</Target>
+
+	<ItemGroup>
+	  <Compile Remove="Output\**" />
+	  <EmbeddedResource Remove="Output\**" />
+	  <None Remove="Output\**" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Remove="Assets\icon-logo.ico" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Resource Include="Assets\icon-logo.ico" />
+	</ItemGroup>
+</Project>
+

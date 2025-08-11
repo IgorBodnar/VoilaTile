@@ -1,0 +1,19 @@
+﻿<Application x:Class="VoilaTile.Snapper.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:VoilaTile.Snapper">
+    <Application.Resources>
+        <!-- Brushes -->
+        <SolidColorBrush x:Key="TextWhite" Color="#f5f3f4"/>
+        <SolidColorBrush x:Key="TextWhiteTranslucent" Color="#ddf5f3f4"/>
+        <SolidColorBrush x:Key="BackgroundDarkGrayOpaque" Color="#161a1d"/>
+        <SolidColorBrush x:Key="BackgroundDarkGray" Color="#dd161a1d"/>
+        <SolidColorBrush x:Key="BackgroundLightestGray" Color="#b1a7a6"/>
+        <SolidColorBrush x:Key="BackgroundLightGray" Color="#33b1a7a6"/>
+        <SolidColorBrush x:Key="BackgroundMediumLightGray" Color="#22b1a7a6"/>
+        <SolidColorBrush x:Key="CloseWindowRed" Color="#ba181b"/>
+        <SolidColorBrush x:Key="AccentRed" Color="#e5383b"/>
+        <SolidColorBrush x:Key="AccentRedTranslucent" Color="#dde5383b"/>
+        <SolidColorBrush x:Key="AccentRedFaint" Color="#33e5383b"/>
+    </Application.Resources>
+</Application>
