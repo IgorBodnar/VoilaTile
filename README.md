@@ -76,10 +76,21 @@ VoilaTile is for people who:
 
 ![Quickstart Snapping](assets/quickstart_snapping.gif)
 
+## Early Release Notice
+
+⚠️ **Early Release** — VoilaTile is already functional and stable enough for daily use,  
+but parts of the code are still being cleaned up and tests are not yet in place.
+
+We’re sharing it early so others can try it, give feedback, and help shape its future.  
+If you encounter bugs or have suggestions, please open an [issue](https://github.com/IgorBodnar/VoilaTile/issues).
+
 ## Contributing
 
-Pull requests are welcome.  
-Open an [issue](https://github.com/IgorBodnar/VoilaTile/issues) for bugs, ideas, or feature requests.
+VoilaTile is in **active development**, and more features are planned for future releases.  
+While the roadmap is evolving, contributions of all kinds are welcome — whether it’s fixing bugs, improving documentation, or adding new functionality.
+
+Pull requests are encouraged and appreciated.  
+If you’d like to discuss an idea before implementing it, please open an [issue](https://github.com/IgorBodnar/VoilaTile/issues) so we can coordinate and make sure it aligns with the project’s goals.
 
 ## Support
 
