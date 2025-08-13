@@ -13,8 +13,10 @@
         public double Height { get; }
         public double ScreenX { get; }
         public double ScreenY { get; }
+        public uint DpiX { get; }
+        public uint DpiY { get; }
 
-        public ResolvedTileModel(string hint, double x, double y, double width, double height, double screenX, double screenY)
+        public ResolvedTileModel(string hint, double x, double y, double width, double height, double screenX, double screenY, uint dpiX, uint dpiY)
         {
             Hint = hint;
             X = x;
@@ -23,6 +25,8 @@
             Height = height;
             ScreenX = screenX;
             ScreenY = screenY;
+            DpiX = dpiX;
+            DpiY = dpiY;
         }
     }
 }

@@ -49,6 +49,8 @@
                     Y = monitorInfo.WorkY,
                     Width = monitorInfo.WorkWidth,
                     Height = monitorInfo.WorkHeight,
+                    DpiX = monitorInfo.DpiX,
+                    DpiY = monitorInfo.DpiY,
                 };
 
                 var validTiles = ComputeValidRectanles(monitorAtomicTileCollections[monitorIndex], monitorDividerCollections[monitorIndex]);

@@ -50,7 +50,9 @@
                     t.Width * monitor.WorkWidth,
                     t.Height * monitor.WorkHeight,
                     monitor.WorkX + t.X * monitor.WorkWidth,
-                    monitor.WorkY + t.Y * monitor.WorkHeight
+                    monitor.WorkY + t.Y * monitor.WorkHeight,
+                    monitor.DpiX,
+                    monitor.DpiY
                 )).ToList();
 
                 resolvedLayouts.Add(new ZoneLayoutModel(monitor, layoutDTO, resolvedTiles));

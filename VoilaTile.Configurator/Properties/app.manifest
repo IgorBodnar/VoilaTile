@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<assembly manifestVersion="1.0"
+  xmlns="urn:schemas-microsoft-com:asm.v1"
+  xmlns:asmv3="urn:schemas-microsoft-com:asm.v3"
+  xmlns:ws="http://schemas.microsoft.com/SMI/2016/WindowsSettings">
+	<asmv3:application>
+		<asmv3:windowsSettings>
+			<ws:dpiAwareness>PerMonitorV2</ws:dpiAwareness>
+		</asmv3:windowsSettings>
+	</asmv3:application>
+</assembly>
+

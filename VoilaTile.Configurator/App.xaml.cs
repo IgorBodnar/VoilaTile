@@ -3,8 +3,8 @@
     using System.IO;
     using System.Windows;
     using VoilaTile.Common.DTO;
+    using VoilaTile.Common.Helpers;
     using VoilaTile.Configurator.DTO;
-    using VoilaTile.Configurator.Enumerations;
     using VoilaTile.Configurator.Helpers;
     using VoilaTile.Configurator.Interfaces;
     using VoilaTile.Configurator.Services;

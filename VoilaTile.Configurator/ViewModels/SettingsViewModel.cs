@@ -12,9 +12,9 @@
     {
         private string seed = "asdfghjklqwertyuiop";
 
-        // <summary>
+        /// <summary>
         /// Gets or sets the seed used for layout generation.
-        /// Only lowercase letters (a–z) are allowed, and characters must be unique.
+        /// Only lowercase letters (a–z) and numeric characters (0-9) are allowed, and characters must be unique.
         /// </summary>
         public string Seed
         {
@@ -23,7 +23,7 @@
             {
                 string cleaned = new string(
                     value
-                        .Where(c => c >= 'a' && c <= 'z')
+                        .Where(c => (c >= 'a' && c <= 'z') || (c >= '0' && c <= '9'))
                         .Distinct()
                         .ToArray());
 

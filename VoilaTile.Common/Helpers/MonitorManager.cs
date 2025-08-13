@@ -37,8 +37,13 @@
                 string deviceName = info.szDevice.TrimEnd('\0');
                 geometryMap[deviceName] = new MonitorGeometryInfo(deviceName, info.rcMonitor, info.rcWork, hMonitor);
 
-                uint dpiX = 96, dpiY = 96;
-                try { GetDpiForMonitor(hMonitor, MonitorDpiType.EffectiveDpi, out dpiX, out dpiY); } catch { }
+                uint dpiX = Defaults.StandardDpi, dpiY = Defaults.StandardDpi;
+                int hr = GetDpiForMonitor(hMonitor, MonitorDpiType.EffectiveDpi, out dpiX, out dpiY);
+                if (hr != 0) 
+                { 
+                    dpiX = Defaults.StandardDpi;
+                    dpiY = Defaults.StandardDpi;
+                }
                 dpiMap[deviceName] = new MonitorDpiInfo(deviceName, dpiX, dpiY);
 
                 return true;
