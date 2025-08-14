@@ -5,6 +5,9 @@
     using System.Runtime.InteropServices;
     using System.Windows;
     using System.Windows.Interop;
+    using System.Windows.Media;
+    using System.Windows.Threading;
+    using VoilaTile.Common.Helpers;
     using VoilaTile.Snapper.Layout;
     using VoilaTile.Snapper.ViewModels;
     using VoilaTile.Snapper.Views;
@@ -25,7 +28,6 @@
         {
             foreach (var vm in overlayViewModels)
             {
-                // Target rectangle in physical pixels (virtual-screen coordinates).
                 int pxX = (int)vm.Layout.Monitor.WorkX;
                 int pxY = (int)vm.Layout.Monitor.WorkY;
                 int pxW = (int)vm.Layout.Monitor.WorkWidth;
@@ -43,11 +45,23 @@
                     ResizeMode = ResizeMode.NoResize,
                 };
 
-                // After HWND exists, enforce pixel-perfect bounds and lock across DPI changes.
                 window.SourceInitialized += (_, __) =>
                 {
-                    this.HookDpiChanged(window, () => this.ApplyBoundsPx(window, pxX, pxY, pxW, pxH));
-                    this.ApplyBoundsPx(window, pxX, pxY, pxW, pxH);
+                    // Use WPF's current scale (what WPF is actually using) for the inverse layout.
+                    ApplyInverseDpiLayout(window);
+
+                    // On DPI change, let WPF update first, then fix layout and bounds.
+                    HookDpiChanged(window, () =>
+                    {
+                        window.Dispatcher.BeginInvoke(new Action(() =>
+                        {
+                            ApplyInverseDpiLayout(window);
+                            ApplyBoundsPx(window, pxX, pxY, pxW, pxH);
+                        }), DispatcherPriority.Send);
+                    });
+
+                    // Enforce exact pixel bounds once the HWND exists.
+                    ApplyBoundsPx(window, pxX, pxY, pxW, pxH);
                 };
 
                 window.Show();
@@ -94,7 +108,50 @@
         }
 
         /// <summary>
-        /// Hooks WM_DPICHANGED to ignore Windows suggested rect and re-apply our pixel bounds.
+        /// Apply inverse DPI layout so pixel-based values render at correct size
+        /// using the DPI WPF is actually using for this window.
+        /// </summary>
+        private void ApplyInverseDpiLayout(Window window)
+        {
+            var src = (HwndSource?)PresentationSource.FromVisual(window);
+            double scale = 1.0;
+
+            if (src?.CompositionTarget is HwndTarget target)
+            {
+                // WPF's authoritative per-window scale
+                scale = target.TransformToDevice.M11;
+            }
+            else
+            {
+                // Fallback if Source not ready yet
+                var hwnd = new WindowInteropHelper(window).Handle;
+                if (hwnd != IntPtr.Zero)
+                {
+                    int dpi = GetDpiForWindow(hwnd);
+                    if (dpi > 0) scale = dpi / Defaults.StandardDpi;
+                }
+            }
+
+            if (scale <= 0) scale = 1.0;
+            double inv = 1.0 / scale;
+
+            if (window.Content is FrameworkElement root)
+            {
+                var st = root.LayoutTransform as ScaleTransform;
+                if (st is null)
+                {
+                    root.LayoutTransform = new ScaleTransform(inv, inv);
+                }
+                else
+                {
+                    st.ScaleX = inv;
+                    st.ScaleY = inv;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Hooks up WM_DPICHANGED while setting it as handled to remove UI jitter.
         /// </summary>
         private void HookDpiChanged(Window window, Action onDpiChanged)
         {
@@ -126,7 +183,9 @@
             int cx,
             int cy,
             uint uFlags);
+
+        [DllImport("user32.dll")]
+        private static extern int GetDpiForWindow(IntPtr hwnd);
     }
 }
-
 
