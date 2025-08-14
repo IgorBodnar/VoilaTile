@@ -81,13 +81,13 @@
             var confirmExitDialog = new ConfirmationDialogViewModel("Confirm Exit", "Are you sure you have finished setting up your layouts?\nOn exit the layouts will be persisted.");
             var (result, _) = await App.DialogService.ShowAsync(confirmExitDialog);
 
-            // Ask the view model to check if the snapper is running.
-            await this.viewModel.CheckSnapperRunningAsync();
-
             if (result == DialogDecision.Negative)
             {
                 return;
             }
+
+            // Ask the view model to check if the snapper is running.
+            await this.viewModel.CheckSnapperRunningAsync();
 
             OverlayManager.HideOverlay();
             this.Close();

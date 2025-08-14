@@ -69,8 +69,6 @@
         public LayoutEditorViewModel(ZoneTemplate template)
         {
             this.editedTemplate = template;
-            this.InitializeDividers(template);
-            this.AttachDividerEventHandlers();
         }
 
         #endregion Constructors
@@ -119,6 +117,12 @@
         #endregion Properties
 
         #region Methods
+
+        public void Initialize()
+        {
+            this.InitializeDividers(this.editedTemplate);
+            this.AttachDividerEventHandlers();
+        }
 
         public ZoneTemplate ToZoneTemplate()
         {

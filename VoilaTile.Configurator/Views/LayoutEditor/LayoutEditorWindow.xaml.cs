@@ -37,6 +37,11 @@
             this.MouseMove += OnMouseMove;
             this.MouseLeftButtonDown += OnMouseLeftButtonDown;
             this.MouseLeftButtonUp += OnMouseLeftButtonUp;
+        }
+
+        public void Initialize()
+        {
+            this.viewModel.Initialize();
 
             this.UpdateGridLayout();
             this.UpdateZoneLabels();

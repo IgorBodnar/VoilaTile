@@ -52,6 +52,7 @@
             };
 
             editor.Show();
+            editor.Initialize();
         }
 
         private static void ApplyBoundsPx(Window window, int x, int y, int width, int height)

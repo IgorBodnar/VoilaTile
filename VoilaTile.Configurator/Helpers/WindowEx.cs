@@ -1,4 +1,4 @@
-﻿namespace Configurator.Helpers
+﻿namespace VoilaTile.Configurator.Helpers
 {
     using System;
     using System.Runtime.InteropServices;

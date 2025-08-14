@@ -30,12 +30,13 @@
             HideOverlay();
 
             var owner = Application.Current.MainWindow;
+            bool isSameMonitor = MonitorUtils.IsSameMonitor(owner, monitor.MonitorInfo);
 
             var overlay = new MonitorOverlayWindow
             {
                 DataContext = monitor.SelectedTemplate,
                 ShowActivated = false,
-                Topmost = false,
+                Topmost = !isSameMonitor,
                 WindowStartupLocation = WindowStartupLocation.Manual,
                 Width = 1,
                 Height = 1,
@@ -58,12 +59,6 @@
             };
 
             overlay.Show();
-
-            bool isSameMonitor = MonitorUtils.IsSameMonitor(owner, monitor.MonitorInfo);
-            if (isSameMonitor)
-                owner.Activate();
-            else
-                WindowZOrderHelper.PlaceWindowBelow(overlay, owner);
         }
 
         public static void HideOverlay()
