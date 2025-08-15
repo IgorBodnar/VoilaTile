@@ -232,7 +232,7 @@
                     <StackPanel Orientation="Horizontal">
                         <Button
                             ToolTip="Edit the layout which is currently selected on the active monitor.&#x0a;The changes will propagate to other monitors using the same layout."
-                            Style="{StaticResource RoundedRectActionButton}" Background="{StaticResource AccentRed}" Width="135" Content="Edit Layout" Command="{Binding EditSelectedLayoutCommand}"/>
+                            Style="{StaticResource RoundedRectActionButton}" Background="{StaticResource AccentRed}" Width="135" Content="Edit Layout" Command="{Binding EditCurrentMonitorLayoutCommand}"/>
                     </StackPanel>
                 </Border>
 
