@@ -27,7 +27,7 @@
 
         private RelayCommand? editLayoutCommand;
 
-        private RelayCommand? editSelectedLayoutCommand;
+        private RelayCommand? editCurrentMonitorLayoutCommand;
 
         /// <summary>
         /// Gets or sets the total canvas width.
@@ -70,7 +70,7 @@
         /// </summary>
         public IRelayCommand EditLayoutCommand => this.editLayoutCommand ??= new RelayCommand(this.EditLayout, () => this.CanEditLayout);
 
-        public IRelayCommand EditSelectedLayoutCommand => this.editSelectedLayoutCommand ??= new RelayCommand(this.EditSelectedLayout, () => this.CanEditSelectedLayout);
+        public IRelayCommand EditCurrentMonitorLayoutCommand => this.editCurrentMonitorLayoutCommand ??= new RelayCommand(this.EditSelectedLayout, () => this.CanEditCurrentMonitorLayout);
 
         public IRelayCommand AddNewLayoutCommand => new RelayCommand(this.AddNewLayout);
 
@@ -108,7 +108,7 @@
 
         private bool CanEditLayout => this.highlightedPreview != null && !this.highlightedPreview.IsDefault;
 
-        private bool CanEditSelectedLayout => this.selectedMonitor != null && !this.selectedMonitor.SelectedTemplate.Template.IsDefault;
+        private bool CanEditCurrentMonitorLayout => this.selectedMonitor != null && !this.selectedMonitor.SelectedTemplate.Template.IsDefault;
 
         private void InitializeTemplates(List<ZoneTemplate> templates)
         {
@@ -217,7 +217,7 @@
                 this.selectedMonitor.IsSelected = true;
             }
 
-            this.editSelectedLayoutCommand?.NotifyCanExecuteChanged();
+            this.editLayoutCommand?.NotifyCanExecuteChanged();
         }
 
         private void InitializeTemplatePreviews()
@@ -249,6 +249,8 @@
                 this.AttachTemplatePreviewEventHandlers(previewVm);
                 this.TemplatePreviews.Add(previewVm);
             }
+
+            this.editCurrentMonitorLayoutCommand?.NotifyCanExecuteChanged();
         }
 
         public void ShowSelectedMonitorOverlay()
@@ -356,7 +358,7 @@
 
             this.HighlightedPreview = null;
 
-            this.editSelectedLayoutCommand?.NotifyCanExecuteChanged();
+            this.editCurrentMonitorLayoutCommand?.NotifyCanExecuteChanged();
         }
 
         private void OnCopyRequested(object? sender, EventArgs e)
