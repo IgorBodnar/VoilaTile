@@ -50,7 +50,7 @@
         /// <summary>
         /// Occurs when the custom power grab hotkey (Win + Space) is pressed.
         /// </summary>
-        public event EventHandler<HotKeyEventArgs>? OnHotKeyPressed;
+        public event Action<HotKeyEventArgs>? OnHotKeyPressed;
 
         /// <summary>
         /// Initializes and installs the global input listener.
@@ -103,12 +103,12 @@
                 }
                 else if (key == this.settings.ShortcutKey && isWinDown && isShiftDown && stateManager.CurrentMode == InputMode.HotKey)
                 {
-                    this.OnHotKeyPressed?.Invoke(this, new HotKeyEventArgs(InputFeature.Snap));
+                    this.OnHotKeyPressed?.Invoke(new HotKeyEventArgs(InputFeature.Snap));
                     shouldSuppress = true;
                 }
                 else if (key == Key.J && isWinDown && isShiftDown && stateManager.CurrentMode == InputMode.HotKey) // temporarily hardcoding the power grab hotkey to J.
                 {
-                    this.OnHotKeyPressed?.Invoke(this, new HotKeyEventArgs(InputFeature.PowerGrab));
+                    this.OnHotKeyPressed?.Invoke(new HotKeyEventArgs(InputFeature.PowerGrab));
                     shouldSuppress = true;
                 }
                 else if (stateManager.CurrentMode == InputMode.Input)

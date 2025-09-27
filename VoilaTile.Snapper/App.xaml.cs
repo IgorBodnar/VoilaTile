@@ -280,9 +280,9 @@
         }
 
         /// <summary>
-        /// Handles <see cref="GlobalInputListener.OnSnapHotKeyPressed"/>.
+        /// Handles <see cref="GlobalInputListener.OnHotKeyPressed"/>.
         /// </summary>
-        private void OnHotKeyPressed(object? sender, HotKeyEventArgs e)
+        private void OnHotKeyPressed(HotKeyEventArgs e)
         {
             switch (e.InputFeature)
             {
