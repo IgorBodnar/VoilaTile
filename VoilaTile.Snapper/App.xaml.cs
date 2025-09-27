@@ -39,6 +39,9 @@
         /// </summary>
         private static int shuttingDown;
 
+        /// <summary>
+        /// The input state manager.
+        /// </summary>
         private InputStateManager? inputState;
 
         /// <summary>
@@ -51,6 +54,11 @@
         /// Snap coordinator service.
         /// </summary>
         private SnapCoordinatorService? snappingCoordinator;
+
+        /// <summary>
+        /// Power grab coordinator service.
+        /// </summary>
+        private PowerGrabCoordinatorService? powerGrabCoordinator;
 
         /// <summary>
         /// Tray icon service.
@@ -67,6 +75,12 @@
         private Action? onEscapeToSnap;
         private Action? onEnterToSnap;
         private Action? onSpaceToSnap;
+
+        private Action<char>? onCharToPower;
+        private Action? onBackspaceToPower;
+        private Action? onEscapeToPower;
+        private Action? onEnterToPower;
+        private Action? onSpaceToPower;
 
         #endregion
 
@@ -232,6 +246,7 @@
             var settingsMonitor = new SettingsMonitoringService(settingsFilePath);
 
             this.snappingCoordinator = new SnapCoordinatorService(overlayService, windowSnapper, this.inputState);
+            this.powerGrabCoordinator = new PowerGrabCoordinatorService(this.inputState);
 
             this.inputListener = new GlobalInputListener(inputState, settingsMonitor);
             this.inputListener.OnHotKeyPressed += this.OnHotKeyPressed;
@@ -242,6 +257,13 @@
             this.onEscapeToSnap    = () => this.snappingCoordinator?.Cancel();
             this.onEnterToSnap     = () => this.snappingCoordinator?.CommitSnap();
             this.onSpaceToSnap     = () => this.snappingCoordinator?.CommitSnap();
+
+            // Initialize power grab actions.
+            this.onCharToPower      = c => this.powerGrabCoordinator?.ForwardCharacter(c);
+            this.onBackspaceToPower = () => this.powerGrabCoordinator?.Backspace();
+            this.onEscapeToPower    = () => this.powerGrabCoordinator?.Cancel();
+            this.onEnterToPower     = () => this.powerGrabCoordinator?.AcceptSelection();
+            this.onSpaceToPower     = () => this.powerGrabCoordinator?.AcceptSelection();
         }
 
         /// <summary>
@@ -349,9 +371,15 @@
                         // Detach event handlers.
                         this.DetachEventHandlers();
 
-                        // TODO: Attach input event handlers to the power grab coordinator.
+                        // Attach input event handlers to the power grab coordinator.
+                        this.inputListener!.OnCharacterTyped += this.onCharToPower;
+                        this.inputListener.OnBackspacePressed += this.onBackspaceToPower;
+                        this.inputListener.OnEscapePressed += this.onEscapeToPower;
+                        this.inputListener.OnEnterPressed += this.onEnterToPower;
+                        this.inputListener.OnSpacePressed += this.onSpaceToPower;
 
-                        System.Diagnostics.Debug.WriteLine("[Power Mode] Hotkey received.");
+                        // Launch power mode.
+                        this.powerGrabCoordinator?.Begin();
                     }
                     catch (Exception ex)
                     {
@@ -367,6 +395,7 @@
         {
             if (this.inputListener is null) return;
 
+            // Snap detach.
             if (this.onCharToSnap is not null)
                 this.inputListener.OnCharacterTyped -= this.onCharToSnap;
 
@@ -381,6 +410,22 @@
 
             if (this.onSpaceToSnap is not null)
                 this.inputListener.OnSpacePressed -= this.onSpaceToSnap;
+
+            // Power Grab detach.
+            if (this.onCharToPower is not null)
+                this.inputListener.OnCharacterTyped -= this.onCharToPower;
+
+            if (this.onBackspaceToPower is not null)
+                this.inputListener.OnBackspacePressed -= this.onBackspaceToPower;
+
+            if (this.onEscapeToPower is not null)
+                this.inputListener.OnEscapePressed -= this.onEscapeToPower;
+
+            if (this.onEnterToPower is not null)
+                this.inputListener.OnEnterPressed -= this.onEnterToPower;
+
+            if (this.onSpaceToPower is not null)
+                this.inputListener.OnSpacePressed -= this.onSpaceToPower;
         }
 
         /// <summary>
