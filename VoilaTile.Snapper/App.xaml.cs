@@ -6,6 +6,7 @@
     using System.Windows;
     using VoilaTile.Common.Helpers;
     using VoilaTile.Common.Models;
+    using VoilaTile.Snapper.EventArgs;
     using VoilaTile.Snapper.Input;
     using VoilaTile.Snapper.Layout;
     using VoilaTile.Snapper.Services;
@@ -38,6 +39,8 @@
         /// </summary>
         private static int shuttingDown;
 
+        private InputStateManager? inputState;
+
         /// <summary>
         /// The global input listener.
         /// Handles hotkeys and user input.
@@ -47,7 +50,7 @@
         /// <summary>
         /// Snap coordinator service.
         /// </summary>
-        private SnapCoordinatorService? coordinator;
+        private SnapCoordinatorService? snappingCoordinator;
 
         /// <summary>
         /// Tray icon service.
@@ -58,6 +61,12 @@
         /// The hidden host window used for message hooks.
         /// </summary>
         private Window? hostWindow;
+
+        private Action<char>? onCharToSnap;
+        private Action? onBackspaceToSnap;
+        private Action? onEscapeToSnap;
+        private Action? onEnterToSnap;
+        private Action? onSpaceToSnap;
 
         #endregion
 
@@ -205,7 +214,7 @@
         {
             if (state.CurrentMode == VoilaTile.Snapper.Input.InputMode.Input)
             {
-                this.coordinator?.ForwardCharacter(c);
+                this.snappingCoordinator?.ForwardCharacter(c);
             }
         }
 
@@ -216,20 +225,23 @@
         {
             this.trayIconService = new TrayIconService();
 
-            var inputState = new InputStateManager();
+            this.inputState = new InputStateManager();
+
             var overlayService = new OverlayDisplayService();
             var windowSnapper = new WindowSnappingService();
             var settingsMonitor = new SettingsMonitoringService(settingsFilePath);
 
-            this.coordinator = new SnapCoordinatorService(overlayService, windowSnapper, inputState);
+            this.snappingCoordinator = new SnapCoordinatorService(overlayService, windowSnapper, this.inputState);
 
             this.inputListener = new GlobalInputListener(inputState, settingsMonitor);
-            this.inputListener.OnCharacterTyped += c => this.ForwardInput(inputState, c);
-            this.inputListener.OnBackspacePressed += () => this.coordinator?.Backspace();
-            this.inputListener.OnEscapePressed += () => this.coordinator?.Cancel();
-            this.inputListener.OnEnterPressed += () => this.coordinator?.CommitSnap();
-            this.inputListener.OnSpacePressed += () => this.coordinator?.CommitSnap();
-            this.inputListener.OnManualHotKeyPressed += this.OnHotKeyPressed;
+            this.inputListener.OnHotKeyPressed += this.OnHotKeyPressed;
+
+            // Intialize snap actions.
+            this.onCharToSnap     = c => this.ForwardInput(this.inputState!, c);
+            this.onBackspaceToSnap = () => this.snappingCoordinator?.Backspace();
+            this.onEscapeToSnap    = () => this.snappingCoordinator?.Cancel();
+            this.onEnterToSnap     = () => this.snappingCoordinator?.CommitSnap();
+            this.onSpaceToSnap     = () => this.snappingCoordinator?.CommitSnap();
         }
 
         /// <summary>
@@ -268,52 +280,107 @@
         }
 
         /// <summary>
-        /// Handles <see cref="GlobalInputListener.OnManualHotKeyPressed"/>.
+        /// Handles <see cref="GlobalInputListener.OnSnapHotKeyPressed"/>.
         /// </summary>
-        private void OnHotKeyPressed()
+        private void OnHotKeyPressed(object? sender, HotKeyEventArgs e)
         {
-            try
+            switch (e.InputFeature)
             {
-                string layoutFilePath = Path.Combine(
-                    Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-                    "VoilaTile",
-                    "active_layouts.json");
+                case InputFeature.Snap:
+                    try
+                    {
+                        // Detach event handlers.
+                        this.DetachEventHandlers();
 
-                List<MonitorInfo> monitors = MonitorManager.GetMonitors();
-                List<ZoneLayoutModel> layouts = LayoutResolver.LoadAndResolveLayouts(layoutFilePath, monitors);
+                        // Attach input event handlers to the snapping coordinator.
+                        this.inputListener!.OnCharacterTyped += this.onCharToSnap;
+                        this.inputListener.OnBackspacePressed += this.onBackspaceToSnap;
+                        this.inputListener.OnEscapePressed += this.onEscapeToSnap;
+                        this.inputListener.OnEnterPressed += this.onEnterToSnap;
+                        this.inputListener.OnSpacePressed += this.onSpaceToSnap;
 
-                this.coordinator?.BeginSnapping(layouts);
-            }
-            catch (FileNotFoundException ex)
-            {
-                var result = MessageBox.Show(
-                    "The layout file could not be found. Would you like to open the Configurator to create or select a layout?",
-                    "Missing Layout File",
-                    MessageBoxButton.YesNo,
-                    MessageBoxImage.Question);
+                        // Begin snapping.
+                        string layoutFilePath = Path.Combine(
+                            Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+                            "VoilaTile",
+                            "active_layouts.json");
 
-                if (result == MessageBoxResult.Yes)
-                {
-                    LaunchConfigurator();
-                }
-            }
-            catch (InvalidOperationException ex) when (ex.Message.StartsWith("No layout found"))
-            {
-                var result = MessageBox.Show(
-                    "Some connected monitors do not have a layout defined. Would you like to open the Configurator to fix this?",
-                    "Unmatched Monitor Layout",
-                    MessageBoxButton.YesNo,
-                    MessageBoxImage.Question);
+                        List<MonitorInfo> monitors = MonitorManager.GetMonitors();
+                        List<ZoneLayoutModel> layouts = LayoutResolver.LoadAndResolveLayouts(layoutFilePath, monitors);
 
-                if (result == MessageBoxResult.Yes)
-                {
-                    LaunchConfigurator();
-                }
+                        this.snappingCoordinator?.BeginSnapping(layouts);
+                    }
+                    catch (FileNotFoundException ex)
+                    {
+                        var result = MessageBox.Show(
+                            "The layout file could not be found. Would you like to open the Configurator to create or select a layout?",
+                            "Missing Layout File",
+                            MessageBoxButton.YesNo,
+                            MessageBoxImage.Question);
+
+                        if (result == MessageBoxResult.Yes)
+                        {
+                            LaunchConfigurator();
+                        }
+                    }
+                    catch (InvalidOperationException ex) when (ex.Message.StartsWith("No layout found"))
+                    {
+                        var result = MessageBox.Show(
+                            "Some connected monitors do not have a layout defined. Would you like to open the Configurator to fix this?",
+                            "Unmatched Monitor Layout",
+                            MessageBoxButton.YesNo,
+                            MessageBoxImage.Question);
+
+                        if (result == MessageBoxResult.Yes)
+                        {
+                            LaunchConfigurator();
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Failed to launch overlays: {ex.Message}", "Snapper Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+
+                    break;
+
+                case InputFeature.PowerGrab:
+                    try
+                    {
+                        // Detach event handlers.
+                        this.DetachEventHandlers();
+
+                        // TODO: Attach input event handlers to the power grab coordinator.
+
+                        System.Diagnostics.Debug.WriteLine("[Power Mode] Hotkey received.");
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Failed to launch power grab: {ex.Message}", "Power Mode Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+
+                    break;
+
             }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Failed to launch overlays: {ex.Message}", "Snapper Error", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
+        }
+
+        private void DetachEventHandlers()
+        {
+            if (this.inputListener is null) return;
+
+            if (this.onCharToSnap is not null)
+                this.inputListener.OnCharacterTyped -= this.onCharToSnap;
+
+            if (this.onBackspaceToSnap is not null)
+                this.inputListener.OnBackspacePressed -= this.onBackspaceToSnap;
+
+            if (this.onEscapeToSnap is not null)
+                this.inputListener.OnEscapePressed -= this.onEscapeToSnap;
+
+            if (this.onEnterToSnap is not null)
+                this.inputListener.OnEnterPressed -= this.onEnterToSnap;
+
+            if (this.onSpaceToSnap is not null)
+                this.inputListener.OnSpacePressed -= this.onSpaceToSnap;
         }
 
         /// <summary>

@@ -5,6 +5,7 @@
     using System.Runtime.InteropServices;
     using System.Windows.Input;
     using System.Windows.Media.Effects;
+    using VoilaTile.Snapper.EventArgs;
     using VoilaTile.Snapper.Services;
 
     /// <summary>
@@ -47,9 +48,9 @@
         public event Action? OnSpacePressed;
 
         /// <summary>
-        /// Occurs when the custom hotkey (Win + Space) is pressed.
+        /// Occurs when the custom power grab hotkey (Win + Space) is pressed.
         /// </summary>
-        public event Action? OnManualHotKeyPressed;
+        public event EventHandler<HotKeyEventArgs>? OnHotKeyPressed;
 
         /// <summary>
         /// Initializes and installs the global input listener.
@@ -102,7 +103,12 @@
                 }
                 else if (key == this.settings.ShortcutKey && isWinDown && isShiftDown && stateManager.CurrentMode == InputMode.HotKey)
                 {
-                    OnManualHotKeyPressed?.Invoke();
+                    this.OnHotKeyPressed?.Invoke(this, new HotKeyEventArgs(InputFeature.Snap));
+                    shouldSuppress = true;
+                }
+                else if (key == Key.J && isWinDown && isShiftDown && stateManager.CurrentMode == InputMode.HotKey) // temporarily hardcoding the power grab hotkey to J.
+                {
+                    this.OnHotKeyPressed?.Invoke(this, new HotKeyEventArgs(InputFeature.PowerGrab));
                     shouldSuppress = true;
                 }
                 else if (stateManager.CurrentMode == InputMode.Input)

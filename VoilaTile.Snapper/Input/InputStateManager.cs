@@ -3,32 +3,23 @@
     using System;
 
     /// <summary>
-    /// Represents the current input mode of the application.
-    /// </summary>
-    public enum InputMode
-    {
-        /// <summary>
-        /// Listening for global hotkey.
-        /// </summary>
-        HotKey,
-
-        /// <summary>
-        /// Receiving character input for tile selection.
-        /// </summary>
-        Input
-    }
-
-    /// <summary>
     /// Manages the application's current input state and transitions.
     /// </summary>
     public class InputStateManager
     {
         private InputMode currentMode = InputMode.HotKey;
 
+        private InputFeature currentFeature = InputFeature.Snap;
+
         /// <summary>
         /// Gets the current input mode.
         /// </summary>
         public InputMode CurrentMode => currentMode;
+
+        /// <summary>
+        /// Gets the current input feature.
+        /// </summary>
+        public InputFeature CurrentFeature => currentFeature;
 
         /// <summary>
         /// Occurs when the input mode changes.
