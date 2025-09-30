@@ -9,6 +9,9 @@
     {
         #region Methods
 
+        bool TryGetSourceSize(WindowId sourceId, out SizePx size);
+
+
         /// <summary>
         /// Ensures that a thumbnail for the specified source window is registered.
         /// </summary>

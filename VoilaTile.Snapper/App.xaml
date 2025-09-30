@@ -1,8 +1,12 @@
 ﻿<Application x:Class="VoilaTile.Snapper.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:VoilaTile.Snapper">
+             xmlns:local="clr-namespace:VoilaTile.Snapper"
+             xmlns:converters="clr-namespace:VoilaTile.Snapper.Converters">
     <Application.Resources>
+        <!-- Converters -->
+        <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+
         <!-- Brushes -->
         <SolidColorBrush x:Key="TextWhite" Color="#f5f3f4"/>
         <SolidColorBrush x:Key="TextWhiteTranslucent" Color="#ddf5f3f4"/>

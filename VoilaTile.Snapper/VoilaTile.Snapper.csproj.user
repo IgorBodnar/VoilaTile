@@ -10,12 +10,24 @@
     <Compile Update="Views\OverlayWindow.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Views\PowerGrabOverlayView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\WindowCardView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Page Update="MainWindow.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Views\OverlayWindow.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\PowerGrabOverlayView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\WindowCardView.xaml">
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>

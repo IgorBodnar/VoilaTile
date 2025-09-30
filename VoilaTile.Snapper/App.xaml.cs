@@ -8,6 +8,7 @@
     using VoilaTile.Common.Models;
     using VoilaTile.Snapper.EventArgs;
     using VoilaTile.Snapper.Input;
+    using VoilaTile.Snapper.Interop;
     using VoilaTile.Snapper.Layout;
     using VoilaTile.Snapper.Services;
 
@@ -81,6 +82,8 @@
         private Action? onEscapeToPower;
         private Action? onEnterToPower;
         private Action? onSpaceToPower;
+        private Action? onPressTabToPower;
+        private Action? onReleaseTabToPower;
 
         #endregion
 
@@ -244,9 +247,15 @@
             var overlayService = new OverlayDisplayService();
             var windowSnapper = new WindowSnappingService();
             var settingsMonitor = new SettingsMonitoringService(settingsFilePath);
+            var windowEnumerator = new WindowEnumerator();
+            var windowIcons = new WindowIconService();
+            var hintService = new HintService();
+            var focusService = new WindowFocusService();
+            var surfaceFactory = new DwmThumbnailSurfaceFactory();
 
             this.snappingCoordinator = new SnapCoordinatorService(overlayService, windowSnapper, this.inputState);
-            this.powerGrabCoordinator = new PowerGrabCoordinatorService(this.inputState);
+            Func<IntPtr> getHost = () => this.hostWindow?.GetHandleOrZero() ?? IntPtr.Zero;
+            this.powerGrabCoordinator = new PowerGrabCoordinatorService(this.inputState, windowEnumerator, windowIcons, hintService, focusService, surfaceFactory, getHost);
 
             this.inputListener = new GlobalInputListener(inputState, settingsMonitor);
             this.inputListener.OnHotKeyPressed += this.OnHotKeyPressed;
@@ -264,6 +273,8 @@
             this.onEscapeToPower    = () => this.powerGrabCoordinator?.Cancel();
             this.onEnterToPower     = () => this.powerGrabCoordinator?.AcceptSelection();
             this.onSpaceToPower     = () => this.powerGrabCoordinator?.AcceptSelection();
+            this.onPressTabToPower     = () => this.powerGrabCoordinator?.ShowPreview();
+            this.onReleaseTabToPower     = () => this.powerGrabCoordinator?.HidePreview();
         }
 
         /// <summary>
@@ -377,6 +388,8 @@
                         this.inputListener.OnEscapePressed += this.onEscapeToPower;
                         this.inputListener.OnEnterPressed += this.onEnterToPower;
                         this.inputListener.OnSpacePressed += this.onSpaceToPower;
+                        this.inputListener.OnTabPressed += this.onPressTabToPower;
+                        this.inputListener.OnTabReleased += this.onReleaseTabToPower;
 
                         // Launch power mode.
                         this.powerGrabCoordinator?.Begin();
@@ -426,6 +439,12 @@
 
             if (this.onSpaceToPower is not null)
                 this.inputListener.OnSpacePressed -= this.onSpaceToPower;
+
+            if (this.onPressTabToPower is not null)
+                this.inputListener.OnTabPressed -= this.onPressTabToPower;
+
+            if (this.onReleaseTabToPower is not null)
+                this.inputListener.OnTabReleased -= this.onReleaseTabToPower;
         }
 
         /// <summary>

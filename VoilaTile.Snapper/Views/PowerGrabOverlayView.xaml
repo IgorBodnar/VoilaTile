@@ -1,0 +1,104 @@
+﻿<!-- PowerGrabOverlayView.xaml -->
+<Window x:Class="VoilaTile.Snapper.Views.PowerGrabOverlayView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="clr-namespace:VoilaTile.Snapper.ViewModels"
+        xmlns:views="clr-namespace:VoilaTile.Snapper.Views"
+        Title="VoilaTile — Power Mode"
+        WindowStyle="None"
+        WindowStartupLocation="Manual"
+        AllowsTransparency="True"
+        ResizeMode="NoResize"
+        ShowInTaskbar="False"
+        Topmost="True"
+        Width="1024" Height="720"
+        Background="{StaticResource BackgroundDarkGray}">
+
+    <Grid x:Name="Root" Margin="16" Focusable="True">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <DockPanel x:Name="Header" Grid.Row="0" Margin="0,0,0,12">
+            <TextBlock Text="Power Mode" FontSize="16" FontWeight="SemiBold" Foreground="{StaticResource TextWhite}"/>
+            <Border Background="{StaticResource BackgroundMediumLightGray}" CornerRadius="8" Padding="8,4" Margin="12,0,0,0">
+                <TextBlock Text="{Binding HintBuffer}" FontFamily="Consolas" FontSize="14" Foreground="{StaticResource TextWhite}"/>
+            </Border>
+        </DockPanel>
+
+        <!-- Cards -->
+        <ItemsControl x:Name="CardsItems" Grid.Row="1" ItemsSource="{Binding Cards}">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <WrapPanel IsItemsHost="True"/>
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+
+            <ItemsControl.ItemTemplate>
+                <DataTemplate DataType="{x:Type vm:WindowCardViewModel}">
+                    <views:WindowCardView/>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+
+        <!-- Preview -->
+        <Grid x:Name="PreviewLayer"
+              Grid.RowSpan="2"
+              Visibility="{Binding IsPreviewVisible, Converter={StaticResource BoolToVisibilityConverter}}"
+              Panel.ZIndex="999"
+              >        
+            <!-- Dim background -->
+            <Border Background="#DD000000"/>
+
+            <!-- Centered preview card -->
+            <Border HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch"
+                    Margin="24"
+                    CornerRadius="12"
+                    Padding="16"
+                    Background="{StaticResource BackgroundLightGray}">
+
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Title + metadata -->
+                    <StackPanel Orientation="Vertical" Margin="0,0,0,12">
+                        <TextBlock Text="{Binding PreviewTarget.Title}"
+                                   FontSize="20"
+                                   FontWeight="SemiBold"
+                                   Foreground="{StaticResource TextWhite}"/>
+                        <!-- Optional metadata line; bind safely with null checks -->
+                        <TextBlock FontSize="12"
+                                   Foreground="{StaticResource TextWhiteTranslucent}">
+                            <Run Text="HWND: "/>
+                            <Run Text="{Binding PreviewTarget.Entry.Id.Hwnd}"/>
+                            <Run Text="  ·  Size: "/>
+                            <Run>
+                                <Run.Text>
+                                    <MultiBinding StringFormat="{}{0}×{1}">
+                                        <Binding Path="PreviewTarget.Entry.SourceClientSize.W"/>
+                                        <Binding Path="PreviewTarget.Entry.SourceClientSize.H"/>
+                                    </MultiBinding>
+                                </Run.Text>
+                            </Run>
+                        </TextBlock>
+                    </StackPanel>
+
+                    <!-- Big thumbnail slot -->
+                    <Border x:Name="PreviewThumbnailSlot"
+                            Grid.Row="2"
+                            CornerRadius="8"
+                            Background="{StaticResource BackgroundDarkGray}"/>
+                </Grid>
+            </Border>
+        </Grid>
+
+    </Grid>
+</Window>
+

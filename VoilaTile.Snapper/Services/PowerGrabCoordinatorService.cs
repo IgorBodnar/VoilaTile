@@ -2,169 +2,151 @@
 {
     using System;
     using System.Diagnostics;
+    using System.Linq;
     using System.Windows;
+    using System.Windows.Media;
     using VoilaTile.Snapper.Input;
+    using VoilaTile.Snapper.Records;
+    using VoilaTile.Snapper.ViewModels;
+    using VoilaTile.Snapper.Views;
 
-    /// <summary>
-    /// Coordinates Power Mode lifecycle and input handling.
-    /// Step 3: skeleton; no window enumeration or thumbnails yet.
-    /// </summary>
     internal sealed class PowerGrabCoordinatorService
     {
-        #region Fields
-
         private readonly InputStateManager inputState;
+        private readonly IWindowEnumerator enumerator;
+        private readonly IWindowIconService icons;
+        private readonly IHintService hints;
+        private readonly IWindowFocusService focus;
+        private readonly IDwmThumbnailSurfaceFactory surfaceFactory;
+        private readonly Func<IntPtr> hostHwndProvider;
 
-        // TODO (Step 4+): inject real services here
-        // private readonly IWindowCacheService cache;
-        // private readonly IWindowEnumerator enumerator;
-        // private readonly IWindowIconService icons;
-        // private readonly IWindowFocusService focus;
-        // private readonly IHintService hints;
-
+        private PowerGrabOverlayView? view;
+        private PowerGrabOverlayViewModel? vm;
         private bool isActive;
 
-        // Very temporary placeholder window for Step 3 verification.
-        private Window? placeholderWindow;
-
-        #endregion
-
-        #region Constructors
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="PowerGrabCoordinatorService"/> class.
-        /// </summary>
-        /// <param name="inputState">The shared input state manager.</param>
-        public PowerGrabCoordinatorService(InputStateManager inputState)
+        public PowerGrabCoordinatorService(
+            InputStateManager inputState,
+            IWindowEnumerator enumerator,
+            IWindowIconService icons,
+            IHintService hints,
+            IWindowFocusService focus,
+            IDwmThumbnailSurfaceFactory surfaceFactory,
+            Func<IntPtr> hostHwndProvider)
         {
             this.inputState = inputState ?? throw new ArgumentNullException(nameof(inputState));
+            this.enumerator = enumerator ?? throw new ArgumentNullException(nameof(enumerator));
+            this.icons = icons ?? throw new ArgumentNullException(nameof(icons));
+            this.hints = hints ?? throw new ArgumentNullException(nameof(hints));
+            this.focus = focus ?? throw new ArgumentNullException(nameof(focus));
+            this.surfaceFactory = surfaceFactory ?? throw new ArgumentNullException(nameof(surfaceFactory));
+            this.hostHwndProvider = hostHwndProvider ?? throw new ArgumentNullException(nameof(hostHwndProvider));
         }
 
-        #endregion
-
-        #region Properties
-
-        /// <summary>
-        /// Gets a value indicating whether Power Mode is currently active.
-        /// </summary>
         public bool IsActive => this.isActive;
 
-        #endregion
-
-        #region Methods
-
-        /// <summary>
-        /// Begins Power Mode: switches input routing and shows a temporary placeholder.
-        /// </summary>
         public void Begin()
         {
-            if (this.isActive)
-            {
-                return;
-            }
+            if (this.isActive) return;
 
             this.isActive = true;
-
-            // Switch global input routing to Power Mode.
-            this.inputState.EnterInputMode();
+            //this.inputState.EnterInputMode();
             this.inputState.SwitchToPowerGrabFeature();
 
-            Debug.WriteLine("[PowerMode] Begin");
-
-            // TEMP visual proof for Step 3 only.
-            this.placeholderWindow = new Window
+            // Enumerate with default options.
+            var options = new WindowQueryOptions
             {
-                Title = "VoilaTile — Power Mode (placeholder)",
-                Width = 560,
-                Height = 360,
-                WindowStyle = WindowStyle.ToolWindow,
-                ShowInTaskbar = false,
-                Topmost = true,
-                Content = new System.Windows.Controls.TextBlock
-                {
-                    Text = "Power Mode is active.\nType letters / Space / Backspace / Esc.\n(Placeholder — real overlay arrives in Step 5+)",
-                    TextWrapping = TextWrapping.Wrap,
-                    Margin = new Thickness(24),
-                },
+                AltTabOnly = false,
+                IncludeToolWindows = false,
+                IncludeMinimized = true,
+                ExcludeCloaked = true,
+                CurrentDesktopOnly = true,
+                MinWidth = 10,
+                MinHeight = 10,
             };
 
-            this.placeholderWindow.Closed += (_, __) => this.placeholderWindow = null;
-            this.placeholderWindow.Show();
+            var all = this.enumerator.Snapshot(options);
+
+            // Require DWM thumbnail.
+            using var prober = new DwmThumbnailProber(this.hostHwndProvider, TimeSpan.FromSeconds(5));
+            var candidates = all.Where(e => prober.CanRegister(e.Id)).ToList();
+
+            // Exclude this process.
+            var selfExcluding = candidates.Where(e => e.ProcessName != Process.GetCurrentProcess().ProcessName);
+
+            // Icons.
+            var withIcons = selfExcluding.Select(e => e with { AppIcon = this.icons.GetIcon(e) }).ToList();
+
+            // VM + view.
+            this.vm = new PowerGrabOverlayViewModel(this.hints, withIcons);
+
+            this.view = new PowerGrabOverlayView(this.surfaceFactory)
+            {
+                DataContext = this.vm,
+                WindowStartupLocation = WindowStartupLocation.CenterScreen,
+                ShowInTaskbar = false,
+                Topmost = true,
+            };
+
+            this.view.Closed += (_, __) =>
+            {
+                this.view = null;
+                this.vm = null;
+            };
+
+            this.view.Show();
         }
 
-        /// <summary>
-        /// Cancels Power Mode and restores global input to HotKey mode.
-        /// </summary>
         public void Cancel()
         {
-            if (!this.isActive)
-            {
-                return;
-            }
+            if (!this.isActive) return;
 
-            Debug.WriteLine("[PowerMode] Cancel");
+            try { this.view?.CloseSafely(); } catch { }
 
-            try
-            {
-                this.placeholderWindow?.Close();
-            }
-            catch
-            {
-                // ignore
-            }
-            finally
-            {
-                this.placeholderWindow = null;
-            }
+            this.view = null;
+            this.vm = null;
 
             this.inputState.ReturnToHotKeyMode();
             this.isActive = false;
         }
 
-        /// <summary>
-        /// Handles a character typed in Power Mode (hint buffer in future steps).
-        /// </summary>
-        /// <param name="c">The input character.</param>
         public void ForwardCharacter(char c)
         {
-            if (!this.isActive)
-            {
-                return;
-            }
-
-            Debug.WriteLine($"[PowerMode] Char: {c}");
-            // TODO: Step 5 — update VM hint buffer / highlight selection
+            if (!this.isActive || this.vm is null) return;
+            this.vm.TypeChar(char.ToUpperInvariant(c));
         }
 
-        /// <summary>
-        /// Handles Backspace during Power Mode.
-        /// </summary>
         public void Backspace()
         {
-            if (!this.isActive)
-            {
-                return;
-            }
-
-            Debug.WriteLine("[PowerMode] Backspace");
-            // TODO: Step 5 — update buffer
+            if (!this.isActive || this.vm is null) return;
+            this.vm.Backspace();
         }
 
-        /// <summary>
-        /// Accepts the current selection (Space/Enter). For now, just closes.
-        /// </summary>
         public void AcceptSelection()
         {
-            if (!this.isActive)
+            if (!this.isActive || this.vm is null) return;
+
+            var selected = this.vm.CommitSelection();
+            if (selected is not null)
             {
-                return;
+                var ok = this.focus.TryFocus(selected.Id);
+                Debug.WriteLine($"[PowerMode] Focus {(ok ? "OK" : "FAILED")} → {selected.ProcessName}  '{selected.Title}'");
             }
 
-            Debug.WriteLine("[PowerMode] Accept (placeholder: close)");
-            // TODO: Step 6 — focus selected window; optionally chain to Snapper
             this.Cancel();
         }
 
-        #endregion
+        public void ShowPreview()
+        {
+            if (!this.isActive || this.vm is null) return;
+
+            this.vm.ShowPreview();
+        }
+
+        public void HidePreview()
+        {
+            if (!this.isActive || this.vm is null) return;
+
+            this.vm.HidePreview();
+        }
     }
 }

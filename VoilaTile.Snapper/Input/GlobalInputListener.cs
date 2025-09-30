@@ -22,6 +22,8 @@
 
         private bool isShiftDown = false;
 
+        private bool isTabDown = false;
+
         /// <summary>
         /// Occurs when a character key is typed.
         /// </summary>
@@ -51,6 +53,16 @@
         /// Occurs when the custom power grab hotkey (Win + Space) is pressed.
         /// </summary>
         public event Action<HotKeyEventArgs>? OnHotKeyPressed;
+
+        /// <summary>
+        /// Occurs when the Tab key is pressed.
+        /// </summary>
+        public event Action? OnTabPressed;
+
+        /// <summary>
+        /// Occurs when the Tab key is released.
+        /// </summary>
+        public event Action? OnTabReleased;
 
         /// <summary>
         /// Initializes and installs the global input listener.
@@ -91,7 +103,7 @@
 
             bool shouldSuppress = false;
 
-            if (wParam == (IntPtr)WM_KEYDOWN)
+            if (IsKeyDownMsg(wParam))
             {
                 if (key == Key.LWin || key == Key.RWin)
                 {
@@ -101,12 +113,22 @@
                 {
                     isShiftDown = true;
                 }
+
+                if (key == Key.Tab && stateManager.CurrentMode == InputMode.Input)
+                {
+                    if (!isTabDown)
+                    {
+                        isTabDown = true;
+                        OnTabPressed?.Invoke();
+                    }
+                    shouldSuppress = true;
+                }
                 else if (key == this.settings.ShortcutKey && isWinDown && isShiftDown && stateManager.CurrentMode == InputMode.HotKey)
                 {
                     this.OnHotKeyPressed?.Invoke(new HotKeyEventArgs(InputFeature.Snap));
                     shouldSuppress = true;
                 }
-                else if (key == Key.J && isWinDown && isShiftDown && stateManager.CurrentMode == InputMode.HotKey) // temporarily hardcoding the power grab hotkey to J.
+                else if (key == Key.J && isWinDown && isShiftDown && stateManager.CurrentMode == InputMode.HotKey)
                 {
                     this.OnHotKeyPressed?.Invoke(new HotKeyEventArgs(InputFeature.PowerGrab));
                     shouldSuppress = true;
@@ -142,7 +164,7 @@
                     }
                 }
             }
-            else if (wParam == (IntPtr)WM_KEYUP)
+            else if (IsKeyUpMsg(wParam))
             {
                 if (key == Key.LWin || key == Key.RWin)
                 {
@@ -152,11 +174,34 @@
                 {
                     isShiftDown = false;
                 }
+                else if (key == Key.Tab)
+                {
+                    if (isTabDown)
+                    {
+                        isTabDown = false;
+                        OnTabReleased?.Invoke();
+                    }
+
+                    if (stateManager.CurrentMode == InputMode.Input)
+                    {
+                        shouldSuppress = true;
+                    }
+                }
             }
 
             return shouldSuppress ? (IntPtr)1 : CallNextHookEx(hookId, nCode, wParam, lParam);
         }
 
+        public void ResetStickyKeys()
+        {
+            this.isWinDown = false;
+            this.isShiftDown = false;
+            if (this.isTabDown)
+            {
+                this.isTabDown = false;
+                try { this.OnTabReleased?.Invoke(); } catch { /* best-effort */ }
+            }
+        }
 
         private static char ToChar(int vkCode)
         {
@@ -170,11 +215,17 @@
             return result > 0 ? sb[0] : '\0';
         }
 
+        private static bool IsKeyDownMsg(IntPtr wParam) => wParam == (IntPtr)WM_KEYDOWN || wParam == (IntPtr)WM_SYSKEYDOWN;
+
+        private static bool IsKeyUpMsg(IntPtr wParam) => wParam == (IntPtr)WM_KEYUP || wParam == (IntPtr)WM_SYSKEYUP;
+
         #region Win32
 
         private const int WH_KEYBOARD_LL = 13;
         private const int WM_KEYDOWN = 0x0100;
         private const int WM_KEYUP = 0x0101;
+        private const int WM_SYSKEYDOWN = 0x0104;
+        private const int WM_SYSKEYUP   = 0x0105;
 
         private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
 
