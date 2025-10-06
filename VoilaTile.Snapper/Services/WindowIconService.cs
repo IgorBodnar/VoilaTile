@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Diagnostics;
     using System.Runtime.InteropServices;
     using System.Windows.Interop;
     using System.Windows.Media;
@@ -17,10 +16,19 @@
     {
         #region Fields
 
+        /// <summary>
+        /// Maximum number of entries to keep in the in-memory icon cache.
+        /// </summary>
         private const int MaxCache = 64;
 
-        // Cache keyed by process name or class as fallback. In practice, exe path would be ideal, but we only stored process name in cold path.
+        /// <summary>
+        /// Cache of icons keyed by process name (or class name fallback). Case-insensitive.
+        /// </summary>
         private readonly Dictionary<string, IconSource> cache = new(StringComparer.OrdinalIgnoreCase);
+
+        /// <summary>
+        /// LRU list tracking cache access order (most-recent at the front).
+        /// </summary>
         private readonly LinkedList<string> lru = new();
 
         #endregion
@@ -36,10 +44,10 @@
             }
 
             // 1) Try window-provided icons.
-            var hIcon = TryGetHwndIcon(entry.Id.Hwnd);
+            IntPtr hIcon = TryGetHwndIcon(entry.Id.Hwnd);
             if (hIcon != IntPtr.Zero)
             {
-                var src = FromHicon(hIcon, destroy: true);
+                ImageSource? src = FromHicon(hIcon, destroy: true);
                 return src is null ? null : new IconSource(src);
             }
 
@@ -47,16 +55,16 @@
             // If you later add ExecutablePath to WindowEntry, switch to that as the cache key.
             string key = string.IsNullOrWhiteSpace(entry.ProcessName) ? entry.ClassName : entry.ProcessName;
 
-            if (this.cache.TryGetValue(key, out var cached))
+            if (this.cache.TryGetValue(key, out IconSource? cached))
             {
-                TouchLru(key);
+                this.TouchLru(key);
                 return cached;
             }
 
-            var shellIcon = ShellIconForProcessName(key);
+            IconSource? shellIcon = ShellIconForProcessName(key);
             if (shellIcon is not null)
             {
-                CachePut(key, shellIcon);
+                this.CachePut(key, shellIcon);
                 return shellIcon;
             }
 
@@ -70,10 +78,11 @@
             this.lru.Clear();
         }
 
-        #endregion
-
-        #region Helpers - Window/Icon retrieval
-
+        /// <summary>
+        /// Attempts to obtain an HICON for a given HWND using WM_GETICON and class icon fallbacks.
+        /// </summary>
+        /// <param name="hwnd">Target window handle.</param>
+        /// <returns>An icon handle if available; otherwise, <see cref="IntPtr.Zero"/>.</returns>
         private static IntPtr TryGetHwndIcon(IntPtr hwnd)
         {
             // WM_GETICON order: small2, small, big.
@@ -101,11 +110,17 @@
             return h;
         }
 
+        /// <summary>
+        /// Creates a frozen <see cref="ImageSource"/> from an HICON and optionally destroys the icon handle.
+        /// </summary>
+        /// <param name="hIcon">The icon handle.</param>
+        /// <param name="destroy">Whether to destroy the icon handle after use.</param>
+        /// <returns>The created image source, or <see langword="null"/> on failure.</returns>
         private static ImageSource? FromHicon(IntPtr hIcon, bool destroy)
         {
             try
             {
-                var bs = Imaging.CreateBitmapSourceFromHIcon(
+                ImageSource bs = Imaging.CreateBitmapSourceFromHIcon(
                     hIcon,
                     System.Windows.Int32Rect.Empty,
                     BitmapSizeOptions.FromEmptyOptions());
@@ -125,7 +140,11 @@
             }
         }
 
-        // Shell icon fallback — conservative, uses SHGetFileInfo on the exe name (not path).
+        /// <summary>
+        /// Gets a shell-derived icon for a process name by querying the shell for a generic executable icon.
+        /// </summary>
+        /// <param name="processName">Process name (without path).</param>
+        /// <returns>An <see cref="IconSource"/> if resolved; otherwise, <see langword="null"/>.</returns>
         private static IconSource? ShellIconForProcessName(string processName)
         {
             if (string.IsNullOrWhiteSpace(processName))
@@ -138,7 +157,7 @@
                 ? processName
                 : processName + ".exe";
 
-            var shfi = new SHFILEINFO();
+            SHFILEINFO shfi;
             IntPtr hImg = SHGetFileInfo(
                 fakePath,
                 0,
@@ -153,21 +172,26 @@
 
             try
             {
-                var src = FromHicon(shfi.hIcon, destroy: true);
+                ImageSource? src = FromHicon(shfi.hIcon, destroy: true);
                 return src is null ? null : new IconSource(src);
             }
             finally
             {
-                // hImg is a handle to the image list, not needed to destroy here.
+                // hImg is a handle to the image list (no need to destroy here).
             }
         }
 
+        /// <summary>
+        /// Inserts or updates a cache entry and updates the LRU ordering (evicting if necessary).
+        /// </summary>
+        /// <param name="key">Cache key.</param>
+        /// <param name="icon">Icon to cache.</param>
         private void CachePut(string key, IconSource icon)
         {
             if (this.cache.ContainsKey(key))
             {
                 this.cache[key] = icon;
-                TouchLru(key);
+                this.TouchLru(key);
                 return;
             }
 
@@ -182,9 +206,13 @@
             }
         }
 
+        /// <summary>
+        /// Marks a cache key as most-recently-used in the LRU list.
+        /// </summary>
+        /// <param name="key">Cache key to touch.</param>
         private void TouchLru(string key)
         {
-            var node = this.lru.Find(key);
+            LinkedListNode<string>? node = this.lru.Find(key);
             if (node is not null)
             {
                 this.lru.Remove(node);
@@ -194,31 +222,78 @@
 
         #endregion
 
-        #region Shell interop
+        #region Interop
 
+        /// <summary>
+        /// Flags for <see cref="SHGetFileInfo(string, uint, out SHFILEINFO, uint, SHGFI)"/>.
+        /// </summary>
         [Flags]
         private enum SHGFI : uint
         {
+            /// <summary>
+            /// Retrieve the handle to the icon that represents the file.
+            /// </summary>
             SHGFI_ICON = 0x000000100,
+
+            /// <summary>
+            /// Retrieve the large icon.
+            /// </summary>
             SHGFI_LARGEICON = 0x000000000,
+
+            /// <summary>
+            /// Retrieve the small icon.
+            /// </summary>
             SHGFI_SMALLICON = 0x000000001,
+
+            /// <summary>
+            /// Indicate that the file attributes are specified in <c>dwFileAttributes</c>.
+            /// </summary>
             SHGFI_USEFILEATTRIBUTES = 0x000000010,
         }
 
+        /// <summary>
+        /// Receives file information from <see cref="SHGetFileInfo(string, uint, out SHFILEINFO, uint, SHGFI)"/>.
+        /// </summary>
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
         private struct SHFILEINFO
         {
+            /// <summary>
+            /// Handle to the icon that represents the file.
+            /// </summary>
             public IntPtr hIcon;
+
+            /// <summary>
+            /// Index of the icon image within the system image list.
+            /// </summary>
             public int iIcon;
+
+            /// <summary>
+            /// File attributes.
+            /// </summary>
             public uint dwAttributes;
 
+            /// <summary>
+            /// Display name string.
+            /// </summary>
             [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 260)]
             public string szDisplayName;
 
+            /// <summary>
+            /// Type name string.
+            /// </summary>
             [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 80)]
             public string szTypeName;
         }
 
+        /// <summary>
+        /// Retrieves information about an object in the file system (including its icon).
+        /// </summary>
+        /// <param name="pszPath">Path to the file.</param>
+        /// <param name="dwFileAttributes">File attributes if <see cref="SHGFI.SHGFI_USEFILEATTRIBUTES"/> is set.</param>
+        /// <param name="psfi">Receives the file info.</param>
+        /// <param name="cbFileInfo">Size of the <see cref="SHFILEINFO"/> structure.</param>
+        /// <param name="uFlags">Flags specifying the information to retrieve.</param>
+        /// <returns>Handle to the system image list; <see cref="IntPtr.Zero"/> on failure.</returns>
         [DllImport("shell32.dll", CharSet = CharSet.Unicode)]
         private static extern IntPtr SHGetFileInfo(
             string pszPath,
@@ -227,9 +302,15 @@
             uint cbFileInfo,
             SHGFI uFlags);
 
+        /// <summary>
+        /// Destroys an icon and frees any associated memory.
+        /// </summary>
+        /// <param name="hIcon">Handle to the icon to be destroyed.</param>
+        /// <returns><see langword="true"/> on success; otherwise, <see langword="false"/>.</returns>
         [DllImport("user32.dll", SetLastError = true)]
         private static extern bool DestroyIcon(IntPtr hIcon);
 
         #endregion
     }
 }
+

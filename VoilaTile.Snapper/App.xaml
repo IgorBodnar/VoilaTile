@@ -12,6 +12,7 @@
         <SolidColorBrush x:Key="TextWhiteTranslucent" Color="#ddf5f3f4"/>
         <SolidColorBrush x:Key="BackgroundDarkGrayOpaque" Color="#161a1d"/>
         <SolidColorBrush x:Key="BackgroundDarkGray" Color="#dd161a1d"/>
+        <SolidColorBrush x:Key="BackgroundDarkestGray" Color="#ee161a1d"/>
         <SolidColorBrush x:Key="BackgroundLightestGray" Color="#b1a7a6"/>
         <SolidColorBrush x:Key="BackgroundLightGray" Color="#33b1a7a6"/>
         <SolidColorBrush x:Key="BackgroundMediumLightGray" Color="#22b1a7a6"/>
@@ -19,5 +20,43 @@
         <SolidColorBrush x:Key="AccentRed" Color="#e5383b"/>
         <SolidColorBrush x:Key="AccentRedTranslucent" Color="#dde5383b"/>
         <SolidColorBrush x:Key="AccentRedFaint" Color="#33e5383b"/>
+
+        <!-- ScrollBar Style -->
+        <Style TargetType="ScrollBar">
+            <Setter Property="SnapsToDevicePixels" Value="True"/>
+            <Setter Property="OverridesDefaultStyle" Value="True"/>
+            <Setter Property="Width" Value="6"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ScrollBar">
+                        <Grid Background="Transparent">
+                            <Border Background="#22FFFFFF" CornerRadius="3" />
+                            <Track x:Name="PART_Track"
+                                   IsDirectionReversed="true"
+                                   Minimum="0"
+                                   Maximum="{TemplateBinding Maximum}"
+                                   Value="{TemplateBinding Value}"
+                                   ViewportSize="{TemplateBinding ViewportSize}">
+                                <Track.Thumb>
+                                    <Thumb>
+                                        <Thumb.Template>
+                                            <ControlTemplate TargetType="Thumb">
+                                                <Border Background="#88f5f3f4" CornerRadius="3" Margin="0"/>
+                                            </ControlTemplate>
+                                        </Thumb.Template>
+                                    </Thumb>
+                                </Track.Thumb>
+                                <Track.DecreaseRepeatButton>
+                                    <RepeatButton Visibility="Collapsed" IsTabStop="False"/>
+                                </Track.DecreaseRepeatButton>
+                                <Track.IncreaseRepeatButton>
+                                    <RepeatButton Visibility="Collapsed" IsTabStop="False"/>
+                                </Track.IncreaseRepeatButton>
+                            </Track>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </Application.Resources>
 </Application>

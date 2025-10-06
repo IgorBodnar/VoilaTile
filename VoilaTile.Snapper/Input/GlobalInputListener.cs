@@ -4,7 +4,6 @@
     using System.Diagnostics;
     using System.Runtime.InteropServices;
     using System.Windows.Input;
-    using System.Windows.Media.Effects;
     using VoilaTile.Snapper.EventArgs;
     using VoilaTile.Snapper.Services;
 

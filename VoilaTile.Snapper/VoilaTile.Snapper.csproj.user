@@ -21,6 +21,9 @@
     <Page Update="MainWindow.xaml">
       <SubType>Designer</SubType>
     </Page>
+    <Page Update="Views\Logos\VoilaTileIcon.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="Views\OverlayWindow.xaml">
       <SubType>Designer</SubType>
     </Page>

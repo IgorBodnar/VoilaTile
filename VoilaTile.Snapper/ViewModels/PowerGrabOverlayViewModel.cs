@@ -9,23 +9,43 @@
     using VoilaTile.Snapper.Services;
 
     /// <summary>
-    /// View model for the Power Mode overlay (icons + titles only in Step 5).
+    /// View model for the Power Mode overlay.
     /// </summary>
     internal sealed class PowerGrabOverlayViewModel : ObservableObject
     {
+        #region Fields
+
+        /// <summary>
+        /// Provides keyboard hints for cards.
+        /// </summary>
         private readonly IHintService hints;
+
+        /// <summary>
+        /// The current hint buffer built from user input.
+        /// </summary>
         private string hintBuffer = string.Empty;
+
+        /// <summary>
+        /// The full title for the currently selected/previewed card.
+        /// </summary>
         private string fullTitle = string.Empty;
 
         /// <summary>
-        /// Tracks whether the preview overlay is currently visible.
+        /// Indicates whether the preview overlay should be visible.
         /// </summary>
         private bool isPreviewVisible;
 
+        #endregion
 
-        public PowerGrabOverlayViewModel(
-            IHintService hints,
-            IReadOnlyList<WindowEntry> windows)
+        #region Constructors
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PowerGrabOverlayViewModel"/> class.
+        /// </summary>
+        /// <param name="hints">Service providing keyboard hints.</param>
+        /// <param name="windows">The list of candidate windows.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="hints"/> is <c>null</c>.</exception>
+        public PowerGrabOverlayViewModel(IHintService hints, IReadOnlyList<WindowEntry> windows)
         {
             this.hints = hints ?? throw new ArgumentNullException(nameof(hints));
 
@@ -33,7 +53,6 @@
             this.Cards = new ObservableCollection<WindowCardViewModel>(
                 windows.Select((w, i) => new WindowCardViewModel(w, labels[i])));
 
-            // Select first card by default if exists.
             if (this.Cards.Count > 0)
             {
                 this.Cards[0].IsSelected = true;
@@ -41,13 +60,37 @@
             }
         }
 
+        #endregion
+
+        #region Events
+
+        /// <summary>
+        /// Raised when the UI should scroll the viewport by exactly one row.
+        /// Positive delta scrolls down, negative scrolls up.
+        /// </summary>
+        public event Action<int>? OnScrollRows;
+
+        /// <summary>
+        /// Raised when the preview should be shown.
+        /// </summary>
         public event Action? OnShowPreview;
+
+        /// <summary>
+        /// Raised when the preview should be hidden.
+        /// </summary>
         public event Action? OnHidePreview;
 
+        #endregion
+
+        #region Properties
+
+        /// <summary>
+        /// Gets the collection of window cards.
+        /// </summary>
         public ObservableCollection<WindowCardViewModel> Cards { get; }
 
         /// <summary>
-        /// Gets the card currently targeted by the preview (the Selected card).
+        /// Gets the card currently targeted by the preview (the selected card).
         /// </summary>
         public WindowCardViewModel? PreviewTarget => this.Selected;
 
@@ -59,11 +102,7 @@
             get => this.isPreviewVisible;
             private set
             {
-                if (value == this.isPreviewVisible)
-                {
-                    return;
-                }
-
+                if (value == this.isPreviewVisible) return;
                 this.isPreviewVisible = value;
                 this.OnPropertyChanged();
                 this.OnPropertyChanged(nameof(this.PreviewTarget));
@@ -71,6 +110,9 @@
             }
         }
 
+        /// <summary>
+        /// Gets the full title of the currently selected/previewed card.
+        /// </summary>
         public string FullTitle
         {
             get => this.fullTitle;
@@ -82,6 +124,9 @@
             }
         }
 
+        /// <summary>
+        /// Gets the current hint buffer (uppercased letters typed by the user).
+        /// </summary>
         public string HintBuffer
         {
             get => this.hintBuffer;
@@ -94,22 +139,56 @@
             }
         }
 
-        public WindowCardViewModel? Selected =>
-            this.Cards.FirstOrDefault(c => c.IsSelected);
+        /// <summary>
+        /// Gets the currently selected card, or <c>null</c> if none.
+        /// </summary>
+        public WindowCardViewModel? Selected => this.Cards.FirstOrDefault(c => c.IsSelected);
 
+        #endregion
+
+        #region Methods
+
+        /// <summary>
+        /// Handles a typed character:
+        /// - '=' → scroll one row down (not added to buffer)
+        /// - '-' → scroll one row up (not added to buffer)
+        /// - otherwise → appended to hint buffer (uppercased)
+        /// </summary>
+        /// <param name="c">The input character.</param>
         public void TypeChar(char c)
         {
-            if (char.IsWhiteSpace(c) || char.IsControl(c)) return;
+            if (char.IsControl(c)) return;
+
+            if (c == '=')
+            {
+                this.OnScrollRows?.Invoke(+1);
+                return;
+            }
+
+            if (c == '-')
+            {
+                this.OnScrollRows?.Invoke(-1);
+                return;
+            }
+
+            if (char.IsWhiteSpace(c)) return;
+
             this.HintBuffer += char.ToUpperInvariant(c);
             Debug.WriteLine($"[ViewModel] Typed char {c}");
         }
 
+        /// <summary>
+        /// Removes the last character from the hint buffer, if any.
+        /// </summary>
         public void Backspace()
         {
             if (this.HintBuffer.Length == 0) return;
             this.HintBuffer = this.HintBuffer.Substring(0, this.HintBuffer.Length - 1);
         }
 
+        /// <summary>
+        /// Selects the next visible (matching) card, cycling at the end.
+        /// </summary>
         public void SelectNext()
         {
             if (this.Cards.Count == 0) return;
@@ -120,6 +199,9 @@
             this.SetSelected(visible[(idx + 1) % visible.Count]);
         }
 
+        /// <summary>
+        /// Selects the previous visible (matching) card, cycling at the start.
+        /// </summary>
         public void SelectPrev()
         {
             if (this.Cards.Count == 0) return;
@@ -131,96 +213,57 @@
             this.SetSelected(visible[next]);
         }
 
+        /// <summary>
+        /// Commits the current selection based on the hint buffer or selected card.
+        /// </summary>
+        /// <returns>The selected <see cref="WindowEntry"/>, or <c>null</c> if none.</returns>
         public WindowEntry? CommitSelection()
         {
-            // Exact match on hint buffer wins; otherwise the current Selected.
             if (!string.IsNullOrEmpty(this.HintBuffer))
             {
                 var exact = this.Cards.FirstOrDefault(c => c.Hint.Equals(this.HintBuffer, StringComparison.OrdinalIgnoreCase));
-                if (exact is not null)
-                {
-                    return exact.Entry;
-                }
+                if (exact is not null) return exact.Entry;
             }
-
             return this.Selected?.Entry;
         }
 
+        /// <summary>
+        /// Applies the current hint filter to all cards and updates selection.
+        /// </summary>
         private void ApplyFilter()
         {
-            Debug.WriteLine($"[ApplyFilter] Buffer='{this.HintBuffer}'");
-
             if (string.IsNullOrEmpty(this.HintBuffer))
             {
-                Debug.WriteLine("[ApplyFilter] Buffer is empty → all cards visible, keep current selection.");
-                foreach (var c in this.Cards)
-                {
-                    c.IsMatch = true;
-                    Debug.WriteLine($"    Card {c.Hint} → IsMatch=true");
-                }
+                foreach (var c in this.Cards) c.IsMatch = true;
                 return;
             }
 
-            // 1) Update IsMatch for each card
             foreach (var c in this.Cards)
             {
-                bool match = c.Hint.StartsWith(this.HintBuffer, StringComparison.OrdinalIgnoreCase);
-                c.IsMatch = match;
-                Debug.WriteLine($"    Card {c.Hint}: match={match}, IsSelected={c.IsSelected}");
+                c.IsMatch = c.Hint.StartsWith(this.HintBuffer, StringComparison.OrdinalIgnoreCase);
             }
 
-            // 2) Gather matches
             var matches = this.Cards.Where(c => c.IsMatch).ToList();
-            Debug.WriteLine($"[ApplyFilter] Matches={matches.Count}");
+            if (matches.Count == 0) return;
 
-            if (matches.Count == 0)
-            {
-                Debug.WriteLine("[ApplyFilter] No matches found → keep current selection.");
-                return;
-            }
-
-            // 3) Look for exact match
-            var exact = matches.FirstOrDefault(c =>
-                c.Hint.Equals(this.HintBuffer, StringComparison.OrdinalIgnoreCase));
-
-            if (exact is not null)
-            {
-                Debug.WriteLine($"[ApplyFilter] Exact match found → {exact.Hint}");
-            }
-            else
-            {
-                Debug.WriteLine("[ApplyFilter] No exact match → fall back to first match.");
-            }
-
+            var exact = matches.FirstOrDefault(c => c.Hint.Equals(this.HintBuffer, StringComparison.OrdinalIgnoreCase));
             var target = exact ?? matches[0];
-
-            // 4) Compare against current selection
-            if (this.Selected is not null)
-            {
-                Debug.WriteLine($"[ApplyFilter] Current selection={this.Selected.Hint}");
-            }
-            else
-            {
-                Debug.WriteLine("[ApplyFilter] Current selection=null");
-            }
 
             if (!ReferenceEquals(target, this.Selected))
             {
-                Debug.WriteLine($"[ApplyFilter] Changing selection → {target.Hint}");
                 this.SetSelected(target);
-            }
-            else
-            {
-                Debug.WriteLine($"[ApplyFilter] Selection unchanged → still {target.Hint}");
             }
         }
 
+        /// <summary>
+        /// Sets the specified card as selected and updates the full title.
+        /// </summary>
+        /// <param name="card">The card to select.</param>
         private void SetSelected(WindowCardViewModel card)
         {
             foreach (var c in this.Cards) c.IsSelected = false;
             card.IsSelected = true;
             this.FullTitle = card.Title;
-            Debug.WriteLine($"[PowerMode ViewModel] Selected Card {card.Title}");
         }
 
         /// <summary>
@@ -228,27 +271,14 @@
         /// </summary>
         public void ShowPreview()
         {
-            if (this.Cards.Count == 0)
-            {
-                this.IsPreviewVisible = false;
-                return;
-            }
-
-            // Ensure we have a selected card (should already be true).
+            if (this.Cards.Count == 0) { this.IsPreviewVisible = false; return; }
             if (this.Selected is null)
             {
                 this.Cards[0].IsSelected = true;
                 this.FullTitle = this.Cards[0].Title;
             }
-
             this.IsPreviewVisible = true;
-
-            // Keep FullTitle in sync with preview target.
-            if (this.Selected is not null)
-            {
-                this.FullTitle = this.Selected.Title;
-            }
-
+            if (this.Selected is not null) this.FullTitle = this.Selected.Title;
             this.OnShowPreview?.Invoke();
         }
 
@@ -260,5 +290,8 @@
             this.IsPreviewVisible = false;
             this.OnHidePreview?.Invoke();
         }
+
+        #endregion
     }
 }
+

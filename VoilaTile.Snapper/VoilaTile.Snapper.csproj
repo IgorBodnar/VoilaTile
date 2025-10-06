@@ -28,4 +28,10 @@
     <EmbeddedResource Include="Assets\icon-logo.ico" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Update="Views\Logos\VoilaTileIcon.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+
 </Project>

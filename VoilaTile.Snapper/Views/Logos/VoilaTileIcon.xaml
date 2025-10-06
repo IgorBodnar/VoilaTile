@@ -1,0 +1,34 @@
+﻿<UserControl x:Class="VoilaTile.Snapper.Views.VoilaTileIcon"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid>
+        <Grid.Resources>
+            <ResourceDictionary xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+                <DrawingGroup x:Key="Decal">
+                    <DrawingGroup.ClipGeometry>
+                        <RectangleGeometry Rect="0.0,0.0,210.0,37.0"/>
+                    </DrawingGroup.ClipGeometry>
+                </DrawingGroup>
+                <DrawingImage Drawing="{StaticResource Decal}" x:Key="di_Decal"/>
+                <DrawingGroup x:Key="Layer_1">
+                    <GeometryDrawing>
+                        <GeometryDrawing.Pen>
+                            <Pen Brush="#ffe53b3b" Thickness="1.6" DashCap="Flat"/>
+                        </GeometryDrawing.Pen>
+                        <GeometryDrawing.Geometry>
+                            <PathGeometry Figures="m 26.3023 16.5627 h 21.3005 v 11.1246 h -21.3005 z m 0 -10.6071 H 47.6028 V 27.7736 H 26.3023 Z M 10.6071 27.7735 h 38.8066 v 3.79442 H 10.6071 Z M 12.521 5.88605 H 47.6724 V 27.7086 H 12.521 Z" FillRule="Nonzero"/>
+                        </GeometryDrawing.Geometry>
+                    </GeometryDrawing>
+                </DrawingGroup>
+                <DrawingImage Drawing="{StaticResource Layer_1}" x:Key="di_Layer_1"/>
+            </ResourceDictionary>
+        </Grid.Resources>
+
+        <Image Source="{StaticResource di_Layer_1}"/>
+
+    </Grid>
+</UserControl>

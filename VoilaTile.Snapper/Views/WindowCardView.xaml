@@ -6,12 +6,11 @@
              mc:Ignorable="d"
              d:DesignHeight="180" d:DesignWidth="280">
 
-    <Border CornerRadius="16"
-      Padding="0"
-      Margin="8"
-      Background="{StaticResource BackgroundMediumLightGray}"
-      BorderThickness="1">
-
+    <Border CornerRadius="12"
+            Padding="6"
+            Margin="8"
+            Background="{StaticResource BackgroundLightGray}"
+            BorderThickness="1.6">
         <Border.Style>
             <Style TargetType="Border">
                 <Setter Property="BorderBrush" Value="Transparent"/>
@@ -22,20 +21,19 @@
                 </Style.Triggers>
             </Style>
         </Border.Style>
-        
-        <Grid Margin="12" Width="{Binding ThumbWidth}">
 
+        <Grid Width="{Binding ThumbWidth}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
-            <Border Grid.Row="0"
-                  Background="#66000000"
-                  CornerRadius="10"
-                  Padding="8,6"
-                  Margin="0,0,0,6">
-
+            <Border x:Name="HeaderBlock"
+                    Grid.Row="0"
+                    Background="#66000000"
+                    CornerRadius="8"
+                    Padding="8,6"
+                    Margin="0,0,0,6">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
@@ -44,45 +42,45 @@
                     </Grid.ColumnDefinitions>
 
                     <Image Grid.Column="0"
-                         Width="18" Height="18"
-                         Source="{Binding Icon}"
-                         Stretch="UniformToFill"/>
+                           Width="18" Height="18"
+                           Source="{Binding Icon}"
+                           Stretch="UniformToFill"/>
 
                     <StackPanel Grid.Column="1" Orientation="Vertical" Margin="8,0,8,0">
-
                         <TextBlock Text="{Binding Title}"
-                               FontSize="14" FontWeight="SemiBold"
-                               TextWrapping="NoWrap"
-                               TextTrimming="CharacterEllipsis"
-                               Foreground="{StaticResource TextWhite}"/>
+                                   FontSize="14" FontWeight="SemiBold"
+                                   TextWrapping="NoWrap"
+                                   TextTrimming="CharacterEllipsis"
+                                   Foreground="{StaticResource TextWhite}"/>
                         <TextBlock Text="{Binding Subtitle}"
-                               FontSize="12" Opacity="0.7"
-                               TextWrapping="NoWrap"
-                               TextTrimming="CharacterEllipsis"
-                               Foreground="{StaticResource TextWhite}"/>
+                                   FontSize="12" Opacity="0.7"
+                                   TextWrapping="NoWrap"
+                                   TextTrimming="CharacterEllipsis"
+                                   Foreground="{StaticResource TextWhite}"/>
                     </StackPanel>
 
                     <Border Grid.Column="2"
-                          Background="#20FFFFFF"
-                          CornerRadius="6"
-                          Padding="6,6"
-                          HorizontalAlignment="Right"
-                          VerticalAlignment="Center">
-
+                            Background="#20FFFFFF"
+                            CornerRadius="6"
+                            Padding="6,4"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center">
                         <TextBlock Text="{Binding Hint}"
-                               FontWeight="Bold"
-                               FontSize="16"
-                               Foreground="{StaticResource TextWhite}"/>
+                                   FontWeight="Bold"
+                                   FontSize="16"
+                                   Foreground="{StaticResource TextWhite}"/>
                     </Border>
                 </Grid>
             </Border>
 
             <Border x:Name="ThumbnailSlot"
-                  Grid.Row="1"
-                  Width="{Binding ThumbWidth}"
-                  Height="{Binding ThumbHeight}"
-                  CornerRadius="10"
-                  Background="Transparent"/>
+                    Grid.Row="1"
+                    Width="{Binding ThumbWidth}"
+                    Height="{Binding ThumbHeight}"
+                    CornerRadius="8"
+                    Background="#090909"
+                    BorderThickness="1"
+                    BorderBrush="#10FFFFFF"/>
         </Grid>
     </Border>
 </UserControl>
