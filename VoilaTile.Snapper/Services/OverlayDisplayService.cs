@@ -18,32 +18,46 @@
     /// </summary>
     public sealed class OverlayDisplayService
     {
-        private readonly Dictionary<string, OverlayWindow> overlays = new();
+        #region Fields
+
+        private readonly Dictionary<string, Window> overlays = new();
+
+        private readonly IOverlayWindowFactory overlayWindowFactory;
+
+        #endregion
+
+        #region Constructors
+
+        public OverlayDisplayService(IOverlayWindowFactory overlayWindowFactory)
+        {
+            this.overlayWindowFactory = overlayWindowFactory ?? throw new ArgumentNullException(nameof(overlayWindowFactory)); 
+        }
+
+        #endregion 
 
         /// <summary>
         /// Shows overlays for the specified monitor layouts.
         /// </summary>
         /// <param name="overlayViewModels">The resolved overlays per monitor.</param>
-        public void ShowOverlays(List<OverlayViewModel> overlayViewModels)
+        public void ShowOverlays(IEnumerable<IOverlayViewModel> overlayViewModels)
         {
             foreach (var vm in overlayViewModels)
             {
-                int pxX = (int)vm.Layout.Monitor.WorkX;
-                int pxY = (int)vm.Layout.Monitor.WorkY;
-                int pxW = (int)vm.Layout.Monitor.WorkWidth;
-                int pxH = (int)vm.Layout.Monitor.WorkHeight;
+                int pxX = (int)vm.Monitor.WorkX;
+                int pxY = (int)vm.Monitor.WorkY;
+                int pxW = (int)vm.Monitor.WorkWidth;
+                int pxH = (int)vm.Monitor.WorkHeight;
 
-                var window = new OverlayWindow(vm)
-                {
-                    WindowStartupLocation = WindowStartupLocation.Manual,
-                    Width = 1,
-                    Height = 1,
-                    Left = 0,
-                    Top = 0,
-                    ShowActivated = false,
-                    Topmost = true,
-                    ResizeMode = ResizeMode.NoResize,
-                };
+                var window = this.overlayWindowFactory.Create(vm);
+
+                window.WindowStartupLocation = WindowStartupLocation.Manual;
+                window.ShowActivated = false;
+                window.Topmost = true;
+                window.ResizeMode = ResizeMode.NoResize;
+                window.Width = 1;
+                window.Height = 1;
+                window.Left = 0;
+                window.Top = 0;
 
                 window.SourceInitialized += (_, __) =>
                 {
@@ -66,7 +80,7 @@
 
                 window.Show();
 
-                this.overlays[vm.Layout.Monitor.DeviceID] = window;
+                this.overlays[vm.Monitor.DeviceID] = window;
             }
         }
 

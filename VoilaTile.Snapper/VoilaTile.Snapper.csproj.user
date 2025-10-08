@@ -7,7 +7,10 @@
     </ApplicationDefinition>
   </ItemGroup>
   <ItemGroup>
-    <Compile Update="Views\OverlayWindow.xaml.cs">
+    <Compile Update="Views\QuickGrabOverlayWindow.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\SnapOverlayWindow.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="Views\PowerGrabOverlayView.xaml.cs">
@@ -24,7 +27,10 @@
     <Page Update="Views\Logos\VoilaTileIcon.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="Views\OverlayWindow.xaml">
+    <Page Update="Views\QuickGrabOverlayWindow.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\SnapOverlayWindow.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Views\PowerGrabOverlayView.xaml">

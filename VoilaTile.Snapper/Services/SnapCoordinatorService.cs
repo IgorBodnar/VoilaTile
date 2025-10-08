@@ -22,7 +22,7 @@
         private SnappableWindowInfo? targetWindow;
 
         // Active overlay view models
-        private readonly List<OverlayViewModel> activeOverlays = new();
+        private readonly List<SnapOverlayViewModel> activeOverlays = new();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SnapCoordinatorService"/> class.
@@ -55,7 +55,7 @@
 
             foreach (var layout in layouts) 
             {
-                var viewModel = new OverlayViewModel(layout, (match) =>
+                var viewModel = new SnapOverlayViewModel(layout, (match) =>
                 {
                     this.selectedTile = match;
                 });

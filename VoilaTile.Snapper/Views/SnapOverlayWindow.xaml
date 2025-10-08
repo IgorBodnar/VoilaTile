@@ -1,4 +1,4 @@
-﻿<Window x:Class="VoilaTile.Snapper.Views.OverlayWindow"
+﻿<Window x:Class="VoilaTile.Snapper.Views.SnapOverlayWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="clr-namespace:VoilaTile.Snapper.ViewModels"
@@ -30,6 +30,33 @@
                 </DataTrigger>
             </Style.Triggers>
         </Style>
+
+        <Style x:Key="QuickGrabBadgeBorderStyle" TargetType="Border">
+            <Setter Property="CornerRadius" Value="6"/>
+            <Setter Property="BorderThickness" Value="1.8"/>
+            <Setter Property="Padding" Value="6,4"/>
+            <Setter Property="Background" Value="{StaticResource BackgroundDarkGray}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource BackgroundLightestGray}"/>
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect BlurRadius="10" ShadowDepth="0" Opacity="0.45"/>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <!-- Selected: stronger background/border and a tiny scale-up -->
+                <DataTrigger Binding="{Binding IsMatched}" Value="True">
+                    <Setter Property="Background" Value="{StaticResource BackgroundDarkestGray}"/>
+                    <Setter Property="BorderBrush" Value="{StaticResource AccentRed}"/>
+                    <Setter Property="RenderTransform">
+                        <Setter.Value>
+                            <ScaleTransform ScaleX="1.08" ScaleY="1.08"/>
+                        </Setter.Value>
+                    </Setter>
+                    <Setter Property="RenderTransformOrigin" Value="0.5,0.5"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
     </Window.Resources>
 
     <Grid>
@@ -69,41 +96,34 @@
                 <ItemsControl.ItemTemplate>
                     <DataTemplate DataType="{x:Type vm:TileViewModel}">
                         <Canvas>
-                            <Viewbox
-                    Stretch="Uniform"
-                    Width="100" Height="40"
-                    Canvas.Left="{Binding CenterX}"
-                    Canvas.Top="{Binding CenterY}"
-                    RenderTransformOrigin="0.5,0.5">
+                            <Grid
+                                Width="66" Height="36"
+                                Canvas.Left="{Binding CenterX}"
+                                Canvas.Top="{Binding CenterY}"
+                                RenderTransformOrigin="0.5,0.5">
+                                <Grid.RenderTransform>
+                                    <TranslateTransform X="-33" Y="-18"/>
+                                </Grid.RenderTransform>
 
-                                <Viewbox.RenderTransform>
-                                    <TranslateTransform X="-50" Y="-20"/>
-                                </Viewbox.RenderTransform>
-
-                                <Border
-                                    Background="{StaticResource BackgroundDarkGray}"
-                                    BorderBrush="{StaticResource TextWhite}"
-                                    BorderThickness="1"
-                                    CornerRadius="4"
-                                    Padding="5"
-                                    HorizontalAlignment="Center"
-                                    VerticalAlignment="Center">
-
+                                <Border Style="{StaticResource QuickGrabBadgeBorderStyle}">
                                     <TextBlock Text="{Binding Hint}"
-                                               Foreground="{StaticResource TextWhite}"
+                                               FontSize="18"
                                                FontWeight="Bold"
-                                               FontSize="24"
+                                               Foreground="{StaticResource TextWhite}"
                                                HorizontalAlignment="Center"
-                                               VerticalAlignment="Center"/>
+                                               VerticalAlignment="Center"
+                                               TextOptions.TextFormattingMode="Display"
+                                               TextOptions.TextRenderingMode="ClearType"
+                                               SnapsToDevicePixels="True"/>
                                 </Border>
-                            </Viewbox>
+                            </Grid>
                         </Canvas>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
         </Canvas>
 
-        <!-- Input bar at bottom -->
+        <!-- Input bar at bottoms -->
         <TextBlock Text="{Binding CurrentInput}"
                    FontFamily="Consolas"
                    FontSize="18"

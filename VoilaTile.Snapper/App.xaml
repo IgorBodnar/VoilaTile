@@ -11,6 +11,7 @@
         <SolidColorBrush x:Key="TextWhite" Color="#f5f3f4"/>
         <SolidColorBrush x:Key="TextWhiteTranslucent" Color="#ddf5f3f4"/>
         <SolidColorBrush x:Key="BackgroundDarkGrayOpaque" Color="#161a1d"/>
+        <SolidColorBrush x:Key="BackgroundDarkGrayTranslucent" Color="#66161a1d"/>
         <SolidColorBrush x:Key="BackgroundDarkGray" Color="#dd161a1d"/>
         <SolidColorBrush x:Key="BackgroundDarkestGray" Color="#ee161a1d"/>
         <SolidColorBrush x:Key="BackgroundLightestGray" Color="#b1a7a6"/>
@@ -18,8 +19,8 @@
         <SolidColorBrush x:Key="BackgroundMediumLightGray" Color="#22b1a7a6"/>
         <SolidColorBrush x:Key="CloseWindowRed" Color="#ba181b"/>
         <SolidColorBrush x:Key="AccentRed" Color="#e5383b"/>
-        <SolidColorBrush x:Key="AccentRedTranslucent" Color="#dde5383b"/>
-        <SolidColorBrush x:Key="AccentRedFaint" Color="#33e5383b"/>
+        <SolidColorBrush x:Key="AccentRedTranslucent" Color="#dd861b2d"/>
+        <SolidColorBrush x:Key="AccentRedFaint" Color="#66861b2d"/>
 
         <!-- ScrollBar Style -->
         <Style TargetType="ScrollBar">

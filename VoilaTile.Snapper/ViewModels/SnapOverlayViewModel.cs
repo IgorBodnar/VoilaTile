@@ -4,12 +4,13 @@
     using System.Collections.ObjectModel;
     using System.Linq;
     using CommunityToolkit.Mvvm.ComponentModel;
+    using VoilaTile.Common.Models;
     using VoilaTile.Snapper.Layout;
 
     /// <summary>
     /// View model for a single monitor overlay, including its tiles and input.
     /// </summary>
-    public partial class OverlayViewModel : ObservableObject
+    public partial class SnapOverlayViewModel : ObservableObject, IOverlayViewModel
     {
         private readonly ZoneLayoutModel layout;
         private readonly Action<ResolvedTileModel?> matchReportedCallback;
@@ -24,13 +25,16 @@
         /// </summary>
         /// <param name="layout">The resolved layout for a single monitor.</param>
         /// <param name="reportMatch">A callback to report best match to coordinator.</param>
-        public OverlayViewModel(ZoneLayoutModel layout, Action<ResolvedTileModel?> reportMatch)
+        public SnapOverlayViewModel(ZoneLayoutModel layout, Action<ResolvedTileModel?> reportMatch)
         {
             this.layout = layout;
             this.matchReportedCallback = reportMatch;
             this.Tiles = new ObservableCollection<TileViewModel>(
                 layout.Tiles.Select(t => new TileViewModel(t)));
         }
+
+        /// <inheritdoc/>
+        public MonitorInfo Monitor => this.layout.Monitor;
 
         public ZoneLayoutModel Layout => this.layout;
 
@@ -45,7 +49,7 @@
         /// </summary>
         public void AppendCharacter(char c)
         {
-            CurrentInput += c;
+            CurrentInput += char.ToUpper(c);
             EvaluateMatches();
         }
 
@@ -97,11 +101,11 @@
 
                 if (isExactMatch)
                 {
-                    bestMatch = layout.Tiles.First(t => t.Hint == tile.Hint);
+                    bestMatch = layout.Tiles.First(t => t.Hint.Equals(tile.Hint, StringComparison.OrdinalIgnoreCase));
                 }
                 else if (isPrefixMatch && firstPrefixMatch == null)
                 {
-                    firstPrefixMatch = layout.Tiles.First(t => t.Hint == tile.Hint);
+                    firstPrefixMatch = layout.Tiles.First(t => t.Hint.Equals(tile.Hint, StringComparison.OrdinalIgnoreCase));
                 }
             }
 

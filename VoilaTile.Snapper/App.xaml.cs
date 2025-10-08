@@ -11,7 +11,8 @@
     using VoilaTile.Snapper.Interop;
     using VoilaTile.Snapper.Layout;
     using VoilaTile.Snapper.Services;
-
+    using VoilaTile.Snapper.ViewModels;
+    using VoilaTile.Snapper.Views;
     using Application = System.Windows.Application;
     using MessageBox = System.Windows.MessageBox;
 
@@ -62,6 +63,11 @@
         private PowerGrabCoordinatorService? powerGrabCoordinator;
 
         /// <summary>
+        /// Quick grab coordinator service.
+        /// </summary>
+        private QuickGrabCoordinatorService? quickGrabCoordinator;
+
+        /// <summary>
         /// Tray icon service.
         /// </summary>
         private TrayIconService? trayIconService;
@@ -84,6 +90,12 @@
         private Action? onSpaceToPower;
         private Action? onPressTabToPower;
         private Action? onReleaseTabToPower;
+
+        private Action<char>? onCharToQuick;
+        private Action? onBackspaceToQuick;
+        private Action? onEscapeToQuick;
+        private Action? onEnterToQuick;
+        private Action? onSpaceToQuick;
 
         #endregion
 
@@ -223,19 +235,6 @@
         }
 
         /// <summary>
-        /// Forwards the user input to the snap coordinator.
-        /// </summary>
-        /// <param name="state">The input state manager.</param>
-        /// <param name="c">The input character.</param>
-        private void ForwardInput(InputStateManager state, char c)
-        {
-            if (state.CurrentMode == VoilaTile.Snapper.Input.InputMode.Input)
-            {
-                this.snappingCoordinator?.ForwardCharacter(c);
-            }
-        }
-
-        /// <summary>
         /// Initializes application services.
         /// </summary>
         private void InitializeServices()
@@ -244,12 +243,17 @@
 
             this.inputState = new InputStateManager();
 
-            var overlayService = new OverlayDisplayService();
+            var overlayWindowFactory = new OverlayWindowFactory()
+                .Register<SnapOverlayViewModel>(vm => new SnapOverlayWindow(vm))
+                .Register<QuickGrabOverlayViewModel>(vm => new QuickGrabOverlayWindow(vm));
+
+            var overlayService = new OverlayDisplayService(overlayWindowFactory);
             var windowSnapper = new WindowSnappingService();
             var settingsMonitor = new SettingsMonitoringService(settingsFilePath);
             var windowEnumerator = new WindowEnumerator();
             var windowIcons = new WindowIconService();
             var hintService = new HintService();
+            var hintPlacementService = new HintPlacementService();
             var focusService = new WindowFocusService();
             var surfaceFactory = new DwmThumbnailSurfaceFactory();
 
@@ -257,11 +261,13 @@
             Func<IntPtr> getHost = () => this.hostWindow?.GetHandleOrZero() ?? IntPtr.Zero;
             this.powerGrabCoordinator = new PowerGrabCoordinatorService(this.inputState, windowEnumerator, windowIcons, hintService, focusService, surfaceFactory, getHost);
 
+            this.quickGrabCoordinator = new QuickGrabCoordinatorService(overlayService, windowEnumerator, hintPlacementService, hintService, this.inputState, focusService);
+
             this.inputListener = new GlobalInputListener(inputState, settingsMonitor);
             this.inputListener.OnHotKeyPressed += this.OnHotKeyPressed;
 
             // Intialize snap actions.
-            this.onCharToSnap     = c => this.ForwardInput(this.inputState!, c);
+            this.onCharToSnap     = c => this.snappingCoordinator?.ForwardCharacter(c);
             this.onBackspaceToSnap = () => this.snappingCoordinator?.Backspace();
             this.onEscapeToSnap    = () => this.snappingCoordinator?.Cancel();
             this.onEnterToSnap     = () => this.snappingCoordinator?.CommitSnap();
@@ -275,6 +281,13 @@
             this.onSpaceToPower     = () => this.powerGrabCoordinator?.AcceptSelection();
             this.onPressTabToPower     = () => this.powerGrabCoordinator?.ShowPreview();
             this.onReleaseTabToPower     = () => this.powerGrabCoordinator?.HidePreview();
+
+            // Intialize quick grab actions.
+            this.onCharToQuick     = c => this.quickGrabCoordinator?.ForwardCharacter(c);
+            this.onBackspaceToQuick = () => this.quickGrabCoordinator?.Backspace();
+            this.onEscapeToQuick    = () => this.quickGrabCoordinator?.Cancel();
+            this.onEnterToQuick     = () => this.quickGrabCoordinator?.Confirm();
+            this.onSpaceToQuick     = () => this.quickGrabCoordinator?.Confirm();
         }
 
         /// <summary>
@@ -396,7 +409,30 @@
                     }
                     catch (Exception ex)
                     {
-                        MessageBox.Show($"Failed to launch power grab: {ex.Message}", "Power Mode Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                        MessageBox.Show($"Failed to launch power grab: {ex.Message}", "Power Grab Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+
+                    break;
+
+                case InputFeature.QuickGrab:
+                    try
+                    {
+                        // Detach event handlers.
+                        this.DetachEventHandlers();
+
+                        // Attach input event handlers to the power grab coordinator.
+                        this.inputListener!.OnCharacterTyped += this.onCharToQuick;
+                        this.inputListener.OnBackspacePressed += this.onBackspaceToQuick;
+                        this.inputListener.OnEscapePressed += this.onEscapeToQuick;
+                        this.inputListener.OnEnterPressed += this.onEnterToQuick;
+                        this.inputListener.OnSpacePressed += this.onSpaceToQuick;
+
+                        // Launch quick grab mode.
+                        this.quickGrabCoordinator?.Begin();
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Failed to launch quick grab: {ex.Message}", "Quick Grab Error", MessageBoxButton.OK, MessageBoxImage.Error);
                     }
 
                     break;
@@ -445,6 +481,22 @@
 
             if (this.onReleaseTabToPower is not null)
                 this.inputListener.OnTabReleased -= this.onReleaseTabToPower;
+
+            // Quick Grab detach.
+            if (this.onCharToQuick is not null)
+                this.inputListener.OnCharacterTyped -= this.onCharToQuick;
+
+            if (this.onBackspaceToQuick is not null)
+                this.inputListener.OnBackspacePressed -= this.onBackspaceToQuick;
+
+            if (this.onEscapeToQuick is not null)
+                this.inputListener.OnEscapePressed -= this.onEscapeToQuick;
+
+            if (this.onEnterToQuick is not null)
+                this.inputListener.OnEnterPressed -= this.onEnterToQuick;
+
+            if (this.onSpaceToQuick is not null)
+                this.inputListener.OnSpacePressed -= this.onSpaceToQuick;
         }
 
         /// <summary>

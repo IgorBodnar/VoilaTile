@@ -1,0 +1,103 @@
+﻿<Window x:Class="VoilaTile.Snapper.Views.QuickGrabOverlayWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="clr-namespace:VoilaTile.Snapper.ViewModels"
+        AllowsTransparency="True"
+        WindowStyle="None"
+        Background="{StaticResource BackgroundDarkGrayTranslucent}"
+        Topmost="True"
+        ShowInTaskbar="False"
+        ResizeMode="NoResize"
+        Focusable="False"
+        IsHitTestVisible="False"
+        SnapsToDevicePixels="True"
+        UseLayoutRounding="True">
+
+    <Window.Resources>
+
+        <!-- Badge chrome -->
+        <Style x:Key="QuickGrabBadgeBorderStyle" TargetType="Border">
+            <Setter Property="CornerRadius" Value="6"/>
+            <Setter Property="BorderThickness" Value="1.8"/>
+            <Setter Property="Padding" Value="6,4"/>
+            <Setter Property="Background" Value="{StaticResource BackgroundDarkGray}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource BackgroundLightestGray}"/>
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect BlurRadius="10" ShadowDepth="0" Opacity="0.45"/>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsSelected}" Value="True">
+                    <Setter Property="Background" Value="{StaticResource BackgroundDarkestGray}"/>
+                    <Setter Property="BorderBrush" Value="{StaticResource AccentRed}"/>
+                    <Setter Property="RenderTransform">
+                        <Setter.Value>
+                            <ScaleTransform ScaleX="1.08" ScaleY="1.08"/>
+                        </Setter.Value>
+                    </Setter>
+                    <Setter Property="RenderTransformOrigin" Value="0.5,0.5"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- Single, reusable hint template -->
+        <DataTemplate x:Key="QuickGrabHintTemplate" DataType="{x:Type vm:QuickHintViewModel}">
+            <!-- Center a fixed-size visual on the anchor; container handles Canvas.Left/Top -->
+            <Grid Width="66" Height="36" RenderTransformOrigin="0.5,0.5">
+                <Grid.RenderTransform>
+                    <TranslateTransform X="-33" Y="-18"/>
+                </Grid.RenderTransform>
+                <Border Style="{StaticResource QuickGrabBadgeBorderStyle}">
+                    <TextBlock Text="{Binding HintText}"
+                     FontSize="18"
+                     FontWeight="Bold"
+                     Foreground="{StaticResource TextWhite}"
+                     HorizontalAlignment="Center"
+                     VerticalAlignment="Center"
+                     TextOptions.TextFormattingMode="Display"
+                     TextOptions.TextRenderingMode="ClearType"
+                     SnapsToDevicePixels="True"/>
+                </Border>
+            </Grid>
+        </DataTemplate>
+
+    </Window.Resources>
+
+    <Grid>
+        <Canvas>
+            <ItemsControl ItemsSource="{Binding Hints}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <Canvas IsHitTestVisible="False"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+
+                <!-- Position on the container -->
+                <ItemsControl.ItemContainerStyle>
+                    <Style TargetType="ContentPresenter">
+                        <Setter Property="Canvas.Left" Value="{Binding Xdip}"/>
+                        <Setter Property="Canvas.Top"  Value="{Binding Ydip}"/>
+                        <Setter Property="Panel.ZIndex" Value="{Binding Z}"/>
+                    </Style>
+                </ItemsControl.ItemContainerStyle>
+
+                <!-- Reuse the one template -->
+                <ItemsControl.ItemTemplate>
+                    <StaticResource ResourceKey="QuickGrabHintTemplate"/>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </Canvas>
+
+        <!-- Buffer bar etc... -->
+        <TextBlock Text="{Binding Buffer}"
+               FontFamily="Consolas"
+               FontSize="18"
+               Foreground="{StaticResource TextWhite}"
+               Background="{StaticResource BackgroundDarkGray}"
+               HorizontalAlignment="Stretch"
+               VerticalAlignment="Bottom"
+               Padding="10"/>
+    </Grid>
+</Window>
+

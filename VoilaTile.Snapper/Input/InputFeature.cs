@@ -14,5 +14,10 @@
         /// The global window switcher with thumbnails.
         /// </summary>
         PowerGrab,
+
+        /// <summary>
+        /// The hint based top level window switcher.
+        /// </summary>
+        QuickGrab,
     }
 }

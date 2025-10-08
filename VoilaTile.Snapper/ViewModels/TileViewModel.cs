@@ -42,7 +42,7 @@
         /// <summary>
         /// Gets the hint label for this tile.
         /// </summary>
-        public string Hint => model.Hint;
+        public string Hint => model.Hint.ToUpper();
 
         /// <summary>
         /// Gets the X coordinate of the tile center.

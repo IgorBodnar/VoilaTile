@@ -25,18 +25,6 @@
 
         #endregion
 
-        #region Constructors
-        // No constructors declared (default constructor is used).
-        #endregion
-
-        #region Events
-        // No events declared.
-        #endregion
-
-        #region Properties
-        // No properties declared.
-        #endregion
-
         #region Methods
 
         /// <summary>

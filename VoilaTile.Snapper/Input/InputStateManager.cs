@@ -47,6 +47,14 @@
         }
 
         /// <summary>
+        /// Switches to input mode if not already in it.
+        /// </summary>
+        public void SwitchToQuickGrabFeature()
+        {
+            this.currentFeature = InputFeature.QuickGrab;
+        }
+
+        /// <summary>
         /// Switches to hotkey mode if not already in it.
         /// </summary>
         public void ReturnToHotKeyMode()

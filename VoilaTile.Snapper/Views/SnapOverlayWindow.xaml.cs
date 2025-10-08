@@ -6,11 +6,11 @@
     /// <summary>
     /// Code-behind for a single monitor's transparent overlay.
     /// </summary>
-    public partial class OverlayWindow : Window
+    public partial class SnapOverlayWindow : Window
     {
-        public OverlayViewModel ViewModel { get; }
+        public SnapOverlayViewModel ViewModel { get; }
 
-        public OverlayWindow(OverlayViewModel viewModel)
+        public SnapOverlayWindow(SnapOverlayViewModel viewModel)
         {
             InitializeComponent();
             this.ViewModel = viewModel;

@@ -132,6 +132,11 @@
                     this.OnHotKeyPressed?.Invoke(new HotKeyEventArgs(InputFeature.PowerGrab));
                     shouldSuppress = true;
                 }
+                else if (key == Key.M && isWinDown && isShiftDown && stateManager.CurrentMode == InputMode.HotKey)
+                {
+                    this.OnHotKeyPressed?.Invoke(new HotKeyEventArgs(InputFeature.QuickGrab));
+                    shouldSuppress = true;
+                }
                 else if (stateManager.CurrentMode == InputMode.Input)
                 {
                     switch (key)

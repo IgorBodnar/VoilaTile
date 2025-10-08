@@ -40,6 +40,9 @@ namespace VoilaTile.Snapper.Interop
 
         internal const int SW_RESTORE = 9;
 
+        internal const int GW_HWNDFIRST = 0;
+        internal const int GW_HWNDNEXT  = 2;
+
         #endregion
 
         #region User32 P/Invokes
@@ -85,6 +88,17 @@ namespace VoilaTile.Snapper.Interop
 
         [DllImport("user32.dll", SetLastError = true)]
         internal static extern uint GetWindowThreadProcessId(IntPtr hWnd, out uint processId);
+
+        [DllImport("user32.dll")]
+        internal static extern IntPtr GetTopWindow(IntPtr hWnd);
+
+        [DllImport("user32.dll",
+            SetLastError = true,
+            ExactSpelling = true,
+            EntryPoint = "GetWindowInfo")]
+        private static extern bool GetWindowInfoNative(IntPtr hwnd, ref WINDOWINFO pwi);
+
+
 
         #endregion
 
@@ -138,6 +152,21 @@ namespace VoilaTile.Snapper.Interop
             public bool IsEmpty => this.right <= this.left || this.bottom <= this.top;
         }
 
+        [StructLayout(LayoutKind.Sequential)]
+        internal struct WINDOWINFO
+        {
+            public uint cbSize;
+            public RECT rcWindow;
+            public RECT rcClient;
+            public uint dwStyle;
+            public uint dwExStyle;
+            public uint dwWindowStatus;
+            public uint cxWindowBorders;
+            public uint cyWindowBorders;
+            public ushort atomWindowType;
+            public ushort wCreatorVersion;
+        }
+
         #endregion
 
         #region Helpers
@@ -154,6 +183,17 @@ namespace VoilaTile.Snapper.Interop
             _ = GetWindowText(hWnd, sb, sb.Capacity);
             return sb.ToString();
         }
+
+        internal static bool GetWindowInfo(IntPtr hwnd, out WINDOWINFO info)
+        {
+            info = new WINDOWINFO
+            {
+                cbSize = (uint)Marshal.SizeOf<WINDOWINFO>()
+            };
+
+            return GetWindowInfoNative(hwnd, ref info);
+        }
+
 
         internal static string GetClassNameSafe(IntPtr hWnd)
         {
