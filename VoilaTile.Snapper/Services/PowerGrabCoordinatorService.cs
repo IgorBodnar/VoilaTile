@@ -4,10 +4,8 @@
     using System.Diagnostics;
     using System.Linq;
     using System.Windows;
-    using System.Windows.Media;
-    using VoilaTile.Common.Helpers;
+    using VoilaTile.Snapper.Helpers;
     using VoilaTile.Snapper.Input;
-    using VoilaTile.Snapper.Records;
     using VoilaTile.Snapper.ViewModels;
     using VoilaTile.Snapper.Views;
 
@@ -16,7 +14,7 @@
     /// enumerates candidate windows, builds the view model and overlay,
     /// routes input to the view model, and finalizes focus operations.
     /// </summary>
-    internal sealed class PowerGrabCoordinatorService
+    internal sealed class PowerGrabCoordinatorService : IKeyboardControllable
     {
         #region Fields
 
@@ -105,10 +103,6 @@
 
         #endregion
 
-        #region Events
-        // No custom events declared.
-        #endregion
-
         #region Properties
 
         /// <summary>
@@ -119,6 +113,42 @@
         #endregion
 
         #region Methods
+
+        /// <inheritdoc/>
+        public IDisposable Attach(GlobalInputListener listener)
+        {
+            var cd = new CompositeDisposable();
+
+            void OnChar(char c) => this.ForwardCharacter(c);
+            listener.OnCharacterTyped += OnChar;
+            cd.Add(new AnonymousDisposable(() => listener.OnCharacterTyped -= OnChar));
+
+            void OnBackspace() => this.Backspace();
+            listener.OnBackspacePressed += OnBackspace;
+            cd.Add(new AnonymousDisposable(() => listener.OnBackspacePressed -= OnBackspace));
+
+            void OnEscape() => this.Cancel();
+            listener.OnEscapePressed += OnEscape;
+            cd.Add(new AnonymousDisposable(() => listener.OnEscapePressed -= OnEscape));
+
+            void OnEnter() => this.Confirm();
+            listener.OnEnterPressed += OnEnter;
+            cd.Add(new AnonymousDisposable(() => listener.OnEnterPressed -= OnEnter));
+
+            void OnSpace() => this.Confirm();
+            listener.OnSpacePressed += OnSpace;
+            cd.Add(new AnonymousDisposable(() => listener.OnSpacePressed -= OnSpace));
+
+            void OnTabPressed() => this.ShowPreview();
+            listener.OnTabPressed += OnTabPressed;
+            cd.Add(new AnonymousDisposable(() => listener.OnTabPressed -= OnTabPressed));
+
+            void OnTabReleased() => this.HidePreview();
+            listener.OnTabReleased += OnTabReleased;
+            cd.Add(new AnonymousDisposable(() => listener.OnTabReleased -= OnTabReleased));
+
+            return cd;
+        }
 
         /// <summary>
         /// Starts the Power Grab overlay: enumerates windows, builds the view model and view,
@@ -214,7 +244,7 @@
         /// <summary>
         /// Accepts the current selection (if any), attempts to focus the target window, and closes the overlay.
         /// </summary>
-        public void AcceptSelection()
+        public void Confirm()
         {
             if (!this.isActive || this.vm is null) return;
 

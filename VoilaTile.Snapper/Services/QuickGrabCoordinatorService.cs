@@ -22,7 +22,7 @@ namespace VoilaTile.Snapper.Services
     /// <summary>
     /// Coordinates Quick Grab overlays and manages lifecycle + input.
     /// </summary>
-    public sealed class QuickGrabCoordinatorService
+    public sealed class QuickGrabCoordinatorService : IKeyboardControllable
     {
         private readonly InputStateManager inputStateManager;
         private readonly OverlayDisplayService overlayDisplayService;
@@ -49,6 +49,34 @@ namespace VoilaTile.Snapper.Services
             this.hintService = hintService ?? throw new ArgumentNullException(nameof(hintService));
             this.inputStateManager = inputStateManager ?? throw new ArgumentNullException(nameof(inputStateManager));
             this.focusService = focusService ?? throw new ArgumentNullException(nameof(focusService));
+        }
+
+        /// <inheritdoc/>
+        public IDisposable Attach(GlobalInputListener listener)
+        {
+            var cd = new CompositeDisposable();
+
+            void OnChar(char c) => this.ForwardCharacter(c);
+            listener.OnCharacterTyped += OnChar;
+            cd.Add(new AnonymousDisposable(() => listener.OnCharacterTyped -= OnChar));
+
+            void OnBackspace() => this.Backspace();
+            listener.OnBackspacePressed += OnBackspace;
+            cd.Add(new AnonymousDisposable(() => listener.OnBackspacePressed -= OnBackspace));
+
+            void OnEscape() => this.Cancel();
+            listener.OnEscapePressed += OnEscape;
+            cd.Add(new AnonymousDisposable(() => listener.OnEscapePressed -= OnEscape));
+
+            void OnEnter() => this.Confirm();
+            listener.OnEnterPressed += OnEnter;
+            cd.Add(new AnonymousDisposable(() => listener.OnEnterPressed -= OnEnter));
+
+            void OnSpace() => this.Confirm();
+            listener.OnSpacePressed += OnSpace;
+            cd.Add(new AnonymousDisposable(() => listener.OnSpacePressed -= OnSpace));
+
+            return cd;
         }
 
         /// <summary>

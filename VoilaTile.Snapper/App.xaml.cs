@@ -77,25 +77,10 @@
         /// </summary>
         private Window? hostWindow;
 
-        private Action<char>? onCharToSnap;
-        private Action? onBackspaceToSnap;
-        private Action? onEscapeToSnap;
-        private Action? onEnterToSnap;
-        private Action? onSpaceToSnap;
-
-        private Action<char>? onCharToPower;
-        private Action? onBackspaceToPower;
-        private Action? onEscapeToPower;
-        private Action? onEnterToPower;
-        private Action? onSpaceToPower;
-        private Action? onPressTabToPower;
-        private Action? onReleaseTabToPower;
-
-        private Action<char>? onCharToQuick;
-        private Action? onBackspaceToQuick;
-        private Action? onEscapeToQuick;
-        private Action? onEnterToQuick;
-        private Action? onSpaceToQuick;
+        /// <summary>
+        /// The current input binding.
+        /// </summary>
+        private IDisposable? currentInputBinding;
 
         #endregion
 
@@ -249,15 +234,16 @@
 
             var overlayService = new OverlayDisplayService(overlayWindowFactory);
             var windowSnapper = new WindowSnappingService();
-            var settingsMonitor = new SettingsMonitoringService(settingsFilePath);
+            var focusService = new WindowFocusService();
             var windowEnumerator = new WindowEnumerator();
             var windowIcons = new WindowIconService();
             var hintService = new HintService();
             var hintPlacementService = new HintPlacementService();
-            var focusService = new WindowFocusService();
             var surfaceFactory = new DwmThumbnailSurfaceFactory();
+            var settingsMonitor = new SettingsMonitoringService(settingsFilePath);
 
             this.snappingCoordinator = new SnapCoordinatorService(overlayService, windowSnapper, this.inputState);
+
             Func<IntPtr> getHost = () => this.hostWindow?.GetHandleOrZero() ?? IntPtr.Zero;
             this.powerGrabCoordinator = new PowerGrabCoordinatorService(this.inputState, windowEnumerator, windowIcons, hintService, focusService, surfaceFactory, getHost);
 
@@ -265,29 +251,6 @@
 
             this.inputListener = new GlobalInputListener(inputState, settingsMonitor);
             this.inputListener.OnHotKeyPressed += this.OnHotKeyPressed;
-
-            // Intialize snap actions.
-            this.onCharToSnap     = c => this.snappingCoordinator?.ForwardCharacter(c);
-            this.onBackspaceToSnap = () => this.snappingCoordinator?.Backspace();
-            this.onEscapeToSnap    = () => this.snappingCoordinator?.Cancel();
-            this.onEnterToSnap     = () => this.snappingCoordinator?.CommitSnap();
-            this.onSpaceToSnap     = () => this.snappingCoordinator?.CommitSnap();
-
-            // Initialize power grab actions.
-            this.onCharToPower      = c => this.powerGrabCoordinator?.ForwardCharacter(c);
-            this.onBackspaceToPower = () => this.powerGrabCoordinator?.Backspace();
-            this.onEscapeToPower    = () => this.powerGrabCoordinator?.Cancel();
-            this.onEnterToPower     = () => this.powerGrabCoordinator?.AcceptSelection();
-            this.onSpaceToPower     = () => this.powerGrabCoordinator?.AcceptSelection();
-            this.onPressTabToPower     = () => this.powerGrabCoordinator?.ShowPreview();
-            this.onReleaseTabToPower     = () => this.powerGrabCoordinator?.HidePreview();
-
-            // Intialize quick grab actions.
-            this.onCharToQuick     = c => this.quickGrabCoordinator?.ForwardCharacter(c);
-            this.onBackspaceToQuick = () => this.quickGrabCoordinator?.Backspace();
-            this.onEscapeToQuick    = () => this.quickGrabCoordinator?.Cancel();
-            this.onEnterToQuick     = () => this.quickGrabCoordinator?.Confirm();
-            this.onSpaceToQuick     = () => this.quickGrabCoordinator?.Confirm();
         }
 
         /// <summary>
@@ -335,15 +298,7 @@
                 case InputFeature.Snap:
                     try
                     {
-                        // Detach event handlers.
-                        this.DetachEventHandlers();
-
-                        // Attach input event handlers to the snapping coordinator.
-                        this.inputListener!.OnCharacterTyped += this.onCharToSnap;
-                        this.inputListener.OnBackspacePressed += this.onBackspaceToSnap;
-                        this.inputListener.OnEscapePressed += this.onEscapeToSnap;
-                        this.inputListener.OnEnterPressed += this.onEnterToSnap;
-                        this.inputListener.OnSpacePressed += this.onSpaceToSnap;
+                        this.SwitchKeyboardTo(this.snappingCoordinator!);
 
                         // Begin snapping.
                         string layoutFilePath = Path.Combine(
@@ -354,7 +309,7 @@
                         List<MonitorInfo> monitors = MonitorManager.GetMonitors();
                         List<ZoneLayoutModel> layouts = LayoutResolver.LoadAndResolveLayouts(layoutFilePath, monitors);
 
-                        this.snappingCoordinator?.BeginSnapping(layouts);
+                        this.snappingCoordinator?.Begin(layouts);
                     }
                     catch (FileNotFoundException ex)
                     {
@@ -392,17 +347,7 @@
                 case InputFeature.PowerGrab:
                     try
                     {
-                        // Detach event handlers.
-                        this.DetachEventHandlers();
-
-                        // Attach input event handlers to the power grab coordinator.
-                        this.inputListener!.OnCharacterTyped += this.onCharToPower;
-                        this.inputListener.OnBackspacePressed += this.onBackspaceToPower;
-                        this.inputListener.OnEscapePressed += this.onEscapeToPower;
-                        this.inputListener.OnEnterPressed += this.onEnterToPower;
-                        this.inputListener.OnSpacePressed += this.onSpaceToPower;
-                        this.inputListener.OnTabPressed += this.onPressTabToPower;
-                        this.inputListener.OnTabReleased += this.onReleaseTabToPower;
+                        this.SwitchKeyboardTo(this.powerGrabCoordinator!);
 
                         // Launch power mode.
                         this.powerGrabCoordinator?.Begin();
@@ -417,15 +362,7 @@
                 case InputFeature.QuickGrab:
                     try
                     {
-                        // Detach event handlers.
-                        this.DetachEventHandlers();
-
-                        // Attach input event handlers to the power grab coordinator.
-                        this.inputListener!.OnCharacterTyped += this.onCharToQuick;
-                        this.inputListener.OnBackspacePressed += this.onBackspaceToQuick;
-                        this.inputListener.OnEscapePressed += this.onEscapeToQuick;
-                        this.inputListener.OnEnterPressed += this.onEnterToQuick;
-                        this.inputListener.OnSpacePressed += this.onSpaceToQuick;
+                        this.SwitchKeyboardTo(this.quickGrabCoordinator!);
 
                         // Launch quick grab mode.
                         this.quickGrabCoordinator?.Begin();
@@ -440,63 +377,20 @@
             }
         }
 
-        private void DetachEventHandlers()
+        /// <summary>
+        /// Switches keyboard control to the specified controller, disposing previous bindings.
+        /// </summary>
+        private void SwitchKeyboardTo(IKeyboardControllable controller)
         {
-            if (this.inputListener is null) return;
+            // Dispose previous wiring
+            try { this.currentInputBinding?.Dispose(); } catch { }
+            this.currentInputBinding = null;
 
-            // Snap detach.
-            if (this.onCharToSnap is not null)
-                this.inputListener.OnCharacterTyped -= this.onCharToSnap;
-
-            if (this.onBackspaceToSnap is not null)
-                this.inputListener.OnBackspacePressed -= this.onBackspaceToSnap;
-
-            if (this.onEscapeToSnap is not null)
-                this.inputListener.OnEscapePressed -= this.onEscapeToSnap;
-
-            if (this.onEnterToSnap is not null)
-                this.inputListener.OnEnterPressed -= this.onEnterToSnap;
-
-            if (this.onSpaceToSnap is not null)
-                this.inputListener.OnSpacePressed -= this.onSpaceToSnap;
-
-            // Power Grab detach.
-            if (this.onCharToPower is not null)
-                this.inputListener.OnCharacterTyped -= this.onCharToPower;
-
-            if (this.onBackspaceToPower is not null)
-                this.inputListener.OnBackspacePressed -= this.onBackspaceToPower;
-
-            if (this.onEscapeToPower is not null)
-                this.inputListener.OnEscapePressed -= this.onEscapeToPower;
-
-            if (this.onEnterToPower is not null)
-                this.inputListener.OnEnterPressed -= this.onEnterToPower;
-
-            if (this.onSpaceToPower is not null)
-                this.inputListener.OnSpacePressed -= this.onSpaceToPower;
-
-            if (this.onPressTabToPower is not null)
-                this.inputListener.OnTabPressed -= this.onPressTabToPower;
-
-            if (this.onReleaseTabToPower is not null)
-                this.inputListener.OnTabReleased -= this.onReleaseTabToPower;
-
-            // Quick Grab detach.
-            if (this.onCharToQuick is not null)
-                this.inputListener.OnCharacterTyped -= this.onCharToQuick;
-
-            if (this.onBackspaceToQuick is not null)
-                this.inputListener.OnBackspacePressed -= this.onBackspaceToQuick;
-
-            if (this.onEscapeToQuick is not null)
-                this.inputListener.OnEscapePressed -= this.onEscapeToQuick;
-
-            if (this.onEnterToQuick is not null)
-                this.inputListener.OnEnterPressed -= this.onEnterToQuick;
-
-            if (this.onSpaceToQuick is not null)
-                this.inputListener.OnSpacePressed -= this.onSpaceToQuick;
+            // Attach new wiring
+            if (this.inputListener is not null)
+            {
+                this.currentInputBinding = controller.Attach(this.inputListener);
+            }
         }
 
         /// <summary>

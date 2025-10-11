@@ -1,6 +1,7 @@
 ﻿namespace VoilaTile.Snapper.Services
 {
     using System.Collections.Generic;
+    using VoilaTile.Snapper.Helpers;
     using VoilaTile.Snapper.Input;
     using VoilaTile.Snapper.Layout;
     using VoilaTile.Snapper.Records;
@@ -9,7 +10,7 @@
     /// <summary>
     /// Coordinates snapping based on input from overlays and manages global state transitions.
     /// </summary>
-    public class SnapCoordinatorService
+    public class SnapCoordinatorService : IKeyboardControllable
     {
         private readonly OverlayDisplayService overlayDisplayService;
         private readonly WindowSnappingService windowSnappingService;
@@ -37,11 +38,39 @@
             this.inputStateManager = inputStateManager;
         }
 
+        /// <inheritdoc/>
+        public IDisposable Attach(GlobalInputListener listener)
+        {
+            var cd = new CompositeDisposable();
+
+            void OnChar(char c) => this.ForwardCharacter(c);
+            listener.OnCharacterTyped += OnChar;
+            cd.Add(new AnonymousDisposable(() => listener.OnCharacterTyped -= OnChar));
+
+            void OnBackspace() => this.Backspace();
+            listener.OnBackspacePressed += OnBackspace;
+            cd.Add(new AnonymousDisposable(() => listener.OnBackspacePressed -= OnBackspace));
+
+            void OnEscape() => this.Cancel();
+            listener.OnEscapePressed += OnEscape;
+            cd.Add(new AnonymousDisposable(() => listener.OnEscapePressed -= OnEscape));
+
+            void OnEnter() => this.Confirm();
+            listener.OnEnterPressed += OnEnter;
+            cd.Add(new AnonymousDisposable(() => listener.OnEnterPressed -= OnEnter));
+
+            void OnSpace() => this.Confirm();
+            listener.OnSpacePressed += OnSpace;
+            cd.Add(new AnonymousDisposable(() => listener.OnSpacePressed -= OnSpace));
+
+            return cd;
+        }
+
         /// <summary>
         /// Launches overlays and starts the snapping process.
         /// </summary>
         /// <param name="layouts">Resolved layouts from LayoutResolver.</param>
-        public void BeginSnapping(List<ZoneLayoutModel> layouts)
+        public void Begin(List<ZoneLayoutModel> layouts)
         {
             this.targetWindow = windowSnappingService.GetFocusedWindow();
 
@@ -82,7 +111,7 @@
         /// <summary>
         /// Finalizes snapping (e.g. on Space key press).
         /// </summary>
-        public void CommitSnap()
+        public void Confirm()
         {
             if (this.targetWindow == null)
             {
