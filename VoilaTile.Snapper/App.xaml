@@ -6,6 +6,7 @@
     <Application.Resources>
         <!-- Converters -->
         <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+        <converters:HalfNegativeConverter x:Key="HalfNegativeConverter"/>
 
         <!-- Brushes -->
         <SolidColorBrush x:Key="TextWhite" Color="#f5f3f4"/>
