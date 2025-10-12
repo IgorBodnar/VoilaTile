@@ -64,6 +64,12 @@
         /// </summary>
         public void SnapWindow(SnappableWindowInfo window, ResolvedTileModel tile)
         {
+            // If the window is maximized, restore it first so it will accept a non-fullscreen size.
+            if (IsZoomed(window.Hwnd))
+            {
+                ShowWindow(window.Hwnd, SW_RESTORE);
+            }
+
             if (!GetWindowRect(window.Hwnd, out RECT windowRect))
                 return;
 
@@ -72,7 +78,7 @@
             int targetW = Math.Max(1, (int)Math.Round(tile.Width));
             int targetH = Math.Max(1, (int)Math.Round(tile.Height));
 
-            // Move to destination monitor first (no size), so DWM margins we read next are for the destination DPI.
+            // Move to destination monitor first (position-only), then measure margins on that monitor’s DPI.
             const SetWindowPosFlags MoveOnlyFlags =
                 SetWindowPosFlags.NoSize | SetWindowPosFlags.NoZOrder | SetWindowPosFlags.NoActivate;
             SetWindowPos(window.Hwnd, IntPtr.Zero, targetX, targetY, 0, 0, MoveOnlyFlags);
@@ -95,8 +101,7 @@
             int outerW = targetW + leftMargin + rightMargin;
             int outerH = targetH + topMargin + bottomMargin;
 
-            // If the target app is Unaware/SystemAware on a >StandardDpi monitor,
-            //     shrink (or grow) the outer size by StandardDpi/dpi so the visual area matches the tile.
+            // DPI awareness adjustment for Unaware/SystemAware apps on >96 DPI monitors.
             var ctx = GetWindowDpiAwarenessContext(window.Hwnd);
             var awareness = GetAwarenessFromDpiAwarenessContext(ctx);
 
@@ -119,17 +124,24 @@
                          targetY - topMargin,
                          outerW, outerH, SizeOnlyFlags);
 
-            // Debug information.
             Debug.WriteLine($"[Snap] awareness={awareness}, destDpi={GetDpiForWindow(window.Hwnd)}, " +
                             $"margins L{leftMargin} T{topMargin} R{rightMargin} B{bottomMargin}, " +
                             $"outerW={outerW}, outerH={outerH}");
         }
+
 
         #region Win32
 
         private const int GWL_STYLE = -16;
         private const int GWL_EXSTYLE = -20;
         private const int DWMWA_EXTENDED_FRAME_BOUNDS = 9;
+        private const int SW_RESTORE = 9;
+
+        [DllImport("user32.dll")]
+        private static extern bool IsZoomed(IntPtr hWnd);
+
+        [DllImport("user32.dll")]
+        private static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
 
         [DllImport("dwmapi.dll", PreserveSig = true)]
         private static extern int DwmGetWindowAttribute(IntPtr hwnd, int dwAttribute, out RECT pvAttribute, int cbAttribute);
