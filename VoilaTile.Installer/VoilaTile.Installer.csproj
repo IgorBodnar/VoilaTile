@@ -7,8 +7,8 @@
 	</PropertyGroup>
 
 	<Target Name="PublishApps" BeforeTargets="Build">
-		<Exec Command="dotnet publish ..\VoilaTile.Snapper\VoilaTile.Snapper.csproj -c Release -r win-x86 -p:PublishSingleFile=true -p:SelfContained=true -p:IncludeNativeLibrariesForSelfExtract=true -o &quot;$(SnapperTargetDir)&quot;" />
-		<Exec Command="dotnet publish ..\VoilaTile.Configurator\VoilaTile.Configurator.csproj -c Release -r win-x86 -p:PublishSingleFile=true -p:SelfContained=true -p:IncludeNativeLibrariesForSelfExtract=true -o &quot;$(ConfiguratorTargetDir)&quot;" />
+		<Exec Command="dotnet publish ..\VoilaTile.Snapper\VoilaTile.Snapper.csproj -c Release -r win-x64 -p:PublishSingleFile=false -p:SelfContained=false -o &quot;$(SnapperTargetDir)&quot;" />
+		<Exec Command="dotnet publish ..\VoilaTile.Configurator\VoilaTile.Configurator.csproj -c Release -r win-x64 -p:PublishSingleFile=false -p:SelfContained=false -o &quot;$(ConfiguratorTargetDir)&quot;" />
 	</Target>
 
 	<Target Name="BuildInstaller" AfterTargets="Build">

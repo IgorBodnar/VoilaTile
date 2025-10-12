@@ -1,5 +1,8 @@
 ﻿#define AppName "VoilaTile"
 
+#define SnapperPublish "..\VoilaTile.Snapper\bin\Release\net8.0-windows\publish"
+#define ConfiguratorPublish "..\VoilaTile.Configurator\bin\Release\net8.0-windows\publish"
+
 #include "installer.secrets.iss"
 
 [Setup]
@@ -28,22 +31,25 @@ UninstallDisplayIcon={app}\VoilaTile.Configurator.exe
 CloseApplications=yes
 CloseApplicationsFilter=VoilaTile.Snapper.exe;VoilaTile.Configurator.exe
 RestartApplications=no
+ArchitecturesInstallIn64BitMode=x64
 
 [Files]
-Source: "..\VoilaTile.Snapper\bin\Release\net8.0-windows\publish\VoilaTile.Snapper.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\VoilaTile.Configurator\bin\Release\net8.0-windows\publish\VoilaTile.Configurator.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#SnapperPublish}\*";      DestDir: "{app}"; Excludes: "*.pdb,*.runtimeconfig.dev.json"; Flags: recursesubdirs createallsubdirs ignoreversion
+Source: "{#ConfiguratorPublish}\*"; DestDir: "{app}"; Excludes: "*.pdb,*.runtimeconfig.dev.json"; Flags: recursesubdirs createallsubdirs ignoreversion
+
 
 [Icons]
-Name: "{group}\VoílaTile Snapper";      Filename: "{app}\VoilaTile.Snapper.exe";
-Name: "{group}\VoílaTile Configurator"; Filename: "{app}\VoilaTile.Configurator.exe";
-Name: "{group}\Uninstall VoílaTile";    Filename: "{uninstallexe}";
+Name: "{group}\VoilaTile Snapper";      Filename: "{app}\VoilaTile.Snapper.exe";          WorkingDir: "{app}"
+Name: "{group}\VoilaTile Configurator"; Filename: "{app}\VoilaTile.Configurator.exe"; WorkingDir: "{app}"
+Name: "{group}\Uninstall VoilaTile";    Filename: "{uninstallexe}"
 
 [Tasks]
 Name: "autostart"; Description: "Launch VoílaTile Snapper on Windows startup"; GroupDescription: "Post-install options"
 Name: "launchconfigurator"; Description: "Launch VoílaTile Configurator now"; GroupDescription: "Post-install options"
 
 [Run]
-Filename: "{app}\VoilaTile.Configurator.exe"; Description: "Launch VoílaTile Configurator"; Flags: nowait postinstall skipifsilent; Tasks: launchconfigurator
+Filename: "{app}\VoilaTile.Configurator.exe"; WorkingDir: "{app}"; Flags: nowait postinstall skipifsilent; Tasks: launchconfigurator
+
 
 [Code]
 
@@ -271,7 +277,8 @@ begin
     if IsTaskSelected('autostart') then
     begin
       SnapperPath := ExpandConstant('{app}\VoilaTile.Snapper.exe');
-      RegWriteStringValue(HKEY_CURRENT_USER, 'Software\Microsoft\Windows\CurrentVersion\Run', 'VoilaTile.Snapper', SnapperPath);
+      RegWriteStringValue(HKEY_CURRENT_USER, 'Software\Microsoft\Windows\CurrentVersion\Run',
+        'VoilaTile.Snapper', SnapperPath);
     end;
   end;
 end;
