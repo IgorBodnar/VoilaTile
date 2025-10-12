@@ -9,17 +9,10 @@
     {
         private InputMode currentMode = InputMode.HotKey;
 
-        private InputFeature currentFeature = InputFeature.Snap;
-
         /// <summary>
         /// Gets the current input mode.
         /// </summary>
         public InputMode CurrentMode => currentMode;
-
-        /// <summary>
-        /// Gets the current input feature.
-        /// </summary>
-        public InputFeature CurrentFeature => currentFeature;
 
         /// <summary>
         /// Occurs when the input mode changes.
@@ -36,22 +29,6 @@
                 currentMode = InputMode.Input;
                 ModeChanged?.Invoke(currentMode);
             }
-        }
-
-        /// <summary>
-        /// Switches to input mode if not already in it.
-        /// </summary>
-        public void SwitchToPowerGrabFeature()
-        {
-            this.currentFeature = InputFeature.PowerGrab;
-        }
-
-        /// <summary>
-        /// Switches to input mode if not already in it.
-        /// </summary>
-        public void SwitchToQuickGrabFeature()
-        {
-            this.currentFeature = InputFeature.QuickGrab;
         }
 
         /// <summary>

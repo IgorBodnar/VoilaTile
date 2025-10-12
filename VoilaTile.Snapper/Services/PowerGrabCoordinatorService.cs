@@ -160,7 +160,6 @@
 
             this.isActive = true;
             this.inputState.EnterInputMode();
-            this.inputState.SwitchToPowerGrabFeature();
 
             // Enumerate with default options.
             var options = new WindowQueryOptions
@@ -192,7 +191,6 @@
             this.view = new PowerGrabOverlayView(this.surfaceFactory)
             {
                 DataContext = this.vm,
-                WindowStartupLocation = WindowStartupLocation.CenterScreen,
                 ShowInTaskbar = false,
                 Topmost = true,
             };

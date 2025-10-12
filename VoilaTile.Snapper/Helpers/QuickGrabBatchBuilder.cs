@@ -1,5 +1,6 @@
 ﻿namespace VoilaTile.Snapper.Helpers
 {
+    using VoilaTile.Common.Helpers;
     using VoilaTile.Common.Models;
     using VoilaTile.Snapper.Models;
     using VoilaTile.Snapper.Records;
@@ -36,10 +37,6 @@
                     int originX = mon.WorkX;
                     int originY = mon.WorkY;
 
-                    // Then px -> DIP using that monitor’s DPI
-                    double dxScale = mon.DpiX / 96.0;
-                    double dyScale = mon.DpiY / 96.0;
-
                     var badges = g
                         .OrderBy(x => x.Z).ThenBy(x => x.Xpx).ThenBy(x => x.Ypx)
                         .Select(x =>
@@ -47,15 +44,11 @@
                             int localPxX = x.Xpx - originX;
                             int localPxY = x.Ypx - originY;
 
-                            // Optional: clamp to canvas
-                            // localPxX = Math.Max(0, Math.Min(localPxX, mon.WorkWidth));
-                            // localPxY = Math.Max(0, Math.Min(localPxY, mon.WorkHeight));
-
                             return new QuickGrabBadge(
                                 x.Id,
                                 x.HintText,
-                                Xdip: localPxX / dxScale,
-                                Ydip: localPxY / dyScale,
+                                Xdip: localPxX,
+                                Ydip: localPxY,
                                 x.Z);
                         })
                         .ToList();

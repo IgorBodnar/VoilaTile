@@ -33,10 +33,19 @@
         </DockPanel>
 
         <!-- Footer -->
-        <DockPanel x:Name="Footer" Grid.Row="2" Margin="0,12,0,0" HorizontalAlignment="Center">
-            <TextBlock Text="Type hints to select respective windows    |    Press 'Enter' or 'Space' to switch to the selected window    |    Hold 'Tab' to see a preview of the selected window    |    Press '+' key without holding 'Shift' to scroll down    |    Press '-' key without holding 'Shift' to scoll up    |    Press 'Esc' to close the overlay"
-                       FontSize="12" FontWeight="SemiBold"
-                       Foreground="#44FFFFFF"/>
+        <DockPanel x:Name="Footer"
+           Grid.Row="2"
+           Margin="0,12,0,0"
+           HorizontalAlignment="Stretch">
+            <Viewbox Stretch="Uniform"
+             StretchDirection="DownOnly"
+             HorizontalAlignment="Stretch">
+                <TextBlock Text="Type hints to select respective windows    |    Press 'Enter' or 'Space' to switch to the selected window    |    Hold 'Tab' to see a preview of the selected window    |    Press '+' key without holding 'Shift' to scroll down    |    Press '-' key without holding 'Shift' to scroll up    |    Press 'Esc' to close the overlay"
+                   FontSize="12"
+                   FontWeight="SemiBold"
+                   Foreground="#44FFFFFF"
+                   TextWrapping="NoWrap"/>
+            </Viewbox>
         </DockPanel>
 
         <!-- Viewport -->

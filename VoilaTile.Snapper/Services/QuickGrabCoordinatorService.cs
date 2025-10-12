@@ -120,7 +120,7 @@ namespace VoilaTile.Snapper.Services
                 // Group by monitor & convert px -> DIP for overlay canvases
                 var batches = QuickGrabBatchBuilder.BuildBatches(placedWithHints, monitors);
 
-                // 4) Build VMs, attach badges, THEN show overlays (UI thread)
+                // 4) Build VMs, attach badges, the show overlays (UI thread)
                 Application.Current.Dispatcher.Invoke(() =>
                 {
                     this.activeOverlays.Clear();
