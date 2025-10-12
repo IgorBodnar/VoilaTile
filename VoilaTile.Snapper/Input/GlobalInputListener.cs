@@ -122,17 +122,17 @@
                     }
                     shouldSuppress = true;
                 }
-                else if (key == this.settings.ShortcutKey && isWinDown && isShiftDown && stateManager.CurrentMode == InputMode.HotKey)
+                else if (key == this.settings.SnapShortcutKey && isWinDown && isShiftDown && stateManager.CurrentMode == InputMode.HotKey)
                 {
                     this.OnHotKeyPressed?.Invoke(new HotKeyEventArgs(InputFeature.Snap));
                     shouldSuppress = true;
                 }
-                else if (key == Key.J && isWinDown && isShiftDown && stateManager.CurrentMode == InputMode.HotKey)
+                else if (key == this.settings.PowerGrabShortcutKey && isWinDown && isShiftDown && stateManager.CurrentMode == InputMode.HotKey)
                 {
                     this.OnHotKeyPressed?.Invoke(new HotKeyEventArgs(InputFeature.PowerGrab));
                     shouldSuppress = true;
                 }
-                else if (key == Key.M && isWinDown && isShiftDown && stateManager.CurrentMode == InputMode.HotKey)
+                else if (key == this.settings.QuickGrabShortcutKey && isWinDown && isShiftDown && stateManager.CurrentMode == InputMode.HotKey)
                 {
                     this.OnHotKeyPressed?.Invoke(new HotKeyEventArgs(InputFeature.QuickGrab));
                     shouldSuppress = true;

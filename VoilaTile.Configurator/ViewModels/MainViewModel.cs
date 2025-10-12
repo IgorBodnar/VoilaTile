@@ -175,9 +175,19 @@
                 this.Settings.Seed = settingsDTO.Seed;
             }
             
-            if (Enum.TryParse<Key>(settingsDTO.SelectedShortcutKey, out var parsedKey))
+            if (Enum.TryParse<Key>(settingsDTO.SelectedSnapShortcutKey, out var parsedSnapKey))
             {
-                this.Settings.SelectedShortcutKey = parsedKey;
+                this.Settings.SelectedSnapShortcutKey = parsedSnapKey;
+            }
+            
+            if (Enum.TryParse<Key>(settingsDTO.SelectedQuickGrabShortcutKey, out var parsedQuickGrabKey))
+            {
+                this.Settings.SelectedQuickGrabShortcutKey = parsedQuickGrabKey;
+            }
+            
+            if (Enum.TryParse<Key>(settingsDTO.SelectedPowerGrabShortcutKey, out var parsedPowerGrabKey))
+            {
+                this.Settings.SelectedPowerGrabShortcutKey = parsedPowerGrabKey;
             }
         }
 

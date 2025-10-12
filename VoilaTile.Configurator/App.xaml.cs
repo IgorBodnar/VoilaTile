@@ -62,7 +62,9 @@
             SettingsDTO settingsDTO = new SettingsDTO()
             {
                 Seed = this.mainViewModel.Settings.Seed,
-                SelectedShortcutKey = this.mainViewModel.Settings.SelectedShortcutKey.ToString(),
+                SelectedSnapShortcutKey = this.mainViewModel.Settings.SelectedSnapShortcutKey.ToString(),
+                SelectedQuickGrabShortcutKey = this.mainViewModel.Settings.SelectedQuickGrabShortcutKey.ToString(),
+                SelectedPowerGrabShortcutKey = this.mainViewModel.Settings.SelectedPowerGrabShortcutKey.ToString(),
             };
 
             SettingsSerializer.SaveSettings(settingsFilePath, settingsDTO);

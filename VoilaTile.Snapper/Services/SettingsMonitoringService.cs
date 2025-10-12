@@ -2,14 +2,16 @@
 {
     using System;
     using System.IO;
+    using System.Linq;
     using System.Text.Json;
     using System.Text.Json.Serialization;
     using System.Threading;
     using System.Windows.Input;
     using VoilaTile.Common.DTO;
+    using VoilaTile.Common.Helpers;
 
     /// <summary>
-    /// Loads and watches the user settings JSON for Snapper, exposing the parsed shortcut key.
+    /// Loads and watches the user settings JSON for Snapper, exposing the parsed shortcut keys and seed.
     /// </summary>
     public sealed class SettingsMonitoringService : IDisposable
     {
@@ -24,7 +26,12 @@
         private readonly FileSystemWatcher? watcher;
         private readonly object gate = new();
         private Timer? debounceTimer;
-        private Key shortcutKey = Key.Space;
+
+        private Key snapShortcutKey = Defaults.DefaultSnapShortcutKey;
+        private Key quickGrabShortcutKey = Defaults.DefaultQuickGrabShortcutKey;
+        private Key powerGrabShortcutKey = Defaults.DefaultPowerGrabShortcutKey;
+        private string seed = Defaults.DefaultSeed;
+
         private bool disposed;
 
         /// <summary>
@@ -41,7 +48,7 @@
 
             this.filePath = Path.GetFullPath(settingsFilePath);
 
-            // Initial load (defaults to Space on any issue)
+            // Initial load (defaults on any issue)
             this.LoadNowSafe();
 
             // Setup watcher if directory exists; otherwise there is nothing to watch yet.
@@ -65,16 +72,61 @@
         }
 
         /// <summary>
-        /// Gets the current shortcut key (combined with Win+Shift by the host).
+        /// Gets the current snap shortcut key (combined with Win+Shift by the host).
         /// </summary>
-        public Key ShortcutKey
+        public Key SnapShortcutKey
         {
-            get => this.shortcutKey;
+            get => this.snapShortcutKey;
             private set
             {
-                if (this.shortcutKey != value)
+                if (this.snapShortcutKey != value)
                 {
-                    this.shortcutKey = value;
+                    this.snapShortcutKey = value;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets the current quick grab shortcut key (combined with Win+Shift by the host).
+        /// </summary>
+        public Key QuickGrabShortcutKey
+        {
+            get => this.quickGrabShortcutKey;
+            private set
+            {
+                if (this.quickGrabShortcutKey != value)
+                {
+                    this.quickGrabShortcutKey = value;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets the current power grab shortcut key (combined with Win+Shift by the host).
+        /// </summary>
+        public Key PowerGrabShortcutKey
+        {
+            get => this.powerGrabShortcutKey;
+            private set
+            {
+                if (this.powerGrabShortcutKey != value)
+                {
+                    this.powerGrabShortcutKey = value;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets the current seed used for hint generation.
+        /// </summary>
+        public string Seed
+        {
+            get => this.seed;
+            private set
+            {
+                if (!string.Equals(this.seed, value, StringComparison.Ordinal))
+                {
+                    this.seed = value;
                 }
             }
         }
@@ -108,22 +160,41 @@
             }
         }
 
+        /// <summary>
+        /// Loads settings immediately; safe defaults on any error.
+        /// </summary>
         private void LoadNowSafe()
         {
             try
             {
-                this.ShortcutKey = this.LoadShortcutKeyWithRetry();
+                var (snap, quick, power, seedValue) = this.LoadSettingsWithRetry();
+                this.SnapShortcutKey = snap;
+                this.QuickGrabShortcutKey = quick;
+                this.PowerGrabShortcutKey = power;
+                this.Seed = seedValue;
             }
             catch
             {
-                // On any error, keep a safe default.
-                this.ShortcutKey = Key.Space;
+                // Safe defaults if something unexpected happens.
+                this.SnapShortcutKey = Defaults.DefaultSnapShortcutKey;
+                this.QuickGrabShortcutKey = Defaults.DefaultQuickGrabShortcutKey;
+                this.PowerGrabShortcutKey = Defaults.DefaultPowerGrabShortcutKey;
+                this.Seed = Defaults.DefaultSeed;
             }
         }
 
-        private Key LoadShortcutKeyWithRetry()
+        /// <summary>
+        /// Reads and parses all shortcut keys and the seed from the JSON with brief retries
+        /// (to tolerate temporary file locks during save).
+        /// </summary>
+        /// <returns>A tuple of (Snap, QuickGrab, PowerGrab, Seed).</returns>
+        private (Key Snap, Key Quick, Key Power, string Seed) LoadSettingsWithRetry()
         {
-            // Retry a couple of times in case the file is temporarily locked by another writer.
+            static Key ParseKey(string? s, Key fallback) =>
+                !string.IsNullOrWhiteSpace(s) && Enum.TryParse<Key>(s, ignoreCase: true, out var parsed)
+                    ? parsed
+                    : fallback;
+
             const int attempts = 3;
             for (int i = 0; i < attempts; i++)
             {
@@ -131,34 +202,38 @@
                 {
                     if (!File.Exists(this.filePath))
                     {
-                        return Key.Space; // default when settings file is absent
+                        // File absent: return defaults.
+                        return (Defaults.DefaultSnapShortcutKey,
+                                Defaults.DefaultQuickGrabShortcutKey,
+                                Defaults.DefaultPowerGrabShortcutKey,
+                                Defaults.DefaultSeed);
                     }
 
                     string json = File.ReadAllText(this.filePath);
                     SettingsDTO? dto = JsonSerializer.Deserialize<SettingsDTO>(json, JsonOptions) ?? new SettingsDTO();
 
-                    // Parse the string into a Key; default to Space on failure or empty.
-                    if (dto.SelectedShortcutKey is string s && Enum.TryParse<Key>(s, out var parsed))
-                    {
-                        return parsed;
-                    }
+                    var snap = ParseKey(dto.SelectedSnapShortcutKey, Defaults.DefaultSnapShortcutKey);
+                    var quick = ParseKey(dto.SelectedQuickGrabShortcutKey, Defaults.DefaultQuickGrabShortcutKey);
+                    var power = ParseKey(dto.SelectedPowerGrabShortcutKey, Defaults.DefaultPowerGrabShortcutKey);
+                    var seedValue = HintSeedHelper.CleanOrDefault(dto.Seed);
 
-                    return Key.Space;
+                    return (snap, quick, power, seedValue);
                 }
                 catch (IOException)
                 {
-                    // brief backoff then retry
-                    Thread.Sleep(40);
+                    Thread.Sleep(40); // brief backoff then retry
                     continue;
                 }
                 catch
                 {
-                    // Any other error: break and fall through to default.
-                    break;
+                    break; // fall through to defaults below
                 }
             }
 
-            return Key.Space;
+            return (Defaults.DefaultSnapShortcutKey,
+                    Defaults.DefaultQuickGrabShortcutKey,
+                    Defaults.DefaultPowerGrabShortcutKey,
+                    Defaults.DefaultSeed);
         }
     }
 }

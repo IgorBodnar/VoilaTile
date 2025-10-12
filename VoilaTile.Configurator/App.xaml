@@ -37,6 +37,7 @@
         <SolidColorBrush x:Key="BackgroundMediumLightGray" Color="#22b1a7a6"/>
         <SolidColorBrush x:Key="CloseWindowRed" Color="#ba181b"/>
         <SolidColorBrush x:Key="AccentRed" Color="#e5383b"/>
+        <SolidColorBrush x:Key="AccentRedTranslucent" Color="#dd861b2d"/>
 
         <!-- ScrollBar Style -->
         <Style TargetType="ScrollBar">
@@ -207,11 +208,7 @@
                                 <Setter Property="Foreground" Value="Gray"/>
                             </Trigger>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Background" Value="{StaticResource BackgroundLightGray}" />
-                                <Setter Property="BorderBrush" Value="{StaticResource BackgroundMediumLightGray}" />
-                            </Trigger>
-                            <Trigger Property="IsKeyboardFocused" Value="True">
-                                <Setter Property="Background" Value="{StaticResource BackgroundLightGray}" />
+                                <Setter Property="Background" Value="{StaticResource BackgroundDarkGray}" />
                                 <Setter Property="BorderBrush" Value="{StaticResource BackgroundMediumLightGray}" />
                             </Trigger>
                         </ControlTemplate.Triggers>
@@ -220,6 +217,7 @@
             </Setter>
         </Style>
 
+        <!-- ToolTip Style -->
         <Style TargetType="ToolTip">
             <Setter Property="Background" Value="{StaticResource BackgroundDarkGrayOpaque}" />
             <Setter Property="Foreground" Value="{StaticResource TextWhite}" />
@@ -248,6 +246,15 @@
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
+        </Style>
+
+        <!-- TextBox Style -->
+        <Style TargetType="TextBox">
+            <Setter Property="Background" Value="{StaticResource BackgroundLightGray}" />
+            <Setter Property="Foreground" Value="{StaticResource TextWhite}" />
+            <Setter Property="CaretBrush" Value="{StaticResource AccentRed}" />
+            <Setter Property="SelectionBrush" Value="{StaticResource AccentRedTranslucent}" />
+            <Setter Property="BorderThickness" Value="0" />
         </Style>
 
     </Application.Resources>

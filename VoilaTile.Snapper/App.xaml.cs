@@ -232,15 +232,15 @@
                 .Register<SnapOverlayViewModel>(vm => new SnapOverlayWindow(vm))
                 .Register<QuickGrabOverlayViewModel>(vm => new QuickGrabOverlayWindow(vm));
 
+            var settingsMonitor = new SettingsMonitoringService(settingsFilePath);
             var overlayService = new OverlayDisplayService(overlayWindowFactory);
             var windowSnapper = new WindowSnappingService();
             var focusService = new WindowFocusService();
             var windowEnumerator = new WindowEnumerator();
             var windowIcons = new WindowIconService();
-            var hintService = new HintService();
+            var hintService = new HintService(settingsMonitor);
             var hintPlacementService = new HintPlacementService();
             var surfaceFactory = new DwmThumbnailSurfaceFactory();
-            var settingsMonitor = new SettingsMonitoringService(settingsFilePath);
 
             this.snappingCoordinator = new SnapCoordinatorService(overlayService, windowSnapper, this.inputState);
 

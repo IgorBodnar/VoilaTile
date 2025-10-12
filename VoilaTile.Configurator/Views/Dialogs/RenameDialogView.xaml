@@ -16,9 +16,6 @@
         <TextBox Grid.Column="2"
                  MinWidth="200"
                  Margin="0"
-                 Background="{StaticResource BackgroundLightGray}"
-                 Foreground="{StaticResource TextWhite}"
-                 BorderThickness="0"
                  Padding="6"
                  Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" />
 
