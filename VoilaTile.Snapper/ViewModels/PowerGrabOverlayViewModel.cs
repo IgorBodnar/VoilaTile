@@ -1,17 +1,25 @@
-﻿namespace VoilaTile.Snapper.ViewModels
+﻿// -------------------------------------------------------------------------------------
+// <copyright file="PowerGrabOverlayViewModel.cs">
+//   Copyright © VoilaTile.
+// </copyright>
+// -------------------------------------------------------------------------------------
+namespace VoilaTile.Snapper.ViewModels
 {
     using CommunityToolkit.Mvvm.ComponentModel;
     using System;
     using System.Collections.ObjectModel;
     using System.Diagnostics;
     using System.Linq;
+    using System.Threading.Tasks;
+    using System.Windows;
+    using System.Windows.Threading;
     using VoilaTile.Snapper.Records;
     using VoilaTile.Snapper.Services;
 
     /// <summary>
     /// View model for the Power Mode overlay.
     /// </summary>
-    internal sealed class PowerGrabOverlayViewModel : ObservableObject
+    internal sealed class PowerGrabOverlayViewModel : ObservableObject, IDisposable
     {
         #region Fields
 
@@ -21,17 +29,32 @@
         private readonly IHintService hints;
 
         /// <summary>
-        /// The current hint buffer built from user input.
+        /// Dispatcher captured from UI thread.
+        /// </summary>
+        private readonly Dispatcher dispatcher = Application.Current.Dispatcher;
+
+        /// <summary>
+        /// Single long-lived process usage sampler.
+        /// </summary>
+        private readonly ProcessUsageSamplerByHwnd sampler;
+
+        /// <summary>
+        /// Latest sampled stats.
+        /// </summary>
+        private ProcessResourceStats? previewStats;
+
+        /// <summary>
+        /// Current user-typed hint buffer.
         /// </summary>
         private string hintBuffer = string.Empty;
 
         /// <summary>
-        /// The full title for the currently selected/previewed card.
+        /// Title of currently selected card.
         /// </summary>
         private string fullTitle = string.Empty;
 
         /// <summary>
-        /// Indicates whether the preview overlay should be visible.
+        /// Whether preview overlay is visible.
         /// </summary>
         private bool isPreviewVisible;
 
@@ -42,9 +65,8 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="PowerGrabOverlayViewModel"/> class.
         /// </summary>
-        /// <param name="hints">Service providing keyboard hints.</param>
+        /// <param name="hints">The hint generation service.</param>
         /// <param name="windows">The list of candidate windows.</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="hints"/> is <c>null</c>.</exception>
         public PowerGrabOverlayViewModel(IHintService hints, IReadOnlyList<WindowEntry> windows)
         {
             this.hints = hints ?? throw new ArgumentNullException(nameof(hints));
@@ -53,10 +75,19 @@
             this.Cards = new ObservableCollection<WindowCardViewModel>(
                 windows.Select((w, i) => new WindowCardViewModel(w, labels[i])));
 
+            // Create a single sampler, subscribe once, start once.
+            this.sampler = new ProcessUsageSamplerByHwnd();
+            this.sampler.SetDebugLogging(true);
+            this.sampler.OnSample += this.OnSamplerSampleReceived;
+            this.sampler.Start();
+
             if (this.Cards.Count > 0)
             {
                 this.Cards[0].IsSelected = true;
                 this.FullTitle = this.Cards[0].Title;
+
+                // Set initial target (non-blocking) and pulse an immediate sample.
+                this.SetSamplerTargetForSelected();
             }
         }
 
@@ -95,18 +126,40 @@
         public WindowCardViewModel? PreviewTarget => this.Selected;
 
         /// <summary>
-        /// Gets a value indicating whether the preview overlay should be visible (held by Tab).
+        /// Gets a value indicating whether the preview overlay should be visible.
         /// </summary>
         public bool IsPreviewVisible
         {
             get => this.isPreviewVisible;
             private set
             {
-                if (value == this.isPreviewVisible) return;
+                if (value == this.isPreviewVisible)
+                {
+                    return;
+                }
+
                 this.isPreviewVisible = value;
                 this.OnPropertyChanged();
                 this.OnPropertyChanged(nameof(this.PreviewTarget));
                 this.OnPropertyChanged(nameof(this.FullTitle));
+            }
+        }
+
+        /// <summary>
+        /// Gets live CPU/RAM stats for the preview target.
+        /// </summary>
+        public ProcessResourceStats? PreviewStats
+        {
+            get => this.previewStats;
+            private set
+            {
+                if (ReferenceEquals(value, this.previewStats))
+                {
+                    return;
+                }
+
+                this.previewStats = value;
+                this.OnPropertyChanged();
             }
         }
 
@@ -118,7 +171,11 @@
             get => this.fullTitle;
             private set
             {
-                if (value == this.fullTitle) return;
+                if (value == this.fullTitle)
+                {
+                    return;
+                }
+
                 this.fullTitle = value;
                 this.OnPropertyChanged();
             }
@@ -132,7 +189,11 @@
             get => this.hintBuffer;
             private set
             {
-                if (value == this.hintBuffer) return;
+                if (value == this.hintBuffer)
+                {
+                    return;
+                }
+
                 this.hintBuffer = value;
                 this.OnPropertyChanged();
                 this.ApplyFilter();
@@ -149,15 +210,24 @@
         #region Methods
 
         /// <summary>
-        /// Handles a typed character:
-        /// - '=' → scroll one row down (not added to buffer)
-        /// - '-' → scroll one row up (not added to buffer)
-        /// - otherwise → appended to hint buffer (uppercased)
+        /// Disposes of the view model by unsubscribing from the events.
+        /// </summary>
+        public void Dispose()
+        {
+            this.sampler.OnSample -= this.OnSamplerSampleReceived;
+            this.sampler.Dispose();
+        }
+
+        /// <summary>
+        /// Handles typed characters: '=' scrolls down, '-' scrolls up, others extend buffer.
         /// </summary>
         /// <param name="c">The input character.</param>
         public void TypeChar(char c)
         {
-            if (char.IsControl(c)) return;
+            if (char.IsControl(c))
+            {
+                return;
+            }
 
             if (c == '=')
             {
@@ -171,7 +241,10 @@
                 return;
             }
 
-            if (char.IsWhiteSpace(c)) return;
+            if (char.IsWhiteSpace(c))
+            {
+                return;
+            }
 
             this.HintBuffer += char.ToUpperInvariant(c);
             Debug.WriteLine($"[ViewModel] Typed char {c}");
@@ -182,31 +255,49 @@
         /// </summary>
         public void Backspace()
         {
-            if (this.HintBuffer.Length == 0) return;
+            if (this.HintBuffer.Length == 0)
+            {
+                return;
+            }
+
             this.HintBuffer = this.HintBuffer.Substring(0, this.HintBuffer.Length - 1);
         }
 
         /// <summary>
-        /// Selects the next visible (matching) card, cycling at the end.
+        /// Selects the next visible card.
         /// </summary>
         public void SelectNext()
         {
-            if (this.Cards.Count == 0) return;
+            if (this.Cards.Count == 0)
+            {
+                return;
+            }
+
             var visible = this.Cards.Where(c => c.IsMatch).ToList();
-            if (visible.Count == 0) return;
+            if (visible.Count == 0)
+            {
+                return;
+            }
 
             int idx = Math.Max(0, visible.FindIndex(c => c.IsSelected));
             this.SetSelected(visible[(idx + 1) % visible.Count]);
         }
 
         /// <summary>
-        /// Selects the previous visible (matching) card, cycling at the start.
+        /// Selects the previous visible card.
         /// </summary>
         public void SelectPrev()
         {
-            if (this.Cards.Count == 0) return;
+            if (this.Cards.Count == 0)
+            {
+                return;
+            }
+
             var visible = this.Cards.Where(c => c.IsMatch).ToList();
-            if (visible.Count == 0) return;
+            if (visible.Count == 0)
+            {
+                return;
+            }
 
             int idx = Math.Max(0, visible.FindIndex(c => c.IsSelected));
             int next = (idx - 1 + visible.Count) % visible.Count;
@@ -222,8 +313,12 @@
             if (!string.IsNullOrEmpty(this.HintBuffer))
             {
                 var exact = this.Cards.FirstOrDefault(c => c.Hint.Equals(this.HintBuffer, StringComparison.OrdinalIgnoreCase));
-                if (exact is not null) return exact.Entry;
+                if (exact is not null)
+                {
+                    return exact.Entry;
+                }
             }
+
             return this.Selected?.Entry;
         }
 
@@ -234,7 +329,11 @@
         {
             if (string.IsNullOrEmpty(this.HintBuffer))
             {
-                foreach (var c in this.Cards) c.IsMatch = true;
+                foreach (var c in this.Cards)
+                {
+                    c.IsMatch = true;
+                }
+
                 return;
             }
 
@@ -244,7 +343,10 @@
             }
 
             var matches = this.Cards.Where(c => c.IsMatch).ToList();
-            if (matches.Count == 0) return;
+            if (matches.Count == 0)
+            {
+                return;
+            }
 
             var exact = matches.FirstOrDefault(c => c.Hint.Equals(this.HintBuffer, StringComparison.OrdinalIgnoreCase));
             var target = exact ?? matches[0];
@@ -256,29 +358,48 @@
         }
 
         /// <summary>
-        /// Sets the specified card as selected and updates the full title.
+        /// Sets the selected card and retargets the sampler.
         /// </summary>
         /// <param name="card">The card to select.</param>
         private void SetSelected(WindowCardViewModel card)
         {
-            foreach (var c in this.Cards) c.IsSelected = false;
+            foreach (var c in this.Cards)
+            {
+                c.IsSelected = false;
+            }
+
             card.IsSelected = true;
             this.FullTitle = card.Title;
+
+            // Retarget the long-lived sampler (non-blocking, immediate pulse).
+            this.SetSamplerTargetForSelected();
         }
 
         /// <summary>
-        /// Shows the preview overlay (called when Tab is pressed).
+        /// Shows the preview overlay (called when Tab is held).
         /// </summary>
         public void ShowPreview()
         {
-            if (this.Cards.Count == 0) { this.IsPreviewVisible = false; return; }
+            if (this.Cards.Count == 0)
+            {
+                this.IsPreviewVisible = false;
+                return;
+            }
+
             if (this.Selected is null)
             {
                 this.Cards[0].IsSelected = true;
                 this.FullTitle = this.Cards[0].Title;
             }
+
             this.IsPreviewVisible = true;
-            if (this.Selected is not null) this.FullTitle = this.Selected.Title;
+            if (this.Selected is not null)
+            {
+                this.FullTitle = this.Selected.Title;
+            }
+
+            // Ensure the sampler is already looking at the current selection.
+            this.SetSamplerTargetForSelected();
             this.OnShowPreview?.Invoke();
         }
 
@@ -288,7 +409,63 @@
         public void HidePreview()
         {
             this.IsPreviewVisible = false;
+            // We keep sampler running & subscribed for zero-latency next preview.
             this.OnHidePreview?.Invoke();
+        }
+
+        /// <summary>
+        /// Retargets the long-lived sampler to the selected window and requests an immediate sample.
+        /// </summary>
+        private void SetSamplerTargetForSelected()
+        {
+            var sel = this.Selected;
+            if (sel is null)
+            {
+                return;
+            }
+
+            var hwnd = sel.Entry.Id.Hwnd;
+
+            // Fire-and-forget: retarget + immediate pulse; also get a quick snapshot on a pool thread.
+            _ = Task.Run(() =>
+            {
+                try
+                {
+                    this.sampler.SetTarget(hwnd, immediate: true);
+
+                    var snap = this.sampler.TrySnapshotCurrent();
+                    if (snap is not null)
+                    {
+                        if (this.dispatcher is not null && !this.dispatcher.CheckAccess())
+                        {
+                            _ = this.dispatcher.InvokeAsync(() => this.PreviewStats = snap);
+                        }
+                        else
+                        {
+                            this.PreviewStats = snap;
+                        }
+                    }
+                }
+                catch
+                {
+                }
+            });
+        }
+
+        /// <summary>
+        /// Receives new sample updates from sampler thread.
+        /// </summary>
+        /// <param name="stats">Stats for the previewed process group.</param>
+        private void OnSamplerSampleReceived(ProcessResourceStats stats)
+        {
+            if (this.dispatcher is not null && !this.dispatcher.CheckAccess())
+            {
+                _ = this.dispatcher.InvokeAsync(() => this.PreviewStats = stats);
+            }
+            else
+            {
+                this.PreviewStats = stats;
+            }
         }
 
         #endregion

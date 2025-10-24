@@ -198,6 +198,7 @@
             this.view.Closed += (_, __) =>
             {
                 this.view = null;
+                this.vm?.Dispose();
                 this.vm = null;
             };
 
@@ -214,6 +215,7 @@
             try { this.view?.Close(); } catch { }
 
             this.view = null;
+            this.vm?.Dispose();
             this.vm = null;
 
             this.inputState.ReturnToHotKeyMode();

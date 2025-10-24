@@ -11,6 +11,10 @@
         ShowInTaskbar="False"
         Topmost="True"
         Background="{StaticResource BackgroundDarkestGray}">
+    <Window.Resources>
+        <FontFamily x:Key="IconFont">Segoe Fluent Icons, Segoe MDL2 Assets</FontFamily>
+    </Window.Resources>
+
     <Grid x:Name="Root" Margin="16" Focusable="True">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -88,16 +92,66 @@
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
 
-                    <StackPanel Orientation="Vertical" Margin="0,0,0,12">
+                    <Grid Margin="0,0,0,12">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
                         <TextBlock Text="{Binding PreviewTarget.Title}"
+                                   Grid.Row="0"
+                                   Grid.Column="0"
+                                   Margin="0,0,0,8"
                                    FontSize="20"
                                    FontWeight="SemiBold"
                                    Foreground="{StaticResource TextWhite}"/>
+
                         <TextBlock Text="{Binding PreviewTarget.TypeLabel}"
+                                   Grid.Row="1"
+                                   Grid.Column="0"
+                                   DockPanel.Dock="Left"
                                    FontSize="12"
-                                   Foreground="{StaticResource TextWhiteTranslucent}">
-                        </TextBlock>
-                    </StackPanel>
+                                   Foreground="{StaticResource TextWhiteTranslucent}"/>
+
+                        <StackPanel Orientation="Horizontal"
+                                    Grid.Row="1"
+                                    Grid.Column="1">
+
+                            <TextBlock Text="&#xE950;"
+                                       FontFamily="{StaticResource IconFont}"
+                                       FontSize="16"
+                                       Margin="0,0,6,0"
+                                       VerticalAlignment="Center"
+                                       Foreground="{StaticResource TextWhiteTranslucent}"/>
+                            <TextBlock Text="{Binding PreviewStats.CpuPercent, StringFormat={}{0:F1}% CPU}"
+                                       TextAlignment="Right"
+                                       FontSize="12"
+                                       MinWidth="60"
+                                       Margin="0,0,12,0"
+                                       VerticalAlignment="Center"
+                                       Foreground="{StaticResource TextWhiteTranslucent}"/>
+
+                            <TextBlock Text="&#xE964;"
+                                       FontFamily="{StaticResource IconFont}"
+                                       FontSize="16"
+                                       Margin="0,0,6,0"
+                                       VerticalAlignment="Center"
+                                       Foreground="{StaticResource TextWhiteTranslucent}"/>
+                            <TextBlock Text="{Binding PreviewStats.RamPercent, StringFormat={}{0:F1}% RAM}"
+                                       TextAlignment="Right"
+                                       FontSize="12"
+                                       MinWidth="60"
+                                       Margin="0,0,6,0"
+                                       VerticalAlignment="Center"
+                                       Foreground="{StaticResource TextWhiteTranslucent}"/>
+
+                        </StackPanel>
+
+                    </Grid>
 
                     <Border x:Name="PreviewThumbnailSlot"
                             Grid.Row="2"
