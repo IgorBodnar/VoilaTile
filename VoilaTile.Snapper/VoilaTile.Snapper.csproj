@@ -21,11 +21,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
+    <EmbeddedResource Include="Assets\icon-logo.ico" />
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Assets\icon-logo.ico" />
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
   </ItemGroup>
 
   <ItemGroup>

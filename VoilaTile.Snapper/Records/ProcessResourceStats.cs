@@ -1,24 +1,47 @@
 ﻿namespace VoilaTile.Snapper.Records
 {
     /// <summary>
-    /// Snapshot of process resource usage.
+    /// Immutable snapshot of resource usage for a process group.
     /// </summary>
-    internal sealed class ProcessResourceStats
-    {
+    internal sealed record ProcessResourceStats(
         /// <summary>
-        /// CPU percent (0..100) normalized across logical cores.
+        /// Gets the CPU utilization percentage (0–100) normalized across all logical cores.
         /// </summary>
-        public double CpuPercent { get; set; }
+        double CpuPercent,
 
         /// <summary>
-        /// Working set in bytes.
+        /// Gets the number of processes in the group.
         /// </summary>
-        public long WorkingSetBytes { get; set; }
+        int ProcessCount,
 
-        /// s<summary>
-        /// RAM percent (0..100), WorkingSet / TotalPhysicalMemory.
+        /// <summary>
+        /// Gets the total working set (private) memory in bytes for all processes in the group.
         /// </summary>
-        public double RamPercent { get; set; }
-    }
+        long WorkingSetPrivateBytes,
+
+        /// <summary>
+        /// Gets the total private (committed) memory in bytes for all processes in the group.
+        /// </summary>
+        long PrivateBytes,
+
+        /// <summary>
+        /// Gets the percentage share of the group's working set relative to all processes in the system.
+        /// </summary>
+        double WsShareOfProcessesPercent,
+
+        /// <summary>
+        /// Gets the percentage share of the group's committed memory relative to the total system commit.
+        /// </summary>
+        double CommitShareOfSystemPercent,
+
+        /// <summary>
+        /// Gets the total number of threads across all processes in the group.
+        /// </summary>
+        int ThreadCount,
+
+        /// <summary>
+        /// Gets the total number of handles across all processes in the group.
+        /// </summary>
+        int HandleCount);
 }
 

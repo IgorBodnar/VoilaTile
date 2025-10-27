@@ -117,39 +117,98 @@
                                    FontSize="12"
                                    Foreground="{StaticResource TextWhiteTranslucent}"/>
 
-                        <StackPanel Orientation="Horizontal"
-                                    Grid.Row="1"
-                                    Grid.Column="1">
+                        <WrapPanel Grid.Row="1"
+                                   Grid.Column="1"
+                                   HorizontalAlignment="Right"
+                                   VerticalAlignment="Center"
+                                   Orientation="Horizontal"
+                                   ItemHeight="24"
+                                   Margin="0">
 
-                            <TextBlock Text="&#xE950;"
-                                       FontFamily="{StaticResource IconFont}"
-                                       FontSize="16"
-                                       Margin="0,0,6,0"
-                                       VerticalAlignment="Center"
-                                       Foreground="{StaticResource TextWhiteTranslucent}"/>
-                            <TextBlock Text="{Binding PreviewStats.CpuPercent, StringFormat={}{0:F1}% CPU}"
-                                       TextAlignment="Right"
-                                       FontSize="12"
-                                       MinWidth="60"
-                                       Margin="0,0,12,0"
-                                       VerticalAlignment="Center"
-                                       Foreground="{StaticResource TextWhiteTranslucent}"/>
+                                <!-- CPU% -->
+                                <Border Background="{StaticResource BackgroundDarkGray}"
+                                        CornerRadius="12"
+                                        Padding="6,2"
+                                        Margin="6,0,0,0">
 
-                            <TextBlock Text="&#xE964;"
-                                       FontFamily="{StaticResource IconFont}"
-                                       FontSize="16"
-                                       Margin="0,0,6,0"
-                                       VerticalAlignment="Center"
-                                       Foreground="{StaticResource TextWhiteTranslucent}"/>
-                            <TextBlock Text="{Binding PreviewStats.RamPercent, StringFormat={}{0:F1}% RAM}"
-                                       TextAlignment="Right"
-                                       FontSize="12"
-                                       MinWidth="60"
-                                       Margin="0,0,6,0"
-                                       VerticalAlignment="Center"
-                                       Foreground="{StaticResource TextWhiteTranslucent}"/>
+                                    <TextBlock Text="{Binding PreviewStats.CpuPercent, StringFormat={}{0:F1}% CPU}"
+                                               FontSize="12"
+                                               Foreground="{StaticResource TextWhiteTranslucent}"/>
+                                </Border>
 
-                        </StackPanel>
+                                <!-- WS-Private -->
+                                <Border Background="{StaticResource BackgroundDarkGray}"
+                                        CornerRadius="12"
+                                        Padding="6,2"
+                                        Margin="6,0,0,0">
+                                    <TextBlock Foreground="{StaticResource TextWhiteTranslucent}">
+                                        <Run Text="WS:"/>
+                                        <Run Text="{Binding PreviewStats.WorkingSetPrivateBytes, Converter={StaticResource BytesToHumanConverter}}"/>
+                                    </TextBlock>
+                                </Border>
+
+                                <!-- Private Bytes (commit) -->
+                                <Border Background="{StaticResource BackgroundDarkGray}"
+                                        CornerRadius="12"
+                                        Padding="6,2"
+                                        Margin="6,0,0,0">
+                                    <TextBlock Foreground="{StaticResource TextWhiteTranslucent}">
+                                        <Run Text="Commit:"/>
+                                        <Run Text="{Binding PreviewStats.PrivateBytes, Converter={StaticResource BytesToHumanConverter}}"/>
+                                    </TextBlock>
+                                </Border>
+
+                                <!-- WS share among all processes -->
+                                <Border Background="{StaticResource BackgroundDarkGray}"
+                                        CornerRadius="12"
+                                        Padding="6,2"
+                                        Margin="6,0,0,0">
+                                    <TextBlock Text="{Binding PreviewStats.WsShareOfProcessesPercent, StringFormat={}{0:F1}% WS share}"
+                                               FontSize="12"
+                                               Foreground="{StaticResource TextWhiteTranslucent}"/>
+                                </Border>
+
+                                <!-- Commit share of system -->
+                                <Border Background="{StaticResource BackgroundDarkGray}"
+                                        CornerRadius="12"
+                                        Padding="6,2"
+                                        Margin="6,0,0,0">
+                                    <TextBlock Text="{Binding PreviewStats.CommitShareOfSystemPercent, StringFormat={}{0:F1}% commit share}"
+                                               FontSize="12"
+                                               Foreground="{StaticResource TextWhiteTranslucent}"/>
+                                </Border>
+
+                                <!-- Threads -->
+                                <Border Background="{StaticResource BackgroundDarkGray}"
+                                        CornerRadius="12"
+                                        Padding="6,2"
+                                        Margin="6,0,0,0">
+                                    <TextBlock Text="{Binding PreviewStats.ThreadCount, StringFormat={}{0:N0} threads}"
+                                               FontSize="12"
+                                               Foreground="{StaticResource TextWhiteTranslucent}"/>
+                                </Border>
+
+                                <!-- Handles -->
+                                <Border Background="{StaticResource BackgroundDarkGray}"
+                                        CornerRadius="12"
+                                        Padding="6,2"
+                                        Margin="6,0,0,0">
+                                    <TextBlock Text="{Binding PreviewStats.HandleCount, StringFormat={}{0:N0} handles}"
+                                               FontSize="12"
+                                               Foreground="{StaticResource TextWhiteTranslucent}"/>
+                                </Border>
+
+                                <!-- Process count -->
+                                <Border Background="{StaticResource BackgroundDarkGray}"
+                                        CornerRadius="12"
+                                        Padding="6,2"
+                                        Margin="6,0,0,0">
+                                    <TextBlock Text="{Binding PreviewStats.ProcessCount, StringFormat={}{0:N0} procs}"
+                                               FontSize="12"
+                                               Foreground="{StaticResource TextWhiteTranslucent}"/>
+                                </Border>
+                            </WrapPanel>
+
 
                     </Grid>
 

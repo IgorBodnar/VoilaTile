@@ -72,7 +72,7 @@
         /// <summary>
         /// Minimum number of rows to target for layout.
         /// </summary>
-        private const int MinRows = 2;
+        private const int MinRows = 3;
 
         /// <summary>
         /// Maximum number of rows to target for layout.

@@ -75,9 +75,8 @@ namespace VoilaTile.Snapper.ViewModels
             this.Cards = new ObservableCollection<WindowCardViewModel>(
                 windows.Select((w, i) => new WindowCardViewModel(w, labels[i])));
 
-            // Create a single sampler, subscribe once, start once.
             this.sampler = new ProcessUsageSamplerByHwnd();
-            this.sampler.SetDebugLogging(true);
+            this.sampler.SetDebugLogging(false);
             this.sampler.OnSample += this.OnSamplerSampleReceived;
             this.sampler.Start();
 
@@ -86,7 +85,6 @@ namespace VoilaTile.Snapper.ViewModels
                 this.Cards[0].IsSelected = true;
                 this.FullTitle = this.Cards[0].Title;
 
-                // Set initial target (non-blocking) and pulse an immediate sample.
                 this.SetSamplerTargetForSelected();
             }
         }
@@ -409,7 +407,6 @@ namespace VoilaTile.Snapper.ViewModels
         public void HidePreview()
         {
             this.IsPreviewVisible = false;
-            // We keep sampler running & subscribed for zero-latency next preview.
             this.OnHidePreview?.Invoke();
         }
 
@@ -426,7 +423,6 @@ namespace VoilaTile.Snapper.ViewModels
 
             var hwnd = sel.Entry.Id.Hwnd;
 
-            // Fire-and-forget: retarget + immediate pulse; also get a quick snapshot on a pool thread.
             _ = Task.Run(() =>
             {
                 try
