@@ -1,4 +1,4 @@
-﻿namespace VoilaTile.Configurator.Helpers
+namespace VoilaTile.Configurator.Helpers
 {
     using System.Windows;
     using VoilaTile.Common.Models;

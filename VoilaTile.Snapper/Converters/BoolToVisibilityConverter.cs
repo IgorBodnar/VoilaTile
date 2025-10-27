@@ -1,4 +1,4 @@
-﻿namespace VoilaTile.Snapper.Converters
+namespace VoilaTile.Snapper.Converters
 {
     using System;
     using System.Globalization;
@@ -11,6 +11,7 @@
     /// </summary>
     public class BoolToVisibilityConverter : IValueConverter
     {
+        /// <inheritdoc/>
         public object Convert(object value, Type targetType, object? parameter, CultureInfo culture)
         {
             if (value is bool b)
@@ -22,6 +23,7 @@
             return Visibility.Collapsed;
         }
 
+        /// <inheritdoc/>
         public object ConvertBack(object value, Type targetType, object? parameter, CultureInfo culture)
         {
             if (value is Visibility v)

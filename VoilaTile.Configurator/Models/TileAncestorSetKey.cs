@@ -1,4 +1,4 @@
-﻿namespace VoilaTile.Configurator.Models
+namespace VoilaTile.Configurator.Models
 {
     public class TileAncestorSetKey : IEquatable<TileAncestorSetKey>
     {
@@ -24,6 +24,7 @@
             }
         }
 
+        /// <inheritdoc/>
         public bool Equals(TileAncestorSetKey? other)
         {
             if (other is null || other.sortedIds.Length != this.sortedIds.Length)
@@ -36,7 +37,9 @@
             return true;
         }
 
+        /// <inheritdoc/>
         public override bool Equals(object? obj) => Equals(obj as TileAncestorSetKey);
+        /// <inheritdoc/>
         public override int GetHashCode() => this.hashCode;
     }
 

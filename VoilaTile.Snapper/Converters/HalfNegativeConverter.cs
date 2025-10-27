@@ -1,4 +1,4 @@
-﻿namespace VoilaTile.Snapper.Converters
+namespace VoilaTile.Snapper.Converters
 {
     using System;
     using System.Globalization;

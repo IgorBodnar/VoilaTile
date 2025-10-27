@@ -1,4 +1,4 @@
-﻿namespace VoilaTile.Configurator.Records
+namespace VoilaTile.Configurator.Records
 {
     using System.Windows;
 

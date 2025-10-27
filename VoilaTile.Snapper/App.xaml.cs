@@ -1,4 +1,4 @@
-﻿namespace VoilaTile.Snapper
+namespace VoilaTile.Snapper
 {
     using System;
     using System.Collections.Generic;

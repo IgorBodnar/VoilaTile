@@ -1,4 +1,4 @@
-﻿using VoilaTile.Configurator.Enumerations;
+using VoilaTile.Configurator.Enumerations;
 
 namespace VoilaTile.Configurator.Interfaces
 {

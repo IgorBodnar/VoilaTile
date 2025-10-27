@@ -1,4 +1,4 @@
-﻿namespace VoilaTile.Snapper.Services
+namespace VoilaTile.Snapper.Services
 {
     using System;
     using System.Runtime.InteropServices;
@@ -11,6 +11,7 @@
     /// </summary>
     internal sealed class WindowFocusService : IWindowFocusService
     {
+        /// <inheritdoc/>
         public bool TryFocus(WindowId id)
         {
             var hwnd = id.Hwnd;
@@ -27,7 +28,7 @@
 
             // Bring to foreground using ATI (AttachThreadInput) with the current foreground thread
             var fg = Win32.GetForegroundWindow();
-             uint thisThread = GetCurrentThreadId();
+            uint thisThread = GetCurrentThreadId();
             uint fgThread = Win32.GetWindowThreadProcessId(fg, out _);
 
             bool attached = false;

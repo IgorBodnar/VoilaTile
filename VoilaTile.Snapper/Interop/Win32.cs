@@ -1,4 +1,4 @@
-﻿// File: Interop/Win32.cs
+// File: Interop/Win32.cs
 // -------------------------------------------------------------------------------------
 // <copyright file="Win32.cs" company="VoilaTile">
 // Copyright © VoilaTile.
@@ -41,7 +41,7 @@ namespace VoilaTile.Snapper.Interop
         internal const int SW_RESTORE = 9;
 
         internal const int GW_HWNDFIRST = 0;
-        internal const int GW_HWNDNEXT  = 2;
+        internal const int GW_HWNDNEXT = 2;
 
         #endregion
 

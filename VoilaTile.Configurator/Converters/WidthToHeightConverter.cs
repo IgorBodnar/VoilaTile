@@ -1,4 +1,4 @@
-﻿namespace VoilaTile.Configurator.Converters
+namespace VoilaTile.Configurator.Converters
 {
     using System.Globalization;
     using System.Windows.Data;

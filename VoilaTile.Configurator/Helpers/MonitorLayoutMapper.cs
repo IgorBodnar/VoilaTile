@@ -1,4 +1,4 @@
-﻿namespace VoilaTile.Configurator.Helpers
+namespace VoilaTile.Configurator.Helpers
 {
     using VoilaTile.Common.DTO;
     using VoilaTile.Configurator.Models;

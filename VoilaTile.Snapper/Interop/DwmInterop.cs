@@ -1,4 +1,4 @@
-﻿// File: Interop/DwmInterop.cs
+// File: Interop/DwmInterop.cs
 // -------------------------------------------------------------------------------------
 namespace VoilaTile.Snapper.Interop
 {
@@ -17,9 +17,9 @@ namespace VoilaTile.Snapper.Interop
         internal enum DwmTnpFlags : uint
         {
             RectDestination = 0x00000001,
-            RectSource      = 0x00000002,
-            Opacity         = 0x00000004,
-            Visible         = 0x00000008,
+            RectSource = 0x00000002,
+            Opacity = 0x00000004,
+            Visible = 0x00000008,
             SourceClientAreaOnly = 0x00000010,
         }
 

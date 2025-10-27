@@ -1,4 +1,4 @@
-﻿namespace VoilaTile.Snapper.Services
+namespace VoilaTile.Snapper.Services
 {
     using System.Collections.Generic;
     using System.Text;
@@ -32,7 +32,7 @@
         /// <exception cref="ArgumentNullException"></exception>
         public HintService(SettingsMonitoringService settings)
         {
-            this.settings = settings ?? throw new ArgumentNullException(nameof(settings)); 
+            this.settings = settings ?? throw new ArgumentNullException(nameof(settings));
             this.seed = Array.Empty<char>();
         }
 

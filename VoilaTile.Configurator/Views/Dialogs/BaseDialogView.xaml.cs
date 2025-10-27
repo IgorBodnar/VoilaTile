@@ -1,4 +1,4 @@
-﻿namespace VoilaTile.Configurator.Views
+namespace VoilaTile.Configurator.Views
 {
     using System.Threading.Tasks;
     using System.Windows;

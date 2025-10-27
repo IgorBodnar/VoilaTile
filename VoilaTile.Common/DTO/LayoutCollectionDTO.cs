@@ -1,4 +1,4 @@
-﻿namespace VoilaTile.Common.DTO
+namespace VoilaTile.Common.DTO
 {
     public class LayoutCollectionDTO
     {

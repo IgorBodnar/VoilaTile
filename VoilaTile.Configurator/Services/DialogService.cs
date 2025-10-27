@@ -1,4 +1,4 @@
-﻿namespace VoilaTile.Configurator.Services
+namespace VoilaTile.Configurator.Services
 {
     using System.Threading.Tasks;
     using System.Windows;

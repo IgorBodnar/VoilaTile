@@ -1,4 +1,4 @@
-﻿namespace VoilaTile.Configurator.Enumerations
+namespace VoilaTile.Configurator.Enumerations
 {
     /// <summary>
     /// Represents the current interaction state of the layout editor.

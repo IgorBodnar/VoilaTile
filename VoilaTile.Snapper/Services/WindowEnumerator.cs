@@ -1,4 +1,4 @@
-﻿namespace VoilaTile.Snapper.Services
+namespace VoilaTile.Snapper.Services
 {
     using VoilaTile.Snapper.Interop;
     using VoilaTile.Snapper.Records;

@@ -1,4 +1,4 @@
-﻿namespace VoilaTile.Common.Helpers
+namespace VoilaTile.Common.Helpers
 {
     using System.Windows.Input;
 
@@ -33,4 +33,3 @@
         public const Key DefaultPowerGrabShortcutKey = Key.L;
     }
 }
-

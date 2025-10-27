@@ -1,4 +1,4 @@
-﻿namespace VoilaTile.Snapper.Services
+namespace VoilaTile.Snapper.Services
 {
     using System.Collections.Generic;
     using VoilaTile.Snapper.Helpers;
@@ -82,7 +82,7 @@
             this.selectedTile = null;
             this.activeOverlays.Clear();
 
-            foreach (var layout in layouts) 
+            foreach (var layout in layouts)
             {
                 var viewModel = new SnapOverlayViewModel(layout, (match) =>
                 {

@@ -1,4 +1,4 @@
-﻿namespace VoilaTile.Snapper.Interop
+namespace VoilaTile.Snapper.Interop
 {
     using System;
     using System.Windows;

@@ -1,4 +1,4 @@
-﻿namespace VoilaTile.Snapper.Services
+namespace VoilaTile.Snapper.Services
 {
     using System;
     using System.Diagnostics;
@@ -27,6 +27,7 @@
         /// <summary>
         /// Retrieves the currently focused window if it is eligible for snapping.
         /// </summary>
+        /// <returns></returns>
         public SnappableWindowInfo? GetFocusedWindow()
         {
             IntPtr hwnd = GetForegroundWindow();

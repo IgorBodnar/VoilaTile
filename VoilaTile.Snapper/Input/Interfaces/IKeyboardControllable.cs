@@ -1,4 +1,4 @@
-﻿namespace VoilaTile.Snapper.Input
+namespace VoilaTile.Snapper.Input
 {
     using System;
 

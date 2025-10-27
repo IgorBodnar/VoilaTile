@@ -1,9 +1,9 @@
-﻿namespace VoilaTile.Configurator.Views
+namespace VoilaTile.Configurator.Views
 {
     using System.Windows.Controls;
 
     /// <summary>
-    /// Interaction logic for CreateNewLayoutDialogView.xaml
+    /// Interaction logic for CreateNewLayoutDialogView.xaml.
     /// </summary>
     public partial class CreateNewLayoutDialogView : UserControl
     {

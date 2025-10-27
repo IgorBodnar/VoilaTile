@@ -1,4 +1,4 @@
-﻿namespace VoilaTile.Configurator.Helpers
+namespace VoilaTile.Configurator.Helpers
 {
     using System;
     using System.Collections.Generic;
@@ -10,8 +10,21 @@
     /// </summary>
     public class CharacterPool
     {
+        #region Fields
+
+        /// <summary>
+        /// The character array representing the seed for the pool.
+        /// </summary>
         private readonly char[] seed;
+
+        /// <summary>
+        /// The queue used to sequentially assign hints.
+        /// </summary>
         private readonly Queue<string> queue = new();
+
+        #endregion
+
+        #region Constructors
 
         /// <summary>
         /// Initializes a new instance with the given character seed (e.g. "ASDFGHJKL").
@@ -25,16 +38,30 @@
             this.seed = seedCharacters.Distinct().ToArray();
         }
 
+        #endregion
+
+        #region Properties
+
+        /// <summary>
+        /// Returns the number of remaining combinations.
+        /// </summary>
+        public int Count => this.queue.Count;
+
+        #endregion
+
+        #region Methods
+
         /// <summary>
         /// Clears and refills the queue with up to <paramref name="size"/> unique combinations.
         /// </summary>
+        /// <param name="size">The size of the pool required.</param>
         public void RefillPool(int size)
         {
-            queue.Clear();
+            this.queue.Clear();
             var result = new List<string>();
             var bfs = new Queue<string>();
 
-            foreach (var ch in seed)
+            foreach (var ch in this.seed)
                 bfs.Enqueue(ch.ToString());
 
             while (result.Count < size && bfs.Count > 0)
@@ -45,23 +72,24 @@
                 if (result.Count >= size)
                     break;
 
-                foreach (var ch in seed)
+                foreach (var ch in this.seed)
                     bfs.Enqueue(current + ch);
             }
 
             foreach (var combo in result)
-                queue.Enqueue(combo);
+                this.queue.Enqueue(combo);
         }
 
         /// <summary>
         /// Dequeues the next available combination.
         /// </summary>
+        /// <returns></returns>
         public string Dequeue()
         {
-            if (queue.Count == 0)
+            if (this.queue.Count == 0)
                 throw new InvalidOperationException("Character pool is empty. Call RefillPool first.");
 
-            return queue.Dequeue();
+            return this.queue.Dequeue();
         }
 
         /// <summary>
@@ -74,19 +102,16 @@
             if (count < 0)
                 throw new ArgumentOutOfRangeException(nameof(count), "Count must be non-negative.");
 
-            if (count > queue.Count)
-                throw new InvalidOperationException($"Character pool has only {queue.Count} remaining.");
+            if (count > this.queue.Count)
+                throw new InvalidOperationException($"Character pool has only {this.queue.Count} remaining.");
 
             var result = new Queue<string>();
             for (int i = 0; i < count; i++)
-                result.Enqueue(queue.Dequeue());
+                result.Enqueue(this.queue.Dequeue());
 
             return result;
         }
 
-        /// <summary>
-        /// Returns the number of remaining combinations.
-        /// </summary>
-        public int Count => queue.Count;
+        #endregion
     }
 }

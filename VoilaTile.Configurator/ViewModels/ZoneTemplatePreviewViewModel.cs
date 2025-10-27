@@ -1,4 +1,4 @@
-﻿namespace VoilaTile.Configurator.ViewModels
+namespace VoilaTile.Configurator.ViewModels
 {
     using System;
     using System.Windows;
@@ -124,6 +124,7 @@
         /// <summary>
         /// Renames the zone template.
         /// </summary>
+        /// <returns><placeholder>A <see cref="Task"/> representing the asynchronous operation.</placeholder></returns>
         [RelayCommand]
         public async Task RenameAsync()
         {

@@ -1,4 +1,4 @@
-﻿namespace VoilaTile.Snapper.Services
+namespace VoilaTile.Snapper.Services
 {
     using System;
     using System.Collections.Generic;
@@ -12,6 +12,7 @@
     {
         private readonly Dictionary<Type, Func<IOverlayViewModel, Window>> map = new();
 
+        /// <inheritdoc/>
         public IOverlayWindowFactory Register<TViewModel>(Func<TViewModel, Window> ctor)
             where TViewModel : IOverlayViewModel
         {
@@ -20,6 +21,7 @@
             return this;
         }
 
+        /// <inheritdoc/>
         public Window Create(IOverlayViewModel viewModel)
         {
             if (viewModel is null) throw new ArgumentNullException(nameof(viewModel));

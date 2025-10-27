@@ -1,4 +1,4 @@
-﻿namespace VoilaTile.Configurator
+namespace VoilaTile.Configurator
 {
     using System.IO;
     using System.Windows;
@@ -15,6 +15,8 @@
     /// </summary>
     public partial class App : Application
     {
+        #region Fields
+
         private static string layoutFilePath = Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
                 "VoilaTile",
@@ -35,10 +37,22 @@
                 "VoilaTile",
                 "settings.json");
 
-        private MainViewModel mainViewModel;
+        private MainViewModel? mainViewModel;
 
+        #endregion
+
+        #region Properties
+
+        /// <summary>
+        /// Gets the dialog service.
+        /// </summary>
         public static IDialogService DialogService { get; } = new DialogService();
 
+        #endregion
+
+        #region Methods
+
+        /// <inheritdoc/>
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
@@ -54,6 +68,7 @@
             this.mainViewModel.ShowSelectedMonitorOverlay();
         }
 
+        /// <inheritdoc/>
         protected override void OnExit(ExitEventArgs e)
         {
             base.OnExit(e);
@@ -61,7 +76,7 @@
             // Serialize settings.
             SettingsDTO settingsDTO = new SettingsDTO()
             {
-                Seed = this.mainViewModel.Settings.Seed,
+                Seed = this.mainViewModel!.Settings.Seed,
                 SelectedSnapShortcutKey = this.mainViewModel.Settings.SelectedSnapShortcutKey.ToString(),
                 SelectedQuickGrabShortcutKey = this.mainViewModel.Settings.SelectedQuickGrabShortcutKey.ToString(),
                 SelectedPowerGrabShortcutKey = this.mainViewModel.Settings.SelectedPowerGrabShortcutKey.ToString(),
@@ -76,7 +91,7 @@
                     new MonitorTemplateSelectionDTO()
                     {
                         MonitorID = m.MonitorInfo.DeviceID,
-                        TemplateName = m.SelectedTemplate.Name,
+                        TemplateName = m.SelectedTemplate!.Name,
                     }).ToList(),
             };
 
@@ -100,5 +115,7 @@
                 SnapperProcessHelper.TryStartSnapper();
             }
         }
+
+        #endregion
     }
 }

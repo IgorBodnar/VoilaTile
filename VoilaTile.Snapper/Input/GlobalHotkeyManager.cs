@@ -1,10 +1,10 @@
-﻿namespace VoilaTile.Snapper.Input
+namespace VoilaTile.Snapper.Input
 {
     using System;
     using System.Runtime.InteropServices;
-    using System.Windows.Interop;
     using System.Windows;
     using System.Windows.Input;
+    using System.Windows.Interop;
 
     /// <summary>
     /// Manages the registration and detection of a global system-wide hotkey.

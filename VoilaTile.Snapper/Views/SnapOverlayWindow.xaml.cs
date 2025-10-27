@@ -1,4 +1,4 @@
-﻿namespace VoilaTile.Snapper.Views
+namespace VoilaTile.Snapper.Views
 {
     using System.Windows;
     using VoilaTile.Snapper.ViewModels;

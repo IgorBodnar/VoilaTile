@@ -1,4 +1,4 @@
-﻿namespace VoilaTile.Configurator.Views
+namespace VoilaTile.Configurator.Views
 {
     using System.Collections.Generic;
     using System.Collections.Specialized;

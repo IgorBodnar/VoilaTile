@@ -1,4 +1,4 @@
-﻿namespace VoilaTile.Snapper.Records
+namespace VoilaTile.Snapper.Records
 {
     /// <summary>
     /// Snapshot of a top-level window's metadata used by Power Mode.

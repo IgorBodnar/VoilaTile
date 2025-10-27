@@ -1,4 +1,4 @@
-﻿namespace VoilaTile.Snapper.Records
+namespace VoilaTile.Snapper.Records
 {
     public sealed record PlacedHintWithText(
     WindowId Id,

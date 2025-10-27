@@ -1,4 +1,4 @@
-﻿using VoilaTile.Configurator.DTO;
+using VoilaTile.Configurator.DTO;
 
 namespace VoilaTile.Configurator.Models
 {
@@ -35,6 +35,7 @@ namespace VoilaTile.Configurator.Models
             };
         }
 
+        /// <inheritdoc/>
         public object Clone()
         {
             return new DividerModel()

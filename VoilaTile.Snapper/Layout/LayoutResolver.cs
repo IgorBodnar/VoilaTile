@@ -1,4 +1,4 @@
-﻿namespace VoilaTile.Snapper.Layout
+namespace VoilaTile.Snapper.Layout
 {
     using System.IO;
     using System.Text.Json;

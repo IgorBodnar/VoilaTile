@@ -1,11 +1,11 @@
-﻿namespace VoilaTile.Configurator.Views
+namespace VoilaTile.Configurator.Views
 {
-    using VoilaTile.Configurator.ViewModels;
-    using System.Windows.Input;
     using System.Windows.Controls;
+    using System.Windows.Input;
+    using VoilaTile.Configurator.ViewModels;
 
     /// <summary>
-    /// Interaction logic for Page1.xaml
+    /// Interaction logic for Page1.xaml.
     /// </summary>
     public partial class MonitorView : UserControl
     {

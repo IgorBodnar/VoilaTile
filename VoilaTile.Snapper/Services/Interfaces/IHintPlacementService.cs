@@ -1,4 +1,4 @@
-﻿namespace VoilaTile.Snapper.Services.Interfaces
+namespace VoilaTile.Snapper.Services.Interfaces
 {
     using VoilaTile.Common.Models;
     using VoilaTile.Snapper.Records;

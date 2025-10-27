@@ -1,10 +1,10 @@
-﻿namespace VoilaTile.Configurator.Views
+namespace VoilaTile.Configurator.Views
 {
-    using VoilaTile.Configurator.ViewModels;
     using System;
     using System.Windows;
     using System.Windows.Controls;
     using System.Windows.Input;
+    using VoilaTile.Configurator.ViewModels;
 
     /// <summary>
     /// Interaction logic for ZoneTemplatePreviewView.xaml.

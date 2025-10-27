@@ -1,4 +1,4 @@
-﻿namespace VoilaTile.Configurator.Models
+namespace VoilaTile.Configurator.Models
 {
     /// <summary>
     /// Holds layout info for zone label placement in the editor grid.

@@ -1,4 +1,4 @@
-﻿namespace VoilaTile.Snapper.Input
+namespace VoilaTile.Snapper.Input
 {
     /// <summary>
     /// Represents the current input feature of the application.

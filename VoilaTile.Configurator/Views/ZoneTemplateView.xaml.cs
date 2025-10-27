@@ -1,9 +1,9 @@
-﻿using System.Windows;
+using System.Windows;
 
 namespace VoilaTile.Configurator.Views
 {
     /// <summary>
-    /// Interaction logic for Page1.xaml
+    /// Interaction logic for Page1.xaml.
     /// </summary>
     public partial class ZoneTemplateView : System.Windows.Controls.UserControl
     {

@@ -1,4 +1,4 @@
-﻿namespace VoilaTile.Snapper.Services
+namespace VoilaTile.Snapper.Services
 {
     /// <summary>
     /// Options controlling window enumeration behavior.
@@ -41,7 +41,7 @@
         /// <summary>
         /// Minimum visible size in pixels (guards against 0x0 or tiny helper windows).
         /// </summary>
-        public int MinWidth  { get; init; } = 10;
+        public int MinWidth { get; init; } = 10;
         public int MinHeight { get; init; } = 10;
 
         #endregion

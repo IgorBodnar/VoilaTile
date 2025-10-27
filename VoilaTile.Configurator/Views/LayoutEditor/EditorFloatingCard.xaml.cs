@@ -1,6 +1,5 @@
-﻿namespace VoilaTile.Configurator.Views
+namespace VoilaTile.Configurator.Views
 {
-    using VoilaTile.Configurator.ViewModels;
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -15,9 +14,10 @@
     using System.Windows.Media.Imaging;
     using System.Windows.Navigation;
     using System.Windows.Shapes;
+    using VoilaTile.Configurator.ViewModels;
 
     /// <summary>
-    /// Interaction logic for EditorFloatingCard.xaml
+    /// Interaction logic for EditorFloatingCard.xaml.
     /// </summary>
     public partial class EditorFloatingCard : System.Windows.Controls.UserControl
     {

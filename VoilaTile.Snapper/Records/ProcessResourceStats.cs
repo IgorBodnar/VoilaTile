@@ -1,4 +1,4 @@
-﻿namespace VoilaTile.Snapper.Records
+namespace VoilaTile.Snapper.Records
 {
     /// <summary>
     /// Immutable snapshot of resource usage for a process group.

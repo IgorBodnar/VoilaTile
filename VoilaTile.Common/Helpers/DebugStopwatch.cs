@@ -1,4 +1,4 @@
-﻿namespace VoilaTile.Common.Helpers
+namespace VoilaTile.Common.Helpers
 {
     using System;
     using System.Collections.Concurrent;
@@ -17,7 +17,7 @@
         /// <summary>
         /// Stores the last recorded high-resolution timestamp per marker.
         /// </summary>
-        private static readonly ConcurrentDictionary<string, long> lastTimestamps =
+        private static readonly ConcurrentDictionary<string, long> LastTimestamps =
             new ConcurrentDictionary<string, long>(StringComparer.Ordinal);
 
         #endregion
@@ -50,7 +50,7 @@
             long now = Stopwatch.GetTimestamp();
             int threadId = Thread.CurrentThread.ManagedThreadId;
 
-            if (lastTimestamps.TryGetValue(marker, out long previous))
+            if (LastTimestamps.TryGetValue(marker, out long previous))
             {
                 double deltaMs = (now - previous) * 1000.0 / Frequency;
 
@@ -65,7 +65,7 @@
                     $"[DebugStopwatch] marker=\"{marker}\" first mark — {message} (T{threadId})");
             }
 
-            lastTimestamps[marker] = now;
+            LastTimestamps[marker] = now;
         }
 
         /// <summary>
@@ -80,7 +80,7 @@
                 throw new ArgumentException("Marker must not be null or whitespace.", nameof(marker));
             }
 
-            lastTimestamps.TryRemove(marker, out _);
+            LastTimestamps.TryRemove(marker, out _);
         }
 
         /// <summary>
@@ -88,7 +88,7 @@
         /// </summary>
         public static void ClearAll()
         {
-            lastTimestamps.Clear();
+            LastTimestamps.Clear();
         }
 
         #endregion

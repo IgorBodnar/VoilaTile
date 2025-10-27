@@ -1,4 +1,4 @@
-﻿namespace VoilaTile.Snapper.Layout
+namespace VoilaTile.Snapper.Layout
 {
     using System.Collections.Generic;
     using VoilaTile.Common.DTO;

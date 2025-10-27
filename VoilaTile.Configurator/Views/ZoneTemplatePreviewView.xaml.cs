@@ -1,11 +1,11 @@
-﻿using VoilaTile.Configurator.ViewModels;
 using System.Windows;
 using System.Windows.Input;
+using VoilaTile.Configurator.ViewModels;
 
 namespace VoilaTile.Configurator.Views
 {
     /// <summary>
-    /// Interaction logic for ZoneTemplatePreviewView.xaml
+    /// Interaction logic for ZoneTemplatePreviewView.xaml.
     /// </summary>
     public partial class ZoneTemplatePreviewView : System.Windows.Controls.UserControl
     {

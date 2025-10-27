@@ -1,4 +1,4 @@
-﻿namespace VoilaTile.Snapper.Layout
+namespace VoilaTile.Snapper.Layout
 {
     /// <summary>
     /// Represents a resolved tile in absolute screen coordinates.

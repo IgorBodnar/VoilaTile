@@ -1,4 +1,4 @@
-﻿namespace VoilaTile.Configurator.ViewModels
+namespace VoilaTile.Configurator.ViewModels
 {
     using System.Collections.ObjectModel;
     using CommunityToolkit.Mvvm.ComponentModel;

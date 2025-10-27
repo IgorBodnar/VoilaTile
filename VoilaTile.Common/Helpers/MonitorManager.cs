@@ -1,25 +1,24 @@
-﻿namespace VoilaTile.Common.Helpers
+namespace VoilaTile.Common.Helpers
 {
     using System;
     using System.Collections.Generic;
     using System.Runtime.InteropServices;
     using System.Text;
     using VoilaTile.Common.Models;
+    using VoilaTile.Common.Records;
+    using static VoilaTile.Common.Interop.MonitorInteropStructs;
 
+    /// <summary>
+    /// Provides methods to retrieve information about connected monitors.
+    /// </summary>
     public static class MonitorManager
     {
-        #region Records
-
-        public record MonitorGeometryInfo(string DeviceName, Rect MonitorBounds, Rect WorkBounds, IntPtr HMonitor);
-        public record MonitorDeviceInfo(string DeviceName, string DeviceString, string DeviceID);
-        public record MonitorDpiInfo(string DeviceName, uint DpiX, uint DpiY);
-        public record MonitorEdidInfo(string ManufacturerId, string ProductCode, string SerialNumber);
-
-
-        #endregion Records
-
         #region Methods
 
+        /// <summary>
+        /// Gets a list of all connected monitors with their detailed information.
+        /// </summary>
+        /// <returns>A list of <see cref="MonitorInfo"/> representing information about the connected monitors.</returns>
         public static List<MonitorInfo> GetMonitors()
         {
             List<MonitorInfo> monitors = new List<MonitorInfo>();
@@ -39,8 +38,8 @@
 
                 uint dpiX = Defaults.StandardDpi, dpiY = Defaults.StandardDpi;
                 int hr = GetDpiForMonitor(hMonitor, MonitorDpiType.EffectiveDpi, out dpiX, out dpiY);
-                if (hr != 0) 
-                { 
+                if (hr != 0)
+                {
                     dpiX = Defaults.StandardDpi;
                     dpiY = Defaults.StandardDpi;
                 }
@@ -171,78 +170,9 @@
             return monitors;
         }
 
-
-        public static MonitorInfo MergeMonitorData(
-            MonitorGeometryInfo geo,
-            MonitorDeviceInfo dev,
-            MonitorDpiInfo dpi,
-            int monitorNumber)
-        {
-            return new MonitorInfo
-            {
-                MonitorNumber = monitorNumber,
-                DeviceName = geo.DeviceName,
-                DeviceString = dev.DeviceString,
-                DeviceID = dev.DeviceID,
-                MonitorX = geo.MonitorBounds.left,
-                MonitorY = geo.MonitorBounds.top,
-                MonitorWidth = geo.MonitorBounds.right - geo.MonitorBounds.left,
-                MonitorHeight = geo.MonitorBounds.bottom - geo.MonitorBounds.top,
-                WorkX = geo.WorkBounds.left,
-                WorkY = geo.WorkBounds.top,
-                WorkWidth = geo.WorkBounds.right - geo.WorkBounds.left,
-                WorkHeight = geo.WorkBounds.bottom - geo.WorkBounds.top,
-                DpiX = dpi.DpiX,
-                DpiY = dpi.DpiY,
-            };
-        }
-
-
         #endregion Methods
 
         #region Win32
-
-        [StructLayout(LayoutKind.Sequential)]
-        public struct Rect
-        {
-            public int left;
-            public int top;
-            public int right;
-            public int bottom;
-        }
-
-
-        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
-        public struct MONITORINFOEX
-        {
-            public int cbSize;
-            public Rect rcMonitor;
-            public Rect rcWork;
-            public int dwFlags;
-
-            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 32)]
-            public string szDevice;
-        }
-
-        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
-        public struct DISPLAY_DEVICE
-        {
-            public int cb;
-
-            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 32)]
-            public string DeviceName;
-
-            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 128)]
-            public string DeviceString;
-
-            public int StateFlags;
-
-            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 128)]
-            public string DeviceID;
-
-            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 128)]
-            public string DeviceKey;
-        }
 
         [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
         static extern bool GetMonitorInfo(IntPtr hMonitor, ref MONITORINFOEX lpmi);
@@ -251,12 +181,7 @@
         static extern bool EnumDisplayMonitors(IntPtr hdc, IntPtr lprcClip, MonitorEnumProc lpfnEnum, IntPtr dwData);
 
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
-        public static extern bool EnumDisplayDevices(
-            string lpDevice,          // can be null or e.g. "\\.\DISPLAY1"
-            int iDevNum,              // device index
-            ref DISPLAY_DEVICE lpDisplayDevice,
-            int dwFlags               // set to 0
-        );
+        private static extern bool EnumDisplayDevices(string? lpDevice, int iDevNum, ref DISPLAY_DEVICE lpDisplayDevice, int dwFlags);
 
         delegate bool MonitorEnumProc(IntPtr hMonitor, IntPtr hdcMonitor, ref Rect lprcMonitor, IntPtr dwData);
 

@@ -1,4 +1,4 @@
-﻿namespace VoilaTile.Snapper.Records
+namespace VoilaTile.Snapper.Records
 {
     /// <summary>
     /// Represents a size in physical pixels.

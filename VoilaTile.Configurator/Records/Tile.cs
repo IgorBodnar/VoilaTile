@@ -1,4 +1,4 @@
-﻿namespace VoilaTile.Configurator.Records
+namespace VoilaTile.Configurator.Records
 {
     using VoilaTile.Common.DTO;
     using VoilaTile.Common.Models;
@@ -51,6 +51,7 @@
             };
         }
 
+        /// <inheritdoc/>
         public override string ToString()
         {
             return $"X = {this.X}, Y = {this.Y}, Width = {this.Width}, Height = {this.Height}, Hint = {this.Hint}";

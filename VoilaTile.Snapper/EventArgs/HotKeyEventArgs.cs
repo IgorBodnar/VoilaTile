@@ -1,4 +1,4 @@
-﻿namespace VoilaTile.Snapper.EventArgs
+namespace VoilaTile.Snapper.EventArgs
 {
     using System;
     using VoilaTile.Snapper.Input;
@@ -7,7 +7,7 @@
     {
         public HotKeyEventArgs(InputFeature inputFeature)
         {
-            this.InputFeature = inputFeature; 
+            this.InputFeature = inputFeature;
         }
 
         public InputFeature InputFeature { get; private set; }

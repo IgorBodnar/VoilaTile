@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -26,6 +26,7 @@ namespace VoilaTile.Snapper.Services
             this.ttlTicks = (ttl ?? TimeSpan.FromSeconds(5)).Ticks;
         }
 
+        /// <inheritdoc/>
         public bool CanRegister(WindowId source)
         {
             var host = hostHwndProvider();
@@ -49,6 +50,7 @@ namespace VoilaTile.Snapper.Services
             return ok;
         }
 
+        /// <inheritdoc/>
         public void Dispose() => cache.Clear();
     }
 }

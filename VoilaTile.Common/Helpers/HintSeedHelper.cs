@@ -1,4 +1,4 @@
-﻿namespace VoilaTile.Common.Helpers
+namespace VoilaTile.Common.Helpers
 {
     using System;
     using System.Collections.Generic;
@@ -43,4 +43,3 @@
         #endregion
     }
 }
-

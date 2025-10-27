@@ -1,4 +1,4 @@
-﻿namespace VoilaTile.Snapper.Services
+namespace VoilaTile.Snapper.Services
 {
     using System;
     using System.Collections.Generic;
@@ -30,7 +30,7 @@
 
         public OverlayDisplayService(IOverlayWindowFactory overlayWindowFactory)
         {
-            this.overlayWindowFactory = overlayWindowFactory ?? throw new ArgumentNullException(nameof(overlayWindowFactory)); 
+            this.overlayWindowFactory = overlayWindowFactory ?? throw new ArgumentNullException(nameof(overlayWindowFactory));
         }
 
         #endregion 

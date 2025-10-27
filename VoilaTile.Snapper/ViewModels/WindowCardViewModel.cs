@@ -1,8 +1,8 @@
-﻿namespace VoilaTile.Snapper.ViewModels
+namespace VoilaTile.Snapper.ViewModels
 {
-    using CommunityToolkit.Mvvm.ComponentModel;
     using System;
     using System.Windows.Media;
+    using CommunityToolkit.Mvvm.ComponentModel;
     using VoilaTile.Snapper.Records;
 
     /// <summary>

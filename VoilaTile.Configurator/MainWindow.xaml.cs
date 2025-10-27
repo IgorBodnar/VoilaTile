@@ -1,4 +1,4 @@
-﻿namespace VoilaTile.Configurator
+namespace VoilaTile.Configurator
 {
     using System.Windows;
     using System.Windows.Input;

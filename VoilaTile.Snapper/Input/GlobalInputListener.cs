@@ -1,4 +1,4 @@
-﻿namespace VoilaTile.Snapper.Input
+namespace VoilaTile.Snapper.Input
 {
     using System;
     using System.Diagnostics;
@@ -229,7 +229,7 @@
         private const int WM_KEYDOWN = 0x0100;
         private const int WM_KEYUP = 0x0101;
         private const int WM_SYSKEYDOWN = 0x0104;
-        private const int WM_SYSKEYUP   = 0x0105;
+        private const int WM_SYSKEYUP = 0x0105;
 
         private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
 

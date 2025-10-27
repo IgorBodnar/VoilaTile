@@ -1,11 +1,10 @@
-﻿// -------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------
 // <copyright file="PowerGrabOverlayViewModel.cs">
 //   Copyright © VoilaTile.
 // </copyright>
 // -------------------------------------------------------------------------------------
 namespace VoilaTile.Snapper.ViewModels
 {
-    using CommunityToolkit.Mvvm.ComponentModel;
     using System;
     using System.Collections.ObjectModel;
     using System.Diagnostics;
@@ -13,6 +12,7 @@ namespace VoilaTile.Snapper.ViewModels
     using System.Threading.Tasks;
     using System.Windows;
     using System.Windows.Threading;
+    using CommunityToolkit.Mvvm.ComponentModel;
     using VoilaTile.Snapper.Records;
     using VoilaTile.Snapper.Services;
 

@@ -1,4 +1,4 @@
-﻿namespace VoilaTile.Configurator.DTO
+namespace VoilaTile.Configurator.DTO
 {
     public class TemplateCollectionDTO
     {

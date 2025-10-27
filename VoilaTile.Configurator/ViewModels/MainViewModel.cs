@@ -1,20 +1,20 @@
-﻿namespace VoilaTile.Configurator.ViewModels
+namespace VoilaTile.Configurator.ViewModels
 {
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Linq;
+    using System.Web;
+    using System.Windows.Input;
     using CommunityToolkit.Mvvm.ComponentModel;
     using CommunityToolkit.Mvvm.Input;
-    using VoilaTile.Configurator.Enumerations;
-    using VoilaTile.Configurator.Helpers;
-    using VoilaTile.Configurator.Models;
+    using VoilaTile.Common.DTO;
     using VoilaTile.Common.Helpers;
     using VoilaTile.Common.Models;
     using VoilaTile.Configurator.DTO;
-    using VoilaTile.Common.DTO;
-    using System.Windows.Input;
-    using System.Web;
+    using VoilaTile.Configurator.Enumerations;
+    using VoilaTile.Configurator.Helpers;
+    using VoilaTile.Configurator.Models;
 
     /// <summary>
     /// The main view model of the application.
@@ -70,8 +70,14 @@
         /// </summary>
         public IRelayCommand EditLayoutCommand => this.editLayoutCommand ??= new RelayCommand(this.EditLayout, () => this.CanEditLayout);
 
+        /// <summary>
+        /// Gets the command to launch the layout editor for the template selected on the current monitor.
+        /// </summary>
         public IRelayCommand EditCurrentMonitorLayoutCommand => this.editCurrentMonitorLayoutCommand ??= new RelayCommand(this.EditSelectedLayout, () => this.CanEditCurrentMonitorLayout);
 
+        /// <summary>
+        /// Gets the command to add a new layout and launch an editor for it.
+        /// </summary>
         public IRelayCommand AddNewLayoutCommand => new RelayCommand(this.AddNewLayout);
 
         /// <summary>
@@ -94,6 +100,9 @@
         /// </summary>
         public ObservableCollection<ZoneTemplatePreviewViewModel> SelectedTemplatePreview { get; } = new();
 
+        /// <summary>
+        /// Gets the settings view model.
+        /// </summary>
         public SettingsViewModel Settings { get; } = new();
 
         private ZoneTemplatePreviewViewModel? HighlightedPreview
@@ -138,8 +147,8 @@
                 Name = "Three Columns",
                 Dividers = new List<DividerModel>()
                 {
-                    new DividerModel(){IsVertical = true, Position = 1d/3, BoundStart = 0, BoundEnd = 1},
-                    new DividerModel(){IsVertical = true, Position = 2d/3, BoundStart = 0, BoundEnd = 1},
+                    new DividerModel(){IsVertical = true, Position = 1d / 3, BoundStart = 0, BoundEnd = 1},
+                    new DividerModel(){IsVertical = true, Position = 2d / 3, BoundStart = 0, BoundEnd = 1},
                 },
                 IsDefault = true,
             };
@@ -174,17 +183,17 @@
             {
                 this.Settings.Seed = settingsDTO.Seed;
             }
-            
+
             if (Enum.TryParse<Key>(settingsDTO.SelectedSnapShortcutKey, out var parsedSnapKey))
             {
                 this.Settings.SelectedSnapShortcutKey = parsedSnapKey;
             }
-            
+
             if (Enum.TryParse<Key>(settingsDTO.SelectedQuickGrabShortcutKey, out var parsedQuickGrabKey))
             {
                 this.Settings.SelectedQuickGrabShortcutKey = parsedQuickGrabKey;
             }
-            
+
             if (Enum.TryParse<Key>(settingsDTO.SelectedPowerGrabShortcutKey, out var parsedPowerGrabKey))
             {
                 this.Settings.SelectedPowerGrabShortcutKey = parsedPowerGrabKey;

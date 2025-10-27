@@ -1,10 +1,10 @@
-﻿namespace VoilaTile.Configurator.DTO
+namespace VoilaTile.Configurator.DTO
 {
     using VoilaTile.Configurator.Models;
 
     public class TemplateDTO
     {
-        public string Name { get; set; }
+        public required string Name { get; set; }
         public List<DividerDTO> Dividers { get; set; } = new();
 
         public ZoneTemplate ToModel()

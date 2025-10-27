@@ -1,4 +1,4 @@
-﻿namespace VoilaTile.Snapper.Models
+namespace VoilaTile.Snapper.Models
 {
     using VoilaTile.Snapper.Records;
 

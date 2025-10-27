@@ -1,9 +1,9 @@
-﻿namespace VoilaTile.Configurator.Views
+namespace VoilaTile.Configurator.Views
 {
     using System.Windows.Controls;
 
     /// <summary>
-    /// Interaction logic for TitleLogo.xaml
+    /// Interaction logic for TitleLogo.xaml.
     /// </summary>
     public partial class TitleLogo : UserControl
     {

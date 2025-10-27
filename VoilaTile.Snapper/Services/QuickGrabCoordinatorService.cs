@@ -1,4 +1,4 @@
-﻿// File: Services/QuickGrabCoordinatorService.cs
+// File: Services/QuickGrabCoordinatorService.cs
 // -------------------------------------------------------------------------------------
 // Coordinates Quick Grab (focus-only, hint-driven) overlays and input.
 // -------------------------------------------------------------------------------------

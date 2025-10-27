@@ -1,0 +1,22 @@
+{
+  "settings": {
+    "documentationRules": {
+      "companyName": "",
+      "documentExposedElements": true,
+      "documentInterfaces": true,
+      "documentInternalElements": true,
+      "documentPrivateElements": true,
+      "fileNamingConvention": "stylecop",
+    },
+    "orderingRules": {
+      "usingDirectivesPlacement": "outsideNamespace",
+      "systemUsingDirectivesFirst": true
+    },
+    "layoutRules": {
+      "newlineAtEndOfFile": "require"
+    },
+    "maintainabilityRules": {
+      "topLevelTypes": [ "class", "struct", "interface", "enum", "delegate" ]
+    }
+  }
+}
