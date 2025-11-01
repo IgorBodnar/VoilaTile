@@ -1,0 +1,69 @@
+﻿<UserControl x:Class="VoilaTile.Settings.Controls.HslColorPicker"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d"
+             MinWidth="260">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- Preview + Hex -->
+        <DockPanel Grid.Column="0">
+            <Border Width="40" Height="32" CornerRadius="4" BorderBrush="{DynamicResource Brush.Border}" BorderThickness="1">
+                <Border.Background>
+                    <SolidColorBrush Color="{Binding SelectedColor,
+                                      RelativeSource={RelativeSource AncestorType=UserControl}}"/>
+                </Border.Background>
+            </Border>
+
+            <TextBox Margin="8,0,0,0"
+                     Width="120" 
+                     VerticalContentAlignment="Center"
+                     Style="{DynamicResource Style.TextBox}"
+                     Text="{Binding Hex, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+        </DockPanel>
+
+
+        <!-- Hue -->
+        <Grid Grid.Column="1" Margin="8,0,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Grid.Column="0" Text="H" VerticalAlignment="Center" Foreground="{DynamicResource Brush.App.Foreground}" Opacity="0.8" Margin="0,0,8,0"/>
+            <TextBlock Grid.Column="1" Text="{Binding Hue, RelativeSource={RelativeSource AncestorType=UserControl}, StringFormat=[ 0 ]}"
+                 VerticalAlignment="Center" Foreground="{DynamicResource Brush.App.Foreground}" Opacity="0.8" TextAlignment="Right"/>
+            <Slider Grid.Column="2" Minimum="0" Maximum="360" VerticalAlignment="Center"
+              Value="{Binding Hue, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}"
+              Style="{StaticResource Style.Slider}"
+              Margin="8,0,0,0"/>
+        </Grid>
+
+        <!-- Saturation -->
+        <Grid Grid.Column="2" Margin="8,0,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Grid.Column="0" Text="S" VerticalAlignment="Center" Foreground="{DynamicResource Brush.App.Foreground}" Opacity="0.8" Margin="0,0,8,0"/>
+            <TextBlock Grid.Column="1" Text="{Binding Saturation, RelativeSource={RelativeSource AncestorType=UserControl}, StringFormat=[ 0 ]}"
+                 VerticalAlignment="Center" Foreground="{DynamicResource Brush.App.Foreground}" Opacity="0.8" TextAlignment="Right"/>
+            <Slider Grid.Column="2" Minimum="0" Maximum="100" VerticalAlignment="Center"
+              Value="{Binding Saturation, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}"
+              Style="{StaticResource Style.Slider}"
+              Margin="8,0,0,0"/>
+        </Grid>
+
+        <!-- Due to the way Accent Palette Generator works there is no need of adjusting the Lightness -->
+    </Grid>
+</UserControl>
+

@@ -1,0 +1,196 @@
+﻿<UserControl x:Class="VoilaTile.Settings.Views.InteractableZoneTemplatePreviewView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:VoilaTile.Settings.ViewModels"
+             xmlns:views="clr-namespace:VoilaTile.Settings.Views"
+             MinWidth="150"
+             MaxWidth="300"
+             HorizontalAlignment="Stretch">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <!-- Header with name and menu button -->
+        <DockPanel Margin="6,0,0,0">
+            <TextBlock Text="{Binding Name}"
+                       FontWeight="Bold"
+                       FontSize="12"
+                       Foreground="{DynamicResource Brush.App.Foreground}"
+                       MaxWidth="{Binding ActualWidth, ElementName=textEnvelope}"
+                       TextAlignment="Left"
+                       TextTrimming="CharacterEllipsis"
+                       VerticalAlignment="Center">
+            </TextBlock>
+
+            <!-- Three-dot button -->
+            <Button Width="24" Height="24"
+                    Margin="0,0,4,0"
+                    Click="OnMenuButtonClick"
+                    Foreground="{DynamicResource Brush.App.Foreground}"
+                    BorderBrush="{x:Null}"
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Right">
+
+                <Button.Template>
+                    <ControlTemplate>
+                        <TextBlock x:Name="buttonText" FontFamily="{StaticResource Font.MDL2}" Text="&#xE712;" FontSize="18" VerticalAlignment="Center" TextAlignment="Right"/>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="buttonText" Property="Foreground" Value="{DynamicResource Brush.Accent.600}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Button.Template>
+            </Button>
+            
+        </DockPanel>
+
+        <!-- Transparent element for text sizing -->
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="6*"/>
+                <ColumnDefinition Width="2*"/>
+            </Grid.ColumnDefinitions>
+
+            <Border Grid.Column="0" x:Name="textEnvelope"/>
+        </Grid>
+
+        <!-- Preview area -->
+        <Border x:Name="previewBorder"
+                Grid.Row="1"
+                BorderThickness="1"
+                BorderBrush="{DynamicResource Brush.BorderAlt}"
+                CornerRadius="6"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Top"
+                MouseLeftButtonDown="OnClick"
+                ToolTip="Click to select for actions.&#x0a;Double click to apply to the currently active monitor.">
+            <Border.Style>
+                <Style TargetType="Border">
+                    <Setter Property="Background" Value="{DynamicResource Brush.SurfaceAlt3}"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsHighlighted}" Value="True">
+                            <Setter Property="Background" Value="{DynamicResource Brush.Accent.800}"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Border.Style>
+
+            <Viewbox Stretch="Fill">
+                <views:ZoneTemplateView DataContext="{Binding Template}" />
+            </Viewbox>
+        </Border>
+
+        <Grid x:Name="OverlayContainer"
+              Grid.Row="1"
+              Visibility="Collapsed"
+              IsHitTestVisible="False"
+              Width="{Binding ActualWidth, ElementName=previewBorder}">
+
+            <Border
+                BorderThickness="1"
+                BorderBrush="{DynamicResource Brush.BorderAlt}"
+                Background="{DynamicResource Brush.SurfaceAlt2}"
+                CornerRadius="6">
+                <StackPanel>
+                    <Border Background="Transparent" Height="3"/>
+                    <Button 
+                        Command="{Binding RenameCommand}"
+                        Click="OnMenuItemClick"
+                        Visibility="{Binding IsUserAdded, Converter={StaticResource BooleanToVisibility}}">
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <StackPanel x:Name="buttonPanel" Orientation="Horizontal" Background="{DynamicResource Brush.SurfaceAlt2}" Height="32">
+                                    <TextBlock x:Name="buttonIcon"
+                                               FontFamily="{StaticResource Font.MDL2}"
+                                               Text="&#xE8AC;"
+                                               Foreground="{DynamicResource Brush.App.Foreground}"
+                                               FontSize="20"
+                                               Margin="12,0,8,0"
+                                               TextAlignment="Center"
+                                               VerticalAlignment="Center"/>
+                                    <TextBlock x:Name="buttonText"
+                                               Text="Rename"
+                                               Foreground="{DynamicResource Brush.App.Foreground}"
+                                               FontSize="14"
+                                               TextAlignment="Center"
+                                               VerticalAlignment="Center"/>
+                                </StackPanel>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter TargetName="buttonText" Property="Foreground" Value="{DynamicResource Brush.Accent.600}"/>
+                                        <Setter TargetName="buttonIcon" Property="Foreground" Value="{DynamicResource Brush.Accent.600}"/>
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Button.Template>
+                    </Button>
+                    <Button 
+                        Click="OnMenuItemClick"
+                        Command="{Binding CopyCommand}">
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <StackPanel x:Name="buttonPanel" Orientation="Horizontal" Background="{DynamicResource Brush.SurfaceAlt2}" Height="32">
+                                    <TextBlock x:Name="buttonIcon"
+                                               FontFamily="{StaticResource Font.MDL2}"
+                                               Text="&#xE8C8;"
+                                               Foreground="{DynamicResource Brush.App.Foreground}"
+                                               FontSize="20"
+                                               Margin="12,0,8,0"
+                                               TextAlignment="Center"
+                                               VerticalAlignment="Center"/>
+                                    <TextBlock x:Name="buttonText"
+                                               Text="Copy"
+                                               Foreground="{DynamicResource Brush.App.Foreground}"
+                                               FontSize="14"
+                                               TextAlignment="Center"
+                                               VerticalAlignment="Center"/>
+                                </StackPanel>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter TargetName="buttonText" Property="Foreground" Value="{DynamicResource Brush.Accent.600}"/>
+                                        <Setter TargetName="buttonIcon" Property="Foreground" Value="{DynamicResource Brush.Accent.600}"/>
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Button.Template>
+                    </Button>
+                    <Button 
+                        Click="OnMenuItemClick"
+                        Command="{Binding DeleteCommand}"
+                        Visibility="{Binding IsUserAdded, Converter={StaticResource BooleanToVisibility}, ConverterParameter=invert}">
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <StackPanel x:Name="buttonPanel" Orientation="Horizontal" Background="{DynamicResource Brush.SurfaceAlt2}" Height="32">
+                                    <TextBlock x:Name="buttonIcon"
+                                               FontFamily="{StaticResource Font.MDL2}"
+                                               Text="&#xE74D;"
+                                               Foreground="{DynamicResource Brush.App.Foreground}"
+                                               FontSize="20"
+                                               Margin="12,0,8,0"
+                                               TextAlignment="Center"
+                                               VerticalAlignment="Center"/>
+                                    <TextBlock x:Name="buttonText"
+                                               Text="Delete"
+                                               Foreground="{DynamicResource Brush.App.Foreground}"
+                                               FontSize="14"
+                                               TextAlignment="Center"
+                                               VerticalAlignment="Center"/>
+                                </StackPanel>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter TargetName="buttonText" Property="Foreground" Value="{DynamicResource Brush.Accent.600}"/>
+                                        <Setter TargetName="buttonIcon" Property="Foreground" Value="{DynamicResource Brush.Accent.600}"/>
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Button.Template>
+                    </Button>
+                </StackPanel>
+            </Border>
+        </Grid>
+    </Grid>
+</UserControl>
+

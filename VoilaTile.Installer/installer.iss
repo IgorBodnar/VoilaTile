@@ -1,7 +1,7 @@
 ﻿#define AppName "VoilaTile"
 
 #define SnapperPublish "..\VoilaTile.Snapper\bin\Release\net8.0-windows\publish"
-#define ConfiguratorPublish "..\VoilaTile.Configurator\bin\Release\net8.0-windows\publish"
+#define SettingsPublish "..\VoilaTile.Settings\bin\Release\net8.0-windows\publish"
 
 #include "installer.secrets.iss"
 
@@ -27,28 +27,28 @@ UsePreviousAppDir=yes
 UninstallDisplayName={#AppName}
 DisableProgramGroupPage=yes
 SetupIconFile=Assets\icon-logo.ico
-UninstallDisplayIcon={app}\VoilaTile.Configurator.exe
+UninstallDisplayIcon={app}\VoilaTile.Settings.exe
 CloseApplications=yes
-CloseApplicationsFilter=VoilaTile.Snapper.exe;VoilaTile.Configurator.exe
+CloseApplicationsFilter=VoilaTile.Snapper.exe;VoilaTile.Settings.exe
 RestartApplications=no
 ArchitecturesInstallIn64BitMode=x64
 
 [Files]
 Source: "{#SnapperPublish}\*";      DestDir: "{app}"; Excludes: "*.pdb,*.runtimeconfig.dev.json"; Flags: recursesubdirs createallsubdirs ignoreversion
-Source: "{#ConfiguratorPublish}\*"; DestDir: "{app}"; Excludes: "*.pdb,*.runtimeconfig.dev.json"; Flags: recursesubdirs createallsubdirs ignoreversion
+Source: "{#SettingsPublish}\*"; DestDir: "{app}"; Excludes: "*.pdb,*.runtimeconfig.dev.json"; Flags: recursesubdirs createallsubdirs ignoreversion
 
 
 [Icons]
 Name: "{group}\VoilaTile Snapper";      Filename: "{app}\VoilaTile.Snapper.exe";          WorkingDir: "{app}"
-Name: "{group}\VoilaTile Configurator"; Filename: "{app}\VoilaTile.Configurator.exe"; WorkingDir: "{app}"
+Name: "{group}\VoilaTile Settings"; Filename: "{app}\VoilaTile.Settings.exe"; WorkingDir: "{app}"
 Name: "{group}\Uninstall VoilaTile";    Filename: "{uninstallexe}"
 
 [Tasks]
 Name: "autostart"; Description: "Launch VoílaTile Snapper on Windows startup"; GroupDescription: "Post-install options"
-Name: "launchconfigurator"; Description: "Launch VoílaTile Configurator now"; GroupDescription: "Post-install options"
+Name: "launchconfigurator"; Description: "Launch VoílaTile Settings now"; GroupDescription: "Post-install options"
 
 [Run]
-Filename: "{app}\VoilaTile.Configurator.exe"; WorkingDir: "{app}"; Flags: nowait postinstall skipifsilent; Tasks: launchconfigurator
+Filename: "{app}\VoilaTile.Settings.exe"; WorkingDir: "{app}"; Flags: nowait postinstall skipifsilent; Tasks: launchconfigurator
 
 
 [Code]

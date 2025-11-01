@@ -272,19 +272,19 @@ namespace VoilaTile.Snapper
         {
             try
             {
-                string configuratorPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "VoilaTile.Configurator.exe");
+                string configuratorPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "VoilaTile.Settings.exe");
                 if (File.Exists(configuratorPath))
                 {
                     System.Diagnostics.Process.Start(configuratorPath);
                 }
                 else
                 {
-                    MessageBox.Show("Configurator executable not found.", "Launch Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show("VoilaTile.Settings executable not found.", "Launch Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Failed to launch Configurator: {ex.Message}", "Launch Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Failed to launch the Settings: {ex.Message}", "Launch Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 

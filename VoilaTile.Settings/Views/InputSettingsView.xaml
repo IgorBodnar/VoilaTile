@@ -1,0 +1,165 @@
+﻿<UserControl x:Class="VoilaTile.Settings.Views.InputSettingsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:vm="clr-namespace:VoilaTile.Settings.ViewModels"
+             xmlns:views="clr-namespace:VoilaTile.Settings.Views"
+             xmlns:helpers="clr-namespace:VoilaTile.Settings.Helpers"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <ScrollViewer VerticalScrollBarVisibility="Auto"
+                  Background="{DynamicResource Brush.App.Background}">
+        <Grid Margin="{DynamicResource Space.4}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!-- Hint Seed -->
+            <Border Background="{DynamicResource Brush.SurfaceAlt}" Padding="12" CornerRadius="6" Margin="0,0,0,16">
+                <DockPanel Grid.Row="0">
+                    <StackPanel Orientation="Vertical">
+                        <TextBlock Style="{StaticResource Style.CaptionText}" Text="Tile Hint Character Pool" DockPanel.Dock="Left" Margin="0,0,0,2"/>
+                        <TextBlock Text="Configure the hint generation seed."
+                                   Foreground="{DynamicResource Brush.App.Foreground}"
+                                   Opacity="0.75"/>
+                    </StackPanel>
+                    <TextBox Width="258"
+                             HorizontalAlignment="Right"
+                             VerticalAlignment="Stretch"
+                             Style="{StaticResource Style.TextBox}"
+                             Text="{Binding Seed, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"/>
+                </DockPanel>
+            </Border>
+
+            <!-- Snap Shortcut Key -->
+            <Border Grid.Row="1" Background="{DynamicResource Brush.SurfaceAlt}" Padding="12" CornerRadius="6" Margin="0,0,0,16">
+                <DockPanel>
+                    <StackPanel Orientation="Vertical">
+                        <TextBlock Style="{StaticResource Style.CaptionText}" Text="Snap Mode Shortcut Key" DockPanel.Dock="Left" Margin="0,0,0,2"/>
+                        <TextBlock Text="Pick a shortcut key to launch the Snap Mode."
+                                   Foreground="{DynamicResource Brush.App.Foreground}"
+                                   Opacity="0.75"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                        <TextBox VerticalAlignment="Stretch"
+                                 Style="{StaticResource Style.TextBox}"
+                                 Background="{DynamicResource Brush.SurfaceAlt3}"
+                                 IsEnabled="False"
+                                 Text="Win"/>
+                        <Path Data="M 0 4 L 8 4 M 4 0 L 4 8"
+                              Stroke="{DynamicResource Brush.App.Foreground}"
+                              StrokeThickness="1.5"
+                              StrokeStartLineCap="Round"
+                              StrokeEndLineCap="Round"
+                              VerticalAlignment="Center"
+                              Margin="6,0"/>
+                        <TextBox VerticalAlignment="Stretch"
+                                 Style="{StaticResource Style.TextBox}"
+                                 Background="{DynamicResource Brush.SurfaceAlt3}"
+                                 IsEnabled="False"
+                                 Text="Shift"/>
+                        <Path Data="M 0 4 L 8 4 M 4 0 L 4 8"
+                              Stroke="{DynamicResource Brush.App.Foreground}"
+                              StrokeThickness="1.5"
+                              StrokeStartLineCap="Round"
+                              StrokeEndLineCap="Round"
+                              VerticalAlignment="Center"
+                              Margin="6,0"/>
+                        <ComboBox Width="100"
+                                  Style="{StaticResource Style.ComboBox}"
+                                  ItemsSource="{Binding AvailableSnapShortcutKeys}"
+                                  SelectedItem="{Binding SelectedSnapShortcutKey, Mode=TwoWay}"/>
+                    </StackPanel>
+                </DockPanel>
+            </Border>
+
+            <!-- Quick Grab Shortcut Key -->
+            <Border Grid.Row="2" Background="{DynamicResource Brush.SurfaceAlt}" Padding="12" CornerRadius="6" Margin="0,0,0,16">
+                <DockPanel>
+                    <StackPanel Orientation="Vertical">
+                        <TextBlock Style="{StaticResource Style.CaptionText}" Text="Jump Mode Shortcut Key" DockPanel.Dock="Left" Margin="0,0,0,2"/>
+                        <TextBlock Text="Pick a shortcut key to launch the Jump Mode."
+                                   Foreground="{DynamicResource Brush.App.Foreground}"
+                                   Opacity="0.75"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                        <TextBox VerticalAlignment="Stretch"
+                                 Style="{StaticResource Style.TextBox}"
+                                 Background="{DynamicResource Brush.SurfaceAlt3}"
+                                 IsEnabled="False"
+                                 Text="Win"/>
+                        <Path Data="M 0 4 L 8 4 M 4 0 L 4 8"
+                              Stroke="{DynamicResource Brush.App.Foreground}"
+                              StrokeThickness="1.5"
+                              StrokeStartLineCap="Round"
+                              StrokeEndLineCap="Round"
+                              VerticalAlignment="Center"
+                              Margin="6,0"/>
+                        <TextBox VerticalAlignment="Stretch"
+                                 Style="{StaticResource Style.TextBox}"
+                                 Background="{DynamicResource Brush.SurfaceAlt3}"
+                                 IsEnabled="False"
+                                 Text="Shift"/>
+                        <Path Data="M 0 4 L 8 4 M 4 0 L 4 8"
+                              Stroke="{DynamicResource Brush.App.Foreground}"
+                              StrokeThickness="1.5"
+                              StrokeStartLineCap="Round"
+                              StrokeEndLineCap="Round"
+                              VerticalAlignment="Center"
+                              Margin="6,0"/>
+                        <ComboBox Width="100"
+                                  HorizontalAlignment="Right"
+                                  Style="{StaticResource Style.ComboBox}"
+                                  ItemsSource="{Binding AvailableQuickGrabShortcutKeys}"
+                                  SelectedItem="{Binding SelectedQuickGrabShortcutKey, Mode=TwoWay}"/>
+                    </StackPanel>
+                </DockPanel>
+            </Border>
+
+            <!-- Power Grab Shortcut Key -->
+            <Border Grid.Row="3" Background="{DynamicResource Brush.SurfaceAlt}" Padding="12" CornerRadius="6" Margin="0,0,0,16">
+                <DockPanel>
+                    <StackPanel Orientation="Vertical">
+                        <TextBlock Style="{StaticResource Style.CaptionText}" Text="Look Mode Shortcut Key" DockPanel.Dock="Left" Margin="0,0,0,2"/>
+                        <TextBlock Text="Pick a shortcut key to launch the Look Mode."
+                                   Foreground="{DynamicResource Brush.App.Foreground}"
+                                   Opacity="0.75"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                        <TextBox VerticalAlignment="Stretch"
+                                 Style="{StaticResource Style.TextBox}"
+                                 Background="{DynamicResource Brush.SurfaceAlt3}"
+                                 IsEnabled="False"
+                                 Text="Win"/>
+                        <Path Data="M 0 4 L 8 4 M 4 0 L 4 8"
+                              Stroke="{DynamicResource Brush.App.Foreground}"
+                              StrokeThickness="1.5"
+                              StrokeStartLineCap="Round"
+                              StrokeEndLineCap="Round"
+                              VerticalAlignment="Center"
+                              Margin="6,0"/>
+                        <TextBox VerticalAlignment="Stretch"
+                                 Style="{StaticResource Style.TextBox}"
+                                 Background="{DynamicResource Brush.SurfaceAlt3}"
+                                 IsEnabled="False"
+                                 Text="Shift"/>
+                        <Path Data="M 0 4 L 8 4 M 4 0 L 4 8"
+                              Stroke="{DynamicResource Brush.App.Foreground}"
+                              StrokeThickness="1.5"
+                              StrokeStartLineCap="Round"
+                              StrokeEndLineCap="Round"
+                              VerticalAlignment="Center"
+                              Margin="6,0"/>
+                        <ComboBox Width="100"
+                                  HorizontalAlignment="Right"
+                                  Style="{StaticResource Style.ComboBox}"
+                                  ItemsSource="{Binding AvailablePowerGrabShortcutKeys}"
+                                  SelectedItem="{Binding SelectedPowerGrabShortcutKey, Mode=TwoWay}"/>
+                    </StackPanel>
+                </DockPanel>
+            </Border>
+
+        </Grid>
+    </ScrollViewer>
+</UserControl>
+

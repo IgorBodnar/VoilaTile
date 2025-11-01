@@ -1,6 +1,7 @@
 namespace VoilaTile.Common.Helpers
 {
     using System.Windows.Input;
+    using System.Windows.Media;
 
     /// <summary>
     /// Centralized defaults for system and application settings.
@@ -31,5 +32,16 @@ namespace VoilaTile.Common.Helpers
         /// Default Power Grab shortcut key (combined with Win+Shift).
         /// </summary>
         public const Key DefaultPowerGrabShortcutKey = Key.L;
+
+        /// <summary>
+        /// Default custom accent color used when theme accent mode is set to custom.
+        /// </summary>
+        public static readonly Color DefaultAccentColor = Color.FromRgb(0xDC, 0x14, 0x3C);
+
+        /// <summary>
+        /// Gets the default accent color in #RRGGBB format for serialization.
+        /// </summary>
+        public static string DefaultAccentHex => "#DC143C";
     }
 }
+

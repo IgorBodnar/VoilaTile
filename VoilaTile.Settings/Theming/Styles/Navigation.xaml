@@ -1,0 +1,127 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:sys="clr-namespace:System;assembly=mscorlib">
+
+    <!-- Container: vertical stack with subtle border and padded interior -->
+    <Style x:Key="Style.NavPane" TargetType="Border">
+        <Setter Property="Background" Value="{DynamicResource Brush.Surface}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource Brush.Border}"/>
+        <Setter Property="BorderThickness" Value="0,0,1,0"/>
+        <Setter Property="SnapsToDevicePixels" Value="True"/>
+    </Style>
+
+    <!-- Navigation item (RadioButton) -->
+    <Style x:Key="Style.NavItem" TargetType="RadioButton">
+        <Setter Property="Foreground" Value="{DynamicResource Brush.App.Foreground}"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="Padding" Value="10,10,12,10"/>
+        <Setter Property="MinHeight" Value="44"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="RadioButton">
+                    <Border x:Name="Root"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{DynamicResource Brush.Border}"
+                        BorderThickness="0"
+                        CornerRadius="6"
+                        SnapsToDevicePixels="True">
+                        <Grid>
+                            <!-- Accent active strip (animated) -->
+                            <Border x:Name="ActiveStrip"
+                                Width="3"
+                                Height="0"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                CornerRadius="2"
+                                Background="{DynamicResource Brush.Accent.600}"
+                                Opacity="1"/>
+
+                                <!-- Content host -->
+                                <Grid Margin="8,2,8,2">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="8"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <ContentPresenter x:Name="IconPresenter"
+                                              Grid.Column="0"
+                                              RecognizesAccessKey="True"
+                                              Content="{TemplateBinding Content}"
+                                              ContentTemplate="{TemplateBinding ContentTemplate}"/>
+                                </Grid>
+                        </Grid>
+                    </Border>
+
+                    <ControlTemplate.Triggers>
+                        <!-- Hover -->
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Root" Property="Background" Value="{DynamicResource Brush.SurfaceAlt2}"/>
+                        </Trigger>
+
+                        <!-- Pressed -->
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="Root" Property="Background" Value="{DynamicResource Brush.SurfaceAlt3}"/>
+                        </Trigger>
+
+                        <!-- Checked (animate strip up/down) -->
+                        <Trigger Property="IsChecked" Value="True">
+                            <!-- Optional: background for active item -->
+                            <Setter TargetName="Root" Property="Background" Value="{DynamicResource Brush.SurfaceAlt2}"/>
+
+                            <!-- Grow to 24px -->
+                            <Trigger.EnterActions>
+                                <BeginStoryboard x:Name="GrowActiveStripStoryboard">
+                                    <Storyboard FillBehavior="HoldEnd">
+                                        <DoubleAnimation Storyboard.TargetName="ActiveStrip"
+                                                     Storyboard.TargetProperty="Height"
+                                                     To="24"
+                                                     Duration="0:0:0.18">
+                                            <DoubleAnimation.EasingFunction>
+                                                <CubicEase EasingMode="EaseOut"/>
+                                            </DoubleAnimation.EasingFunction>
+                                        </DoubleAnimation>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.EnterActions>
+
+                            <!-- When unchecked, shrink to 0 -->
+                            <Trigger.ExitActions>
+                                <BeginStoryboard x:Name="ShrinkActiveStripStoryboard">
+                                    <Storyboard FillBehavior="HoldEnd">
+                                        <DoubleAnimation Storyboard.TargetName="ActiveStrip"
+                                                     Storyboard.TargetProperty="Height"
+                                                     To="0"
+                                                     Duration="0:0:0.16">
+                                            <DoubleAnimation.EasingFunction>
+                                                <CubicEase EasingMode="EaseIn"/>
+                                            </DoubleAnimation.EasingFunction>
+                                        </DoubleAnimation>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.ExitActions>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+
+        <Setter Property="Background" Value="{x:Null}"/>
+    </Style>
+
+    <!-- Subtle divider between groups (optional) -->
+    <Style x:Key="Style.NavSeparator" TargetType="Separator">
+        <Setter Property="Margin" Value="6,8,6,8"/>
+        <Setter Property="Background" Value="{DynamicResource Brush.Border}"/>
+        <Setter Property="SnapsToDevicePixels" Value="True"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Separator">
+                    <Border Height="1" Background="{TemplateBinding Background}"/>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+</ResourceDictionary>

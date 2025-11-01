@@ -1,0 +1,68 @@
+﻿<Window x:Class="VoilaTile.Settings.Views.BaseDialogView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize"
+        WindowStyle="None"
+        SizeToContent="WidthAndHeight"
+        MinWidth="320"
+        Background="Transparent"
+        AllowsTransparency="True"
+        SnapsToDevicePixels="True"
+        UseLayoutRounding="True">
+
+    <Border CornerRadius="12" Background="{DynamicResource Brush.App.Background}" BorderBrush="{DynamicResource Brush.Border}" BorderThickness="1.6">
+        <StackPanel Orientation="Vertical">
+            <Border Background="{DynamicResource Brush.Surface}" CornerRadius="12,12,0,0">
+                <TextBlock Text="{Binding Title}"
+                           Margin="12,6"
+                           FontSize="16"
+                           Foreground="{DynamicResource Brush.App.Foreground}" />
+            </Border>
+            <Grid Grid.IsSharedSizeScope="True" Margin="8,0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="16"/>
+                    <!-- Gap -->
+                    <RowDefinition Height="Auto"/>
+                    <!-- Content -->
+                    <RowDefinition Height="16"/>
+                    <!-- Gap -->
+                    <RowDefinition Height="32"/>
+                    <!-- Buttons -->
+                    <RowDefinition Height="8"/>
+                    <!-- Gap -->
+                </Grid.RowDefinitions>
+
+                <!-- Content: bind to window's Body DP so the VM can be anything; DataTemplate maps VM->View -->
+                <ContentPresenter Grid.Row="1" Content="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=Body}" />
+
+                <!-- Buttons -->
+                <Grid Grid.Row="3">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="8" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <Button Grid.Column="0"
+                            Style="{StaticResource Style.Button}"
+                            Background="{DynamicResource Brush.SurfaceAlt2}"
+                            Content="{Binding NegativeResponseText}"
+                            Click="OnNegativeClick"
+                            IsCancel="True"
+                            Visibility="{Binding ShowNegativeResponse, Converter={StaticResource BooleanToVisibility}}"/>
+
+                    <Button Grid.Column="2"
+                            Style="{StaticResource Style.Button}"
+                            Background="{DynamicResource Brush.Accent.600}"
+                            Foreground="{DynamicResource Brush.OnAccent}"
+                            Content="{Binding PositiveResponseText}"
+                            Click="OnPositiveClick"
+                            IsDefault="True"
+                            Visibility="{Binding ShowPositiveResponse, Converter={StaticResource BooleanToVisibility}}"/>
+                </Grid>
+            </Grid>
+        </StackPanel>
+    </Border>
+</Window>
+

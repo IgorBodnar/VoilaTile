@@ -1,0 +1,77 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- Global timing for all tooltips -->
+    <Style TargetType="{x:Type FrameworkElement}">
+        <Setter Property="ToolTipService.InitialShowDelay" Value="300"/>
+        <!-- small open delay -->
+        <Setter Property="ToolTipService.BetweenShowDelay" Value="200"/>
+        <!-- default-ish -->
+        <Setter Property="ToolTipService.ShowDuration" Value="5000"/>
+        <!-- 5s total -->
+    </Style>
+
+    <!-- Themed tooltip with smooth fade in/out -->
+    <Style TargetType="ToolTip">
+        <Setter Property="Foreground" Value="{DynamicResource Brush.App.Foreground}"/>
+        <Setter Property="Background" Value="{DynamicResource Brush.SurfaceAlt}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource Brush.Border}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Padding" Value="10,6"/>
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="MaxWidth" Value="360"/>
+        <Setter Property="SnapsToDevicePixels" Value="True"/>
+
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ToolTip">
+                    <Grid>
+                        <!-- Shadow -->
+                        <Border CornerRadius="8">
+                            <Border.Effect>
+                                <DropShadowEffect BlurRadius="14"
+                                                  ShadowDepth="2"
+                                                  Opacity="0.35"/>
+                            </Border.Effect>
+                        </Border>
+
+                        <!-- Body -->
+                        <Border x:Name="Chrome"
+                                CornerRadius="8"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}">
+                            <ContentPresenter Margin="{TemplateBinding Padding}"
+                                              TextElement.Foreground="{TemplateBinding Foreground}"
+                                              TextElement.FontSize="{TemplateBinding FontSize}"
+                                              RecognizesAccessKey="True"
+                                              SnapsToDevicePixels="True"/>
+                        </Border>
+                    </Grid>
+
+                    <!-- Fade animation -->
+                    <ControlTemplate.Triggers>
+                        <EventTrigger RoutedEvent="Loaded">
+                            <BeginStoryboard>
+                                <Storyboard FillBehavior="HoldEnd">
+                                    <!-- Fade in quickly -->
+                                    <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                                     From="0" To="1"
+                                                     Duration="0:0:0.15"/>
+
+                                    <!-- Fade out before WPF auto-closes -->
+                                    <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                                     BeginTime="0:0:4.7"
+                                                     To="0"
+                                                     Duration="0:0:0.30"
+                                                     FillBehavior="HoldEnd"/>
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </EventTrigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+</ResourceDictionary>

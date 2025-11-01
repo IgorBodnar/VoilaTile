@@ -2,13 +2,13 @@
 	<PropertyGroup>
 		<TargetFramework>net8.0</TargetFramework>
 		<SnapperTargetDir>$(MSBuildProjectDirectory)\..\VoilaTile.Snapper\bin\Release\net8.0-windows\publish</SnapperTargetDir>
-		<ConfiguratorTargetDir>$(MSBuildProjectDirectory)\..\VoilaTile.Configurator\bin\Release\net8.0-windows\publish</ConfiguratorTargetDir>
+		<SettingsTargetDir>$(MSBuildProjectDirectory)\..\VoilaTile.Settings\bin\Release\net8.0-windows\publish</SettingsTargetDir>
 		<InstallerOutputDir>$(MSBuildProjectDirectory)\Output</InstallerOutputDir>
 	</PropertyGroup>
 
 	<Target Name="PublishApps" BeforeTargets="Build">
 		<Exec Command="dotnet publish ..\VoilaTile.Snapper\VoilaTile.Snapper.csproj -c Release -r win-x64 -p:PublishSingleFile=false -p:SelfContained=false -o &quot;$(SnapperTargetDir)&quot;" />
-		<Exec Command="dotnet publish ..\VoilaTile.Configurator\VoilaTile.Configurator.csproj -c Release -r win-x64 -p:PublishSingleFile=false -p:SelfContained=false -o &quot;$(ConfiguratorTargetDir)&quot;" />
+		<Exec Command="dotnet publish ..\VoilaTile.Settings\VoilaTile.Settings.csproj -c Release -r win-x64 -p:PublishSingleFile=false -p:SelfContained=false -o &quot;$(SettingsTargetDir)&quot;" />
 	</Target>
 
 	<Target Name="BuildInstaller" AfterTargets="Build">

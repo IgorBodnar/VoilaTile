@@ -1,0 +1,344 @@
+﻿<Window x:Class="VoilaTile.Settings.Views.ShellView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:views="clr-namespace:VoilaTile.Settings.Views"
+        mc:Ignorable="d"
+        Title="VoilaTile Settings"
+        Width="1100"
+        Height="720"
+        MinWidth="900"
+        MinHeight="600"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="CanResize"
+        Background="{DynamicResource Brush.App.Background}"
+        WindowStyle="None"
+        AllowsTransparency="False">
+
+    <!-- WindowChrome to keep native resize + hit-test behavior -->
+    <WindowChrome.WindowChrome>
+        <WindowChrome CaptionHeight="44"
+                      ResizeBorderThickness="6"
+                      GlassFrameThickness="1"
+                      CornerRadius="6"
+                      UseAeroCaptionButtons="False"/>
+    </WindowChrome.WindowChrome>
+
+    <!-- Command bindings for system commands -->
+    <Window.CommandBindings>
+        <CommandBinding Command="SystemCommands.MinimizeWindowCommand" Executed="OnMinimize"/>
+        <CommandBinding Command="SystemCommands.MaximizeWindowCommand" Executed="OnMaximizeRestore"/>
+        <CommandBinding Command="SystemCommands.RestoreWindowCommand"  Executed="OnMaximizeRestore"/>
+        <CommandBinding Command="SystemCommands.CloseWindowCommand"    Executed="OnClose"/>
+    </Window.CommandBindings>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <!-- Top custom title bar -->
+            <RowDefinition Height="Auto"/>
+            <!-- Main area (title spans both columns) -->
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- TITLE BAR -->
+        <!-- Everything here (except buttons) is draggable because it's in the caption area.
+             Buttons are marked with WindowChrome.IsHitTestVisibleInChrome=True. -->
+        <Border Grid.Row="0"
+                Background="{DynamicResource Brush.Surface}"
+                BorderBrush="{DynamicResource Brush.Border}"
+                BorderThickness="0,0,0,1">
+            <Grid Style="{StaticResource Style.TitleBar}"
+                  MouseLeftButtonDown="OnTitleBarMouseDown"
+                  MouseRightButtonUp="OnTitleBarRightClick">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="8"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Expand/Collapse -->
+                <Button Grid.Column="0" Style="{StaticResource Style.TitleButton.ExpandCollapse}"
+                        Command="{Binding ToggleMenuCommand}"
+                        Width="64"
+                        ToolTip="Collapse/Expand Menu">
+                    <TextBlock FontFamily="{StaticResource Font.MDL2}" Text="&#xE700;" FontSize="16"/>
+                </Button>
+
+                <!-- Title -->
+                <TextBlock Grid.Column="2"
+                           Margin="0,0,8,0"
+                           Style="{StaticResource Style.TitleText}"
+                           Text="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=Title}"/>
+
+                <!-- System buttons -->
+                <StackPanel Grid.Column="4" Orientation="Horizontal">
+                    <!-- Minimize -->
+                    <Button Style="{StaticResource Style.TitleButton}"
+                            Command="SystemCommands.MinimizeWindowCommand">
+                        <TextBlock FontFamily="{StaticResource Font.MDL2}" Text="&#xE921;"/>
+                    </Button>
+
+                    <!-- Maximize/Restore -->
+                    <Button Style="{StaticResource Style.TitleButton}"
+                            Command="{x:Static SystemCommands.MaximizeWindowCommand}">
+                        <ContentControl>
+                            <ContentControl.Style>
+                                <Style TargetType="ContentControl">
+                                    <Setter Property="Content">
+                                        <Setter.Value>
+                                            <TextBlock FontFamily="{StaticResource Font.MDL2}" Text="&#xE922;"/>
+                                            <!-- Max -->
+                                        </Setter.Value>
+                                    </Setter>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=WindowState}" Value="Maximized">
+                                            <Setter Property="Content">
+                                                <Setter.Value>
+                                                    <TextBlock FontFamily="{StaticResource Font.MDL2}" Text="&#xE923;"/>
+                                                    <!-- Restore -->
+                                                </Setter.Value>
+                                            </Setter>
+                                            <!-- Also switch the command to Restore -->
+                                            <Setter Property="Tag" Value="Restore"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </ContentControl.Style>
+                        </ContentControl>
+                    </Button>
+
+                    <!-- Close -->
+                    <Button Style="{StaticResource Style.TitleButton.Close}"
+                            Command="SystemCommands.CloseWindowCommand">
+                        <TextBlock FontFamily="{StaticResource Font.MDL2}" Text="&#xE8BB;"/>
+                    </Button>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- BODY -->
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <!-- Left burger (collapsible via style on this ColumnDefinition) -->
+                <ColumnDefinition x:Name="LeftColumn">
+                    <ColumnDefinition.Style>
+                        <Style TargetType="ColumnDefinition">
+                            <!-- Expanded width -->
+                            <Setter Property="Width" Value="240"/>
+                            <Style.Triggers>
+                                <!-- Collapsed width -->
+                                <DataTrigger Binding="{Binding IsMenuCollapsed}" Value="True">
+                                    <Setter Property="Width" Value="64"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ColumnDefinition.Style>
+                </ColumnDefinition>
+
+                <!-- Right content -->
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- NAV PANE -->
+            <Border Grid.Column="0"
+                    Style="{StaticResource Style.NavPane}">
+                <DockPanel LastChildFill="True">
+
+                    <!-- Navigation items -->
+                    <StackPanel Margin="{DynamicResource Space.2}">
+
+                        <!-- Layouts -->
+                        <RadioButton
+                            GroupName="Nav"
+                            Margin="0,0,0,6"
+                            IsChecked="{Binding LayoutsPanel.IsVisible}"
+                            Command="{Binding SelectPanelCommand}"
+                            CommandParameter="{Binding LayoutsPanel}">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="8"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <!-- Icon bigger -->
+                                <Grid Width="32" Height="32">
+                                    <TextBlock FontFamily="{StaticResource Font.MDL2}"
+                                               FontSize="24"
+                                               Foreground="{DynamicResource Brush.App.Foreground}"
+                                               Text="&#xECA5;"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Center"
+                                               TextAlignment="Center"/>
+                                </Grid>
+
+                                <!-- Label bigger -->
+                                <TextBlock Grid.Column="2"
+                                           FontSize="15"
+                                           VerticalAlignment="Center"
+                                           Text="{Binding LayoutsPanel.Title}"
+                                           Foreground="{DynamicResource Brush.App.Foreground}"/>
+                            </Grid>
+
+                            <!-- Collapse behavior -->
+                            <RadioButton.Style>
+                                <Style BasedOn="{StaticResource Style.NavItem}" TargetType="RadioButton">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding DataContext.IsMenuCollapsed, RelativeSource={RelativeSource AncestorType=Window}}" Value="True">
+                                            <Setter Property="ToolTip" Value="{Binding LayoutsPanel.Title}"/>
+                                            <Setter Property="ContentTemplate">
+                                                <Setter.Value>
+                                                    <DataTemplate>
+                                                        <Grid Width="32" Height="32">
+                                                            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center"
+                                                                       FontFamily="{StaticResource Font.MDL2}" FontSize="24"
+                                                                       Text="&#xECA5;"/>
+                                                        </Grid>
+                                                    </DataTemplate>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </RadioButton.Style>
+                        </RadioButton>
+
+                        <!-- Input -->
+                        <RadioButton
+                            GroupName="Nav"
+                            Margin="0,0,0,6"
+                            IsChecked="{Binding InputPanel.IsVisible}"
+                            Command="{Binding SelectPanelCommand}"
+                            CommandParameter="{Binding InputPanel}">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="8"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <!-- Icon bigger -->
+                                <Grid Width="32" Height="32">
+                                    <TextBlock FontFamily="{StaticResource Font.MDL2}"
+                                               FontSize="24"
+                                               Foreground="{DynamicResource Brush.App.Foreground}"
+                                               Text="&#xF741;"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Center"
+                                               TextAlignment="Center"/>
+                                </Grid>
+
+                                <!-- Label bigger -->
+                                <TextBlock Grid.Column="2"
+                                           FontSize="15"
+                                           VerticalAlignment="Center"
+                                           Text="{Binding InputPanel.Title}"
+                                           Foreground="{DynamicResource Brush.App.Foreground}"/>
+                            </Grid>
+
+                            <!-- Collapse behavior -->
+                            <RadioButton.Style>
+                                <Style BasedOn="{StaticResource Style.NavItem}" TargetType="RadioButton">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding DataContext.IsMenuCollapsed, RelativeSource={RelativeSource AncestorType=Window}}" Value="True">
+                                            <Setter Property="ToolTip" Value="{Binding InputPanel.Title}"/>
+                                            <Setter Property="ContentTemplate">
+                                                <Setter.Value>
+                                                    <DataTemplate>
+                                                        <Grid Width="32" Height="32">
+                                                            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center"
+                                                                       FontFamily="{StaticResource Font.MDL2}" FontSize="24"
+                                                                       Text="&#xF741;"/>
+                                                        </Grid>
+                                                    </DataTemplate>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </RadioButton.Style>
+                        </RadioButton>
+
+                        <!-- Appearance / Theme -->
+                        <RadioButton
+                            GroupName="Nav"
+                            Margin="0,0,0,6"
+                            IsChecked="{Binding AppearancePanel.IsVisible}"
+                            Command="{Binding SelectPanelCommand}"
+                            CommandParameter="{Binding AppearancePanel}">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="8"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <!-- Icon bigger -->
+                                <Grid Width="32" Height="32">
+                                    <TextBlock FontFamily="{StaticResource Font.MDL2}"
+                                               FontSize="24"
+                                               Foreground="{DynamicResource Brush.App.Foreground}"
+                                               Text="&#xE790;"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Center"
+                                               TextAlignment="Center"/>
+                                </Grid>
+
+                                <!-- Label bigger -->
+                                <TextBlock Grid.Column="2"
+                                           FontSize="15"
+                                           VerticalAlignment="Center"
+                                           Text="{Binding AppearancePanel.Title}"
+                                           Foreground="{DynamicResource Brush.App.Foreground}"/>
+                            </Grid>
+
+                            <!-- Collapse behavior -->
+                            <RadioButton.Style>
+                                <Style BasedOn="{StaticResource Style.NavItem}" TargetType="RadioButton">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding DataContext.IsMenuCollapsed, RelativeSource={RelativeSource AncestorType=Window}}" Value="True">
+                                            <Setter Property="ToolTip" Value="{Binding AppearancePanel.Title}"/>
+                                            <Setter Property="ContentTemplate">
+                                                <Setter.Value>
+                                                    <DataTemplate>
+                                                        <Grid Width="32" Height="32">
+                                                            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center"
+                                                                       FontFamily="{StaticResource Font.MDL2}" FontSize="24"
+                                                                       Text="&#xE790;"/>
+                                                        </Grid>
+                                                    </DataTemplate>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </RadioButton.Style>
+                        </RadioButton>
+
+                    </StackPanel>
+                </DockPanel>
+            </Border>
+
+            <!-- CONTENT HOST -->
+            <Grid Grid.Column="1"
+                  Background="{DynamicResource Brush.App.Background}">
+                <views:LayoutsSettingsView
+                    DataContext="{Binding LayoutsPanel}"
+                    Visibility="{Binding IsVisible, Converter={StaticResource BooleanToVisibility}}"/>
+
+                <views:InputSettingsView
+                    DataContext="{Binding InputPanel}"
+                    Visibility="{Binding IsVisible, Converter={StaticResource BooleanToVisibility}}"/>
+
+                <views:AppearanceSettingsView
+                    DataContext="{Binding AppearancePanel}"
+                    Visibility="{Binding IsVisible, Converter={StaticResource BooleanToVisibility}}"/>
+            </Grid>
+        </Grid>
+    </Grid>
+</Window>
+
+

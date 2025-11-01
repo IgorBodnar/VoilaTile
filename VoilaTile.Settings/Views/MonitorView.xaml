@@ -1,0 +1,67 @@
+﻿<UserControl x:Class="VoilaTile.Settings.Views.MonitorView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:VoilaTile.Settings.ViewModels"
+             xmlns:views="clr-namespace:VoilaTile.Settings.Views"
+             Width="{Binding MonitorWidth}"
+             Height="{Binding MonitorHeight}">
+    <Border BorderThickness="10"
+            CornerRadius="25"
+            Margin="15"
+            MouseLeftButtonUp="OnClick">
+        <Border.Style>
+            <Style TargetType="Border">
+                <Setter Property="BorderBrush" Value="{DynamicResource Brush.App.Foreground}"/>
+                <Setter Property="Background" Value="{DynamicResource Brush.SurfaceAlt2}"/>
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding IsSelected}" Value="True">
+                        <Setter Property="BorderBrush" Value="{DynamicResource Brush.Accent.600}"/>
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+        </Border.Style>
+
+        <Grid>
+            <!-- Template layout in background -->
+            <Viewbox Stretch="Fill">
+                <views:ZoneTemplateView DataContext="{Binding SelectedTemplate}" />
+            </Viewbox>
+
+            <!-- Monitor label overlay -->
+            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                <TextBlock Text="{Binding MonitorNumber}"
+                           FontSize="240"
+                           FontWeight="Bold"
+                           HorizontalAlignment="Center">
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="Foreground" Value="{DynamicResource Brush.App.Foreground}"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsSelected}" Value="True">
+                                    <Setter Property="Foreground" Value="{DynamicResource Brush.Accent.600}"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
+                <TextBlock Text="{Binding MonitorSize}"
+                           FontSize="160"
+                           FontWeight="DemiBold"
+                           HorizontalAlignment="Center">
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="Foreground" Value="{DynamicResource Brush.App.Foreground}"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsSelected}" Value="True">
+                                    <Setter Property="Foreground" Value="{DynamicResource Brush.Accent.600}"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
+            </StackPanel>
+        </Grid>
+    </Border>
+</UserControl>
+
+

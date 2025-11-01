@@ -1,0 +1,135 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:sys="clr-namespace:System;assembly=mscorlib">
+
+    <!-- knobs -->
+    <sys:Double x:Key="SB.Thickness">6</sys:Double>
+    <CornerRadius x:Key="SB.Radius">3</CornerRadius>
+    <sys:Double x:Key="SB.RailOpacity">0.13</sys:Double>
+    <sys:Double x:Key="SB.RailOpacityHover">0.20</sys:Double>
+    <sys:Double x:Key="SB.ThumbOpacity">0.30</sys:Double>
+    <sys:Double x:Key="SB.ThumbOpacityHover">0.45</sys:Double>
+
+    <!-- Vertical template -->
+    <ControlTemplate x:Key="Template.ScrollBar.Vertical" TargetType="{x:Type ScrollBar}">
+        <Grid Background="Transparent">
+            <Border x:Name="Rail"
+              Background="{DynamicResource Brush.App.Foreground}"
+              Opacity="{StaticResource SB.RailOpacity}"
+              CornerRadius="{StaticResource SB.Radius}"/>
+            <Track x:Name="PART_Track"
+             IsDirectionReversed="True"
+             Minimum="0"
+             Maximum="{TemplateBinding Maximum}"
+             Value="{TemplateBinding Value}"
+             ViewportSize="{TemplateBinding ViewportSize}">
+                <Track.DecreaseRepeatButton>
+                    <RepeatButton Visibility="Collapsed" IsTabStop="False"/>
+                </Track.DecreaseRepeatButton>
+                <Track.IncreaseRepeatButton>
+                    <RepeatButton Visibility="Collapsed" IsTabStop="False"/>
+                </Track.IncreaseRepeatButton>
+                <Track.Thumb>
+                    <Thumb>
+                        <Thumb.Template>
+                            <ControlTemplate TargetType="{x:Type Thumb}">
+                                <Border x:Name="ThumbBg"
+                        Background="{DynamicResource Brush.App.Foreground}"
+                        CornerRadius="{StaticResource SB.Radius}"
+                        Opacity="{StaticResource SB.ThumbOpacity}"/>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter TargetName="ThumbBg" Property="Background" Value="{DynamicResource Brush.Accent.600}"/>
+                                        <Setter TargetName="ThumbBg" Property="Opacity" Value="{StaticResource SB.ThumbOpacityHover}"/>
+                                    </Trigger>
+                                    <Trigger Property="IsDragging" Value="True">
+                                        <Setter TargetName="ThumbBg" Property="Background" Value="{DynamicResource Brush.Accent.600}"/>
+                                        <Setter TargetName="ThumbBg" Property="Opacity" Value="1"/>
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Thumb.Template>
+                    </Thumb>
+                </Track.Thumb>
+            </Track>
+        </Grid>
+        <ControlTemplate.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter TargetName="Rail" Property="Opacity" Value="{StaticResource SB.RailOpacityHover}"/>
+            </Trigger>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter TargetName="Rail" Property="Opacity" Value="0.08"/>
+            </Trigger>
+        </ControlTemplate.Triggers>
+    </ControlTemplate>
+
+    <!-- Horizontal template -->
+    <ControlTemplate x:Key="Template.ScrollBar.Horizontal" TargetType="{x:Type ScrollBar}">
+        <Grid Background="Transparent">
+            <Border x:Name="Rail"
+              Background="{DynamicResource Brush.App.Foreground}"
+              Opacity="{StaticResource SB.RailOpacity}"
+              CornerRadius="{StaticResource SB.Radius}"/>
+            <Track x:Name="PART_Track"
+             Minimum="0"
+             Maximum="{TemplateBinding Maximum}"
+             Value="{TemplateBinding Value}"
+             ViewportSize="{TemplateBinding ViewportSize}">
+                <Track.DecreaseRepeatButton>
+                    <RepeatButton Visibility="Collapsed" IsTabStop="False"/>
+                </Track.DecreaseRepeatButton>
+                <Track.IncreaseRepeatButton>
+                    <RepeatButton Visibility="Collapsed" IsTabStop="False"/>
+                </Track.IncreaseRepeatButton>
+                <Track.Thumb>
+                    <Thumb>
+                        <Thumb.Template>
+                            <ControlTemplate TargetType="{x:Type Thumb}">
+                                <Border x:Name="ThumbBg"
+                        Background="{DynamicResource Brush.Accent.400}"
+                        CornerRadius="{StaticResource SB.Radius}"
+                        Opacity="{StaticResource SB.ThumbOpacity}"/>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter TargetName="ThumbBg" Property="Background" Value="{DynamicResource Brush.Accent.600}"/>
+                                        <Setter TargetName="ThumbBg" Property="Opacity" Value="{StaticResource SB.ThumbOpacityHover}"/>
+                                    </Trigger>
+                                    <Trigger Property="IsDragging" Value="True">
+                                        <Setter TargetName="ThumbBg" Property="Background" Value="{DynamicResource Brush.Accent.600}"/>
+                                        <Setter TargetName="ThumbBg" Property="Opacity" Value="1"/>
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Thumb.Template>
+                    </Thumb>
+                </Track.Thumb>
+            </Track>
+        </Grid>
+        <ControlTemplate.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter TargetName="Rail" Property="Opacity" Value="{StaticResource SB.RailOpacityHover}"/>
+            </Trigger>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter TargetName="Rail" Property="Opacity" Value="0.08"/>
+            </Trigger>
+        </ControlTemplate.Triggers>
+    </ControlTemplate>
+
+    <!-- Global implicit ScrollBar style -->
+    <Style TargetType="{x:Type ScrollBar}">
+        <Setter Property="SnapsToDevicePixels" Value="True"/>
+        <Setter Property="OverridesDefaultStyle" Value="True"/>
+        <Style.Triggers>
+            <Trigger Property="Orientation" Value="Vertical">
+                <Setter Property="Width" Value="{StaticResource SB.Thickness}"/>
+                <Setter Property="Template" Value="{StaticResource Template.ScrollBar.Vertical}"/>
+            </Trigger>
+            <Trigger Property="Orientation" Value="Horizontal">
+                <Setter Property="Height" Value="{StaticResource SB.Thickness}"/>
+                <Setter Property="Template" Value="{StaticResource Template.ScrollBar.Horizontal}"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+</ResourceDictionary>
+

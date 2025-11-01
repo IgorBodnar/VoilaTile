@@ -1,0 +1,170 @@
+﻿<UserControl x:Class="VoilaTile.Settings.Views.AppearanceSettingsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:theming="clr-namespace:VoilaTile.Settings.Theming"
+             xmlns:controls="clr-namespace:VoilaTile.Settings.Controls"
+             mc:Ignorable="d">
+
+    <UserControl.Resources>
+
+        <!-- Brush from VM's CustomAccent -->
+        <SolidColorBrush x:Key="Brush.CustomAccent" Color="{Binding CustomAccent}"/>
+
+        <!-- Accent swatch template -->
+        <DataTemplate x:Key="SwatchTemplate">
+            <Border CornerRadius="6"
+                    Height="38"
+                    Width="38"
+                    Margin="0,0,8,0"
+                    BorderThickness="1"
+                    BorderBrush="{DynamicResource Brush.Border}">
+                <Grid>
+                    <Rectangle RadiusX="6" RadiusY="6" Fill="{Binding}"/>
+                    <TextBlock Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Tag}"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               Foreground="{DynamicResource Brush.OnAccent}"
+                               FontWeight="SemiBold"
+                               Opacity="0.9"/>
+                </Grid>
+            </Border>
+        </DataTemplate>
+
+        <!-- Visible only when AccentMode = Custom -->
+        <Style x:Key="ShowWhenCustom" TargetType="FrameworkElement">
+            <Setter Property="Visibility" Value="Collapsed"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding SelectedAccentMode}" Value="{x:Static theming:AccentMode.Custom}">
+                    <Setter Property="Visibility" Value="Visible"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- Visible only when AccentMode = Windows -->
+        <Style x:Key="ShowWhenWindows" TargetType="FrameworkElement">
+            <Setter Property="Visibility" Value="Collapsed"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding SelectedAccentMode}" Value="{x:Static theming:AccentMode.Windows}">
+                    <Setter Property="Visibility" Value="Visible"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+    </UserControl.Resources>
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto"
+                  Background="{DynamicResource Brush.App.Background}">
+        <Grid Margin="{DynamicResource Space.4}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!-- Theme mode -->
+            <Border Grid.Row="0" Background="{DynamicResource Brush.SurfaceAlt}" Padding="12" CornerRadius="6" Margin="0,0,0,16">
+                <DockPanel>
+                    <StackPanel Orientation="Vertical">
+                        <TextBlock Style="{StaticResource Style.CaptionText}" Text="Theme" DockPanel.Dock="Left" Margin="0,0,0,2"/>
+                        <TextBlock Text="Select dark/light theme or follow the Windows theme."
+                                   Foreground="{DynamicResource Brush.App.Foreground}"
+                                   Opacity="0.75"/>
+                    </StackPanel>
+                    <ComboBox Width="240"
+                              HorizontalAlignment="Right"
+                              Style="{StaticResource Style.ComboBox}"
+                              ItemsSource="{Binding ThemeModeOptions}"
+                              SelectedItem="{Binding SelectedThemeMode, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                </DockPanel>
+            </Border>
+
+            <!-- Accent mode -->
+            <Border Grid.Row="1" Background="{DynamicResource Brush.SurfaceAlt}" Padding="12" CornerRadius="6" Margin="0,0,0,16">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <DockPanel Grid.Row="0" Margin="0,0,0,16">
+                        <StackPanel Orientation="Vertical">
+                            <TextBlock Style="{StaticResource Style.CaptionText}" Text="Accent" DockPanel.Dock="Left" Margin="0,0,0,2"/>
+                            <TextBlock Text="Pick a custom Hue and Saturation for the accent color or use the Windows accent."
+                                       Foreground="{DynamicResource Brush.App.Foreground}"
+                                       Opacity="0.75"/>
+                        </StackPanel>
+                        <ComboBox Width="240"
+                                  HorizontalAlignment="Right"
+                                  Style="{StaticResource Style.ComboBox}"
+                                  ItemsSource="{Binding AccentModeOptions}"
+                                  SelectedItem="{Binding SelectedAccentMode, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                    </DockPanel>
+
+                    <!-- Windows custom color preview -->
+                    <Border Grid.Row="1"
+                            Padding="12"
+                            CornerRadius="8"
+                            Background="{DynamicResource Brush.Surface}"
+                            BorderBrush="{DynamicResource Brush.Border}"
+                            BorderThickness="1"
+                            Style="{StaticResource ShowWhenWindows}">
+                        <DockPanel>
+                            <Border Width="40" Height="32" CornerRadius="4"
+                                    Background="{StaticResource Brush.CustomAccent}"
+                                    BorderBrush="{DynamicResource Brush.Border}" BorderThickness="1"/>
+                            <TextBlock Text="Windows Accent Preview"
+                                       Margin="8,0,0,0"
+                                       VerticalAlignment="Center"
+                                       Foreground="{DynamicResource Brush.App.Foreground}"/>
+                            <TextBlock Text="{Binding CustomAccent}"
+                                       Margin="8,0,0,0"
+                                       VerticalAlignment="Center"
+                                       Foreground="{DynamicResource Brush.App.Foreground}"
+                                       Opacity="0.6"/>
+                            <Button Content="Adopt Windows Accent"
+                                    Style="{StaticResource Style.Button}"
+                                    Command="{Binding UseWindowsAccentAsCustomCommand}"
+                                    Margin="8,0,0,0"
+                                    HorizontalAlignment="Right"
+                                    Background="{DynamicResource Brush.Accent.600}"
+                                    Foreground="{DynamicResource Brush.OnAccent}"/>
+                        </DockPanel>
+                    </Border>
+
+                    <!-- HSL Color Picker (shown only when Custom accent mode) -->
+                    <Border Grid.Row="2"
+                            Padding="12"
+                            CornerRadius="8"
+                            Background="{DynamicResource Brush.Surface}"
+                            BorderBrush="{DynamicResource Brush.Border}"
+                            BorderThickness="1"
+                            Style="{StaticResource ShowWhenCustom}">
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <controls:HslColorPicker Grid.Column="0" SelectedColor="{Binding CustomAccent, Mode=TwoWay}"/>
+                            <Button Content="Adopt Windows Accent"
+                                    Grid.Column="1"
+                                    Style="{StaticResource Style.Button}"
+                                    Command="{Binding UseWindowsAccentAsCustomCommand}"
+                                    Margin="8,0,0,0"
+                                    HorizontalAlignment="Right"
+                                    Background="{DynamicResource Brush.Accent.600}"
+                                    Foreground="{DynamicResource Brush.OnAccent}"/>
+                            
+                        </Grid>
+                    </Border>
+                </Grid>
+            </Border>
+
+        </Grid>
+    </ScrollViewer>
+</UserControl>
+

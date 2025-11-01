@@ -19,6 +19,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VoilaTile.Snapper", "VoilaT
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VoilaTile.Installer", "VoilaTile.Installer\VoilaTile.Installer.csproj", "{F35DA505-D224-4901-9F46-FFC3E4A8D777}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VoilaTile.Settings", "VoilaTile.Settings\VoilaTile.Settings.csproj", "{F1C1BA1C-0328-4281-AF35-1B70D3B56918}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,7 +32,6 @@ Global
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{A1C1052B-76FB-4BD4-8E5D-6EAC7F977DB0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A1C1052B-76FB-4BD4-8E5D-6EAC7F977DB0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A1C1052B-76FB-4BD4-8E5D-6EAC7F977DB0}.Debug|x64.ActiveCfg = Debug|x64
 		{A1C1052B-76FB-4BD4-8E5D-6EAC7F977DB0}.Debug|x64.Build.0 = Debug|x64
 		{A1C1052B-76FB-4BD4-8E5D-6EAC7F977DB0}.Debug|x86.ActiveCfg = Debug|Any CPU
@@ -75,6 +76,18 @@ Global
 		{F35DA505-D224-4901-9F46-FFC3E4A8D777}.Release|x64.Build.0 = Release|Any CPU
 		{F35DA505-D224-4901-9F46-FFC3E4A8D777}.Release|x86.ActiveCfg = Release|Any CPU
 		{F35DA505-D224-4901-9F46-FFC3E4A8D777}.Release|x86.Build.0 = Release|Any CPU
+		{F1C1BA1C-0328-4281-AF35-1B70D3B56918}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F1C1BA1C-0328-4281-AF35-1B70D3B56918}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F1C1BA1C-0328-4281-AF35-1B70D3B56918}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{F1C1BA1C-0328-4281-AF35-1B70D3B56918}.Debug|x64.Build.0 = Debug|Any CPU
+		{F1C1BA1C-0328-4281-AF35-1B70D3B56918}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{F1C1BA1C-0328-4281-AF35-1B70D3B56918}.Debug|x86.Build.0 = Debug|Any CPU
+		{F1C1BA1C-0328-4281-AF35-1B70D3B56918}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F1C1BA1C-0328-4281-AF35-1B70D3B56918}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F1C1BA1C-0328-4281-AF35-1B70D3B56918}.Release|x64.ActiveCfg = Release|Any CPU
+		{F1C1BA1C-0328-4281-AF35-1B70D3B56918}.Release|x64.Build.0 = Release|Any CPU
+		{F1C1BA1C-0328-4281-AF35-1B70D3B56918}.Release|x86.ActiveCfg = Release|Any CPU
+		{F1C1BA1C-0328-4281-AF35-1B70D3B56918}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
