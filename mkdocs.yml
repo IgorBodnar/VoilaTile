@@ -1,0 +1,71 @@
+site_name: VoilaTile Docs
+site_description: Keyboard-first window snapping for Windows — VoilaTile user & developer guide
+site_url: https://IgorBodnar.github.io/VoilaTile
+repo_url: https://github.com/IgorBodnar/VoilaTile
+repo_name: IgorBodnar/VoilaTile
+edit_uri: edit/develop/docs/
+
+theme:
+  name: material
+  features:
+    - navigation.instant
+    - navigation.tracking
+    - navigation.sections
+    - content.code.copy
+    - toc.integrate
+    - search.suggest
+    - search.highlight
+    - header.autohide
+  palette:
+    - scheme: default
+      primary: indigo
+      accent: indigo
+    - scheme: slate
+      primary: indigo
+      accent: indigo
+  logo: assets/images/hero.png
+  favicon: assets/images/hero.png
+
+nav:
+  - Overview: index.md
+  - Getting Started: getting-started.md
+  - Features:
+      - Snapper Overlay: features/snapper.md
+      - Configurator: features/configurator.md
+      - Power Grab: features/power-grab.md
+      - Shortcuts: features/shortcuts.md
+      - Theming: features/theming.md
+  - Guides:
+      - Multi-Monitor: guides/multi-monitor.md
+      - Custom Templates: guides/custom-templates.md
+      - Startup Behavior: guides/startup-behavior.md
+      - Troubleshooting: guides/troubleshooting.md
+  - Development:
+      - Contributing: development/contributing.md
+      - Architecture: development/architecture.md
+      - Style Guide: development/styleguide.md
+      - Roadmap: development/roadmap.md
+  - FAQ: faq.md
+
+plugins:
+  - search
+  - glightbox
+  - git-revision-date-localized:
+      fallback_to_build_date: true
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - def_list
+  - footnotes
+  - md_in_html
+  - toc:
+      permalink: true
+  - pymdownx.superfences
+  - pymdownx.details
+  - pymdownx.emoji
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.highlight
+  - pymdownx.keys
+  - pymdownx.inlinehilite

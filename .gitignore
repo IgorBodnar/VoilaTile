@@ -9,3 +9,23 @@ obj/
 .editorconfig
 .git
 .vs
+
+# MkDocs
+/site/
+.mkdocs-cache/
+.cache/
+
+# Python (common)
+__pycache__/
+*.pyc
+.venv/
+.venv*/
+.env
+.env.*
+
+# OS/editor crumbs
+.DS_Store
+Thumbs.db
+*.swp
+.idea/
+.vscode/
