@@ -1,4 +1,4 @@
-namespace VoilaTile.Settings.Theming
+namespace VoilaTile.Common.Theming
 {
     /// <summary>
     /// Specifies the source of the application's accent color.

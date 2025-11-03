@@ -1,50 +1,57 @@
-namespace VoilaTile.Settings.Theming
+namespace VoilaTile.Snapper.Theming
 {
     using System;
     using System.ComponentModel;
     using System.Windows;
     using System.Windows.Media;
     using Microsoft.Win32;
+    using VoilaTile.Common.Helpers;
     using VoilaTile.Common.Theming;
 
     /// <summary>
-    /// Central runtime theme manager. Swaps light/dark resource dictionaries and
-    /// regenerates the accent palette on demand or when Windows preferences change.
+    /// Central runtime theme manager for Snapper.
+    /// Swaps light/dark resource dictionaries and regenerates the accent palette
+    /// when the source settings or Windows preferences change.
     /// </summary>
     public sealed class ThemeManager : IDisposable, INotifyPropertyChanged
     {
         #region Fields
 
         /// <summary>
-        /// The light theme resource dictionary.
+        /// The light theme resource dictionary for Snapper.
         /// </summary>
         private readonly ResourceDictionary lightDict = new()
         {
-            Source = new Uri("/VoilaTile.Settings;component/Theming/Themes/Light.xaml", UriKind.Relative),
+            Source = new Uri("/VoilaTile.Snapper;component/Theming/Themes/Light.xaml", UriKind.Relative),
         };
 
         /// <summary>
-        /// The dark theme resource dictionary.
+        /// The dark theme resource dictionary for Snapper.
         /// </summary>
         private readonly ResourceDictionary darkDict = new()
         {
-            Source = new Uri("/VoilaTile.Settings;component/Theming/Themes/Dark.xaml", UriKind.Relative),
+            Source = new Uri("/VoilaTile.Snapper;component/Theming/Themes/Dark.xaml", UriKind.Relative),
         };
 
         /// <summary>
-        /// The current theme selection mode.
+        /// The currently selected base theme mode.
         /// </summary>
         private ThemeMode themeMode = ThemeMode.System;
 
         /// <summary>
-        /// The current accent color source.
+        /// The currently selected accent color mode.
         /// </summary>
         private AccentMode accentMode = AccentMode.Windows;
 
         /// <summary>
         /// The custom accent color used when <see cref="AccentMode.Custom"/>.
         /// </summary>
-        private Color customAccent = Color.FromRgb(0x4C, 0x8C, 0xFF);
+        private Color customAccent = Defaults.DefaultAccentColor;
+
+        /// <summary>
+        /// Indicates whether this instance has been disposed.
+        /// </summary>
+        private bool isDisposed;
 
         #endregion Fields
 
@@ -72,7 +79,7 @@ namespace VoilaTile.Settings.Theming
         #region Properties
 
         /// <summary>
-        /// Gets or sets how the application selects its base theme.
+        /// Gets or sets how Snapper selects its base theme.
         /// </summary>
         public ThemeMode ThemeMode
         {
@@ -82,15 +89,15 @@ namespace VoilaTile.Settings.Theming
                 if (this.themeMode != value)
                 {
                     this.themeMode = value;
-                    this.ApplyTheme();
-                    this.ApplyAccent(); // regenerate accent with new effective theme
+                    this.ApplyThemeOnUI();
+                    this.ApplyAccentOnUI(); // regenerate accent using new effective theme
                     this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.ThemeMode)));
                 }
             }
         }
 
         /// <summary>
-        /// Gets or sets how the application selects its accent color.
+        /// Gets or sets how Snapper selects its accent color.
         /// </summary>
         public AccentMode AccentMode
         {
@@ -100,7 +107,7 @@ namespace VoilaTile.Settings.Theming
                 if (this.accentMode != value)
                 {
                     this.accentMode = value;
-                    this.ApplyAccent();
+                    this.ApplyAccentOnUI();
                     this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.AccentMode)));
                 }
             }
@@ -119,7 +126,7 @@ namespace VoilaTile.Settings.Theming
                     this.customAccent = value;
                     if (this.accentMode == AccentMode.Custom)
                     {
-                        this.ApplyAccent();
+                        this.ApplyAccentOnUI();
                     }
 
                     this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.CustomAccent)));
@@ -132,28 +139,34 @@ namespace VoilaTile.Settings.Theming
         #region Methods
 
         /// <summary>
-        /// Initializes the theme and accent according to current settings.
-        /// Call once during application startup.
+        /// Applies the current base theme and accent once. Call during application startup after construction.
         /// </summary>
         public void Initialize()
         {
-            this.ApplyTheme();
-            this.ApplyAccent();
+            this.ApplyThemeOnUI();
+            this.ApplyAccentOnUI();
         }
 
         /// <summary>
-        /// Releases resources.
+        /// Releases unmanaged resources and detaches system event handlers.
         /// </summary>
         public void Dispose()
         {
+            if (this.isDisposed)
+            {
+                return;
+            }
+
             SystemEvents.UserPreferenceChanged -= this.OnUserPreferenceChanged;
+            this.isDisposed = true;
             GC.SuppressFinalize(this);
         }
 
         /// <summary>
         /// Applies the currently selected theme by swapping merged dictionaries.
+        /// Always executes on the UI thread.
         /// </summary>
-        private void ApplyTheme()
+        private void ApplyThemeOnUI()
         {
             var app = Application.Current;
             if (app is null)
@@ -161,25 +174,56 @@ namespace VoilaTile.Settings.Theming
                 return;
             }
 
-            bool useLight = this.GetEffectiveTheme() == ThemeMode.Light;
+            void Swap()
+            {
+                bool useLight = this.GetEffectiveTheme() == ThemeMode.Light;
 
-            // Remove both if present, then add desired one to the end (highest precedence).
-            app.Resources.MergedDictionaries.Remove(this.lightDict);
-            app.Resources.MergedDictionaries.Remove(this.darkDict);
-            app.Resources.MergedDictionaries.Add(useLight ? this.lightDict : this.darkDict);
+                // Remove both, then append the one we need (highest precedence at the end).
+                app.Resources.MergedDictionaries.Remove(this.lightDict);
+                app.Resources.MergedDictionaries.Remove(this.darkDict);
+                app.Resources.MergedDictionaries.Add(useLight ? this.lightDict : this.darkDict);
+            }
+
+            if (app.Dispatcher.CheckAccess())
+            {
+                Swap();
+            }
+            else
+            {
+                app.Dispatcher.Invoke(Swap);
+            }
         }
 
         /// <summary>
-        /// Applies (regenerates) the accent palette based on the current accent mode and effective theme.
+        /// Applies (regenerates) the accent palette and <c>Brush.OnAccent</c>.
+        /// Always executes on the UI thread.
         /// </summary>
-        private void ApplyAccent()
+        private void ApplyAccentOnUI()
         {
-            Color baseAccent = this.accentMode == AccentMode.Windows
-                ? WindowsThemeInterop.GetWindowsAccentOrDefault()
-                : this.customAccent;
+            var app = Application.Current;
+            if (app is null)
+            {
+                return;
+            }
 
-            var effectiveTheme = this.GetEffectiveTheme();
-            AccentPaletteGenerator.ApplyToResources(baseAccent, effectiveTheme);
+            void Regenerate()
+            {
+                Color baseAccent = this.accentMode == AccentMode.Windows
+                    ? WindowsThemeInterop.GetWindowsAccentOrDefault()
+                    : this.customAccent;
+
+                var effectiveTheme = this.GetEffectiveTheme();
+                AccentPaletteGenerator.ApplyToResources(baseAccent, effectiveTheme);
+            }
+
+            if (app.Dispatcher.CheckAccess())
+            {
+                Regenerate();
+            }
+            else
+            {
+                app.Dispatcher.Invoke(Regenerate);
+            }
         }
 
         /// <summary>
@@ -197,20 +241,23 @@ namespace VoilaTile.Settings.Theming
         }
 
         /// <summary>
-        /// Handles Windows user preference changes (theme/accent) and updates the app when following system.
+        /// Handles Windows user preference changes. Responds only when following system/accent.
         /// </summary>
         /// <param name="sender">Sender.</param>
         /// <param name="e">Event args.</param>
         private void OnUserPreferenceChanged(object? sender, UserPreferenceChangedEventArgs e)
         {
+            // When following system theme, switch immediately.
             if (this.themeMode == ThemeMode.System)
             {
-                this.ApplyTheme();
+                this.ApplyThemeOnUI();
+                this.ApplyAccentOnUI(); // accent nudges depend on effective theme
             }
 
+            // When following Windows accent, regenerate on change.
             if (this.accentMode == AccentMode.Windows)
             {
-                this.ApplyAccent();
+                this.ApplyAccentOnUI();
             }
         }
 

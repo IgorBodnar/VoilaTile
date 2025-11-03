@@ -1,0 +1,33 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- Base colors (light) -->
+    <Color x:Key="Color.App.Background">#FFFFFFFF</Color>
+    <Color x:Key="Color.App.Background.SemiTranslucent">#DDFFFFFF</Color>
+    <Color x:Key="Color.App.Background.Translucent">#88FFFFFF</Color>
+    <Color x:Key="Color.App.Foreground">#FF111111</Color>
+
+    <!-- Surfaces: progressively darker for light theme -->
+    <Color x:Key="Color.Surface">#FFF8F8F8</Color>
+    <Color x:Key="Color.SurfaceAlt">#FFF0F0F0</Color>
+    <Color x:Key="Color.SurfaceAlt2">#FFE8E8E8</Color>
+    <Color x:Key="Color.SurfaceAlt3">#FFE0E0E0</Color>
+
+    <Color x:Key="Color.Border">#22000000</Color>
+    <Color x:Key="Color.BorderAlt">#88000000</Color>
+
+    <!-- Brushes -->
+    <SolidColorBrush x:Key="Brush.App.Background" Color="{DynamicResource Color.App.Background}"/>
+    <SolidColorBrush x:Key="Brush.App.Background.SemiTranslucent" Color="{DynamicResource Color.App.Background.SemiTranslucent}"/>
+    <SolidColorBrush x:Key="Brush.App.Background.Translucent" Color="{DynamicResource Color.App.Background.Translucent}"/>
+    <SolidColorBrush x:Key="Brush.App.Foreground" Color="{DynamicResource Color.App.Foreground}"/>
+
+    <SolidColorBrush x:Key="Brush.Surface"       Color="{DynamicResource Color.Surface}"/>
+    <SolidColorBrush x:Key="Brush.SurfaceAlt"    Color="{DynamicResource Color.SurfaceAlt}"/>
+    <SolidColorBrush x:Key="Brush.SurfaceAlt2"   Color="{DynamicResource Color.SurfaceAlt2}"/>
+    <SolidColorBrush x:Key="Brush.SurfaceAlt3"   Color="{DynamicResource Color.SurfaceAlt3}"/>
+
+    <SolidColorBrush x:Key="Brush.Border"        Color="{DynamicResource Color.Border}"/>
+    <SolidColorBrush x:Key="Brush.BorderAlt"        Color="{DynamicResource Color.BorderAlt}"/>
+</ResourceDictionary>
+

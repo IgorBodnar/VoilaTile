@@ -11,6 +11,7 @@ namespace VoilaTile.Snapper
     using VoilaTile.Snapper.Interop;
     using VoilaTile.Snapper.Layout;
     using VoilaTile.Snapper.Services;
+    using VoilaTile.Snapper.Theming;
     using VoilaTile.Snapper.ViewModels;
     using VoilaTile.Snapper.Views;
     using Application = System.Windows.Application;
@@ -73,6 +74,16 @@ namespace VoilaTile.Snapper
         private TrayIconService? trayIconService;
 
         /// <summary>
+        /// The theme manager.
+        /// </summary>
+        private ThemeManager? themeManager;
+
+        /// <summary>
+        /// The theme file synchronization service.
+        /// </summary>
+        private ThemeFileSyncService? themeFileSyncService;
+
+        /// <summary>
         /// The hidden host window used for message hooks.
         /// </summary>
         private Window? hostWindow;
@@ -101,6 +112,7 @@ namespace VoilaTile.Snapper
                 return;
             }
 
+            this.InitializeThemeManagement();
             this.AttachShutdownHooks();
             this.CreateHiddenHostWindow();
             this.InitializeServices();
@@ -192,6 +204,22 @@ namespace VoilaTile.Snapper
 
             try
             {
+                this.themeFileSyncService?.Dispose();
+            }
+            catch
+            {
+            }
+
+            try
+            {
+                this.themeManager?.Dispose();
+            }
+            catch
+            {
+            }
+
+            try
+            {
                 if (this.hostWindow is not null)
                 {
                     if (this.hostWindow.Dispatcher.CheckAccess())
@@ -217,6 +245,15 @@ namespace VoilaTile.Snapper
             catch
             {
             }
+        }
+
+        /// <summary>
+        /// Initializes theme management.
+        /// </summary>
+        private void InitializeThemeManagement()
+        {
+            this.themeManager = new ThemeManager();
+            this.themeFileSyncService = new ThemeFileSyncService(this.themeManager);
         }
 
         /// <summary>

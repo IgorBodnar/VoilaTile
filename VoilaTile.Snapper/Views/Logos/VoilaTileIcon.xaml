@@ -17,7 +17,7 @@
                 <DrawingGroup x:Key="Layer_1">
                     <GeometryDrawing>
                         <GeometryDrawing.Pen>
-                            <Pen Brush="#ffe53b3b" Thickness="1.6" DashCap="Flat"/>
+                            <Pen Brush="{DynamicResource Brush.Accent.600}" Thickness="1.6" DashCap="Flat"/>
                         </GeometryDrawing.Pen>
                         <GeometryDrawing.Geometry>
                             <PathGeometry Figures="m 26.3023 16.5627 h 21.3005 v 11.1246 h -21.3005 z m 0 -10.6071 H 47.6028 V 27.7736 H 26.3023 Z M 10.6071 27.7735 h 38.8066 v 3.79442 H 10.6071 Z M 12.521 5.88605 H 47.6724 V 27.7086 H 12.521 Z" FillRule="Nonzero"/>

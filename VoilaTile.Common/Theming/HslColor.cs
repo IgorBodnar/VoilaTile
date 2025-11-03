@@ -1,4 +1,4 @@
-namespace VoilaTile.Settings.Theming
+namespace VoilaTile.Common.Theming
 {
     using System;
     using System.Windows.Media;

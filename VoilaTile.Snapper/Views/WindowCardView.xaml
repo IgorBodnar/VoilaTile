@@ -9,14 +9,14 @@
     <Border CornerRadius="12"
             Padding="6"
             Margin="8"
-            Background="{StaticResource BackgroundLightGray}"
+            Background="{DynamicResource Brush.SurfaceAlt2}"
             BorderThickness="1.6">
         <Border.Style>
             <Style TargetType="Border">
                 <Setter Property="BorderBrush" Value="Transparent"/>
                 <Style.Triggers>
                     <DataTrigger Binding="{Binding IsSelected}" Value="True">
-                        <Setter Property="BorderBrush" Value="{StaticResource AccentRed}"/>
+                        <Setter Property="BorderBrush" Value="{DynamicResource Brush.Accent.600}"/>
                     </DataTrigger>
                 </Style.Triggers>
             </Style>
@@ -30,7 +30,7 @@
 
             <Border x:Name="HeaderBlock"
                     Grid.Row="0"
-                    Background="#66000000"
+                    Background="{DynamicResource Brush.Surface}"
                     CornerRadius="8"
                     Padding="8,6"
                     Margin="0,0,0,6">
@@ -51,12 +51,12 @@
                                    FontSize="14" FontWeight="SemiBold"
                                    TextWrapping="NoWrap"
                                    TextTrimming="CharacterEllipsis"
-                                   Foreground="{StaticResource TextWhite}"/>
+                                   Foreground="{DynamicResource Brush.App.Foreground}"/>
                         <TextBlock Text="{Binding Subtitle}"
                                    FontSize="12" Opacity="0.7"
                                    TextWrapping="NoWrap"
                                    TextTrimming="CharacterEllipsis"
-                                   Foreground="{StaticResource TextWhite}"/>
+                                   Foreground="{DynamicResource Brush.App.Foreground}"/>
                     </StackPanel>
 
                     <Border Grid.Column="2"
@@ -68,7 +68,7 @@
                         <TextBlock Text="{Binding Hint}"
                                    FontWeight="Bold"
                                    FontSize="16"
-                                   Foreground="{StaticResource TextWhite}"/>
+                                   Foreground="{DynamicResource Brush.App.Foreground}"/>
                     </Border>
                 </Grid>
             </Border>
@@ -78,9 +78,9 @@
                     Width="{Binding ThumbWidth}"
                     Height="{Binding ThumbHeight}"
                     CornerRadius="8"
-                    Background="#090909"
+                    Background="{DynamicResource Brush.App.Background}"
                     BorderThickness="1"
-                    BorderBrush="#10FFFFFF"/>
+                    BorderBrush="{DynamicResource Brush.Border}"/>
         </Grid>
     </Border>
 </UserControl>

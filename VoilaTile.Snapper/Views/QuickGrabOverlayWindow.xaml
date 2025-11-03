@@ -5,7 +5,7 @@
         xmlns:cv="clr-namespace:VoilaTile.Snapper.Converters"
         AllowsTransparency="True"
         WindowStyle="None"
-        Background="{StaticResource BackgroundDarkGrayTranslucent}"
+        Background="{DynamicResource Brush.App.Background.Translucent}"
         Topmost="True"
         ShowInTaskbar="False"
         ResizeMode="NoResize"
@@ -22,8 +22,8 @@
             <Setter Property="CornerRadius" Value="6"/>
             <Setter Property="BorderThickness" Value="1.8"/>
             <Setter Property="Padding" Value="6,4"/>
-            <Setter Property="Background" Value="{StaticResource BackgroundDarkGray}"/>
-            <Setter Property="BorderBrush" Value="{StaticResource BackgroundLightestGray}"/>
+            <Setter Property="Background" Value="{DynamicResource Brush.SurfaceAlt}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource Brush.BorderAlt}"/>
             <Setter Property="Effect">
                 <Setter.Value>
                     <DropShadowEffect BlurRadius="10" ShadowDepth="0" Opacity="0.45"/>
@@ -31,8 +31,8 @@
             </Setter>
             <Style.Triggers>
                 <DataTrigger Binding="{Binding IsSelected}" Value="True">
-                    <Setter Property="Background" Value="{StaticResource BackgroundDarkestGray}"/>
-                    <Setter Property="BorderBrush" Value="{StaticResource AccentRed}"/>
+                    <Setter Property="Background" Value="{DynamicResource Brush.SurfaceAlt2}"/>
+                    <Setter Property="BorderBrush" Value="{DynamicResource Brush.Accent.500}"/>
                     <Setter Property="RenderTransform">
                         <Setter.Value>
                             <ScaleTransform ScaleX="1.08" ScaleY="1.08"/>
@@ -58,7 +58,7 @@
                     <TextBlock Text="{Binding HintText}"
                      FontSize="18"
                      FontWeight="Bold"
-                     Foreground="{StaticResource TextWhite}"
+                     Foreground="{DynamicResource Brush.App.Foreground}"
                      HorizontalAlignment="Center"
                      VerticalAlignment="Center"
                      TextOptions.TextFormattingMode="Display"
@@ -99,8 +99,8 @@
         <TextBlock Text="{Binding Buffer}"
                    FontFamily="Consolas"
                    FontSize="18"
-                   Foreground="{StaticResource TextWhite}"
-                   Background="{StaticResource BackgroundDarkGray}"
+                   Foreground="{DynamicResource Brush.App.Foreground}"
+                   Background="{DynamicResource Brush.App.Background.Translucent}"
                    HorizontalAlignment="Stretch"
                    VerticalAlignment="Bottom"
                    Padding="10" />

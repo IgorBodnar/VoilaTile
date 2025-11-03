@@ -5,6 +5,7 @@ namespace VoilaTile.Settings.Controls
     using System.Windows;
     using System.Windows.Controls;
     using System.Windows.Media;
+    using VoilaTile.Common.Theming;
     using VoilaTile.Settings.Theming;
 
     /// <summary>

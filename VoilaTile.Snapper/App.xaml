@@ -4,62 +4,78 @@
              xmlns:local="clr-namespace:VoilaTile.Snapper"
              xmlns:converters="clr-namespace:VoilaTile.Snapper.Converters">
     <Application.Resources>
-        <!-- Converters -->
-        <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
-        <converters:HalfNegativeConverter x:Key="HalfNegativeConverter"/>
-        <converters:BytesToHumanConverter x:Key="BytesToHumanConverter"/>
+        <ResourceDictionary>
 
-        <!-- Brushes -->
-        <SolidColorBrush x:Key="TextWhite" Color="#f5f3f4"/>
-        <SolidColorBrush x:Key="TextWhiteTranslucent" Color="#ddf5f3f4"/>
-        <SolidColorBrush x:Key="BackgroundDarkGrayOpaque" Color="#161a1d"/>
-        <SolidColorBrush x:Key="BackgroundDarkGrayTranslucent" Color="#66161a1d"/>
-        <SolidColorBrush x:Key="BackgroundDarkGray" Color="#dd161a1d"/>
-        <SolidColorBrush x:Key="BackgroundDarkestGray" Color="#ee161a1d"/>
-        <SolidColorBrush x:Key="BackgroundLightestGray" Color="#b1a7a6"/>
-        <SolidColorBrush x:Key="BackgroundLightGray" Color="#33b1a7a6"/>
-        <SolidColorBrush x:Key="BackgroundMediumLightGray" Color="#22b1a7a6"/>
-        <SolidColorBrush x:Key="CloseWindowRed" Color="#ba181b"/>
-        <SolidColorBrush x:Key="AccentRed" Color="#e5383b"/>
-        <SolidColorBrush x:Key="AccentRedTranslucent" Color="#dd861b2d"/>
-        <SolidColorBrush x:Key="AccentRedFaint" Color="#66861b2d"/>
+            <!-- Merge the current theme dictionary; ThemeManager will swap Light/Dark at runtime -->
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Theming/Themes/Dark.xaml" />
+            </ResourceDictionary.MergedDictionaries>
 
-        <!-- ScrollBar Style -->
-        <Style TargetType="ScrollBar">
-            <Setter Property="SnapsToDevicePixels" Value="True"/>
-            <Setter Property="OverridesDefaultStyle" Value="True"/>
-            <Setter Property="Width" Value="6"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="ScrollBar">
-                        <Grid Background="Transparent">
-                            <Border Background="#22FFFFFF" CornerRadius="3" />
-                            <Track x:Name="PART_Track"
-                                   IsDirectionReversed="true"
-                                   Minimum="0"
-                                   Maximum="{TemplateBinding Maximum}"
-                                   Value="{TemplateBinding Value}"
-                                   ViewportSize="{TemplateBinding ViewportSize}">
-                                <Track.Thumb>
-                                    <Thumb>
-                                        <Thumb.Template>
-                                            <ControlTemplate TargetType="Thumb">
-                                                <Border Background="#88f5f3f4" CornerRadius="3" Margin="0"/>
-                                            </ControlTemplate>
-                                        </Thumb.Template>
-                                    </Thumb>
-                                </Track.Thumb>
-                                <Track.DecreaseRepeatButton>
-                                    <RepeatButton Visibility="Collapsed" IsTabStop="False"/>
-                                </Track.DecreaseRepeatButton>
-                                <Track.IncreaseRepeatButton>
-                                    <RepeatButton Visibility="Collapsed" IsTabStop="False"/>
-                                </Track.IncreaseRepeatButton>
-                            </Track>
-                        </Grid>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
+            <!-- Accent palette placeholders (updated at runtime by ThemeManager/AccentPaletteGenerator) -->
+            <SolidColorBrush x:Key="Brush.Accent.050" Color="#FFEFF6FF"/>
+            <SolidColorBrush x:Key="Brush.Accent.100" Color="#FFD6EAFF"/>
+            <SolidColorBrush x:Key="Brush.Accent.200" Color="#FFB3D2FF"/>
+            <SolidColorBrush x:Key="Brush.Accent.300" Color="#FF8CB8FF"/>
+            <SolidColorBrush x:Key="Brush.Accent.400" Color="#FF6AA3FF"/>
+            <SolidColorBrush x:Key="Brush.Accent.500" Color="#FF4C8CFF"/>
+            <SolidColorBrush x:Key="Brush.Accent.600" Color="#FF3E78E0"/>
+            <SolidColorBrush x:Key="Brush.Accent.700" Color="#FF3363BD"/>
+            <SolidColorBrush x:Key="Brush.Accent.800" Color="#FF2A519C"/>
+            <SolidColorBrush x:Key="Brush.Accent.900" Color="#FF24467F"/>
+            <SolidColorBrush x:Key="Brush.OnAccent"   Color="#FFFFFFFF"/>
+
+            <!-- Translucent accents -->
+            <SolidColorBrush x:Key="Brush.Accent.600.T04" Color="#0A3E78E0"/> <!-- 4% -->
+            <SolidColorBrush x:Key="Brush.Accent.600.T08" Color="#143E78E0"/> <!-- 8% -->
+            <SolidColorBrush x:Key="Brush.Accent.600.T12" Color="#1F3E78E0"/> <!-- 12% -->
+            <SolidColorBrush x:Key="Brush.Accent.600.T16" Color="#293E78E0"/> <!-- 16% -->
+            <SolidColorBrush x:Key="Brush.Accent.600.T24" Color="#3D3E78E0"/> <!-- 24% -->
+            <SolidColorBrush x:Key="Brush.Accent.600.T32" Color="#523E78E0"/> <!-- 32% -->
+            <SolidColorBrush x:Key="Brush.Accent.600.T48" Color="#7A3E78E0"/> <!-- 48% -->
+
+            <!-- Converters -->
+            <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+            <converters:HalfNegativeConverter x:Key="HalfNegativeConverter"/>
+            <converters:BytesToHumanConverter x:Key="BytesToHumanConverter"/>
+
+            <!-- ScrollBar Style -->
+            <Style TargetType="ScrollBar">
+                <Setter Property="SnapsToDevicePixels" Value="True"/>
+                <Setter Property="OverridesDefaultStyle" Value="True"/>
+                <Setter Property="Width" Value="6"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="ScrollBar">
+                            <Grid Background="Transparent">
+                                <Border Background="{DynamicResource Brush.Border}" CornerRadius="3" />
+                                <Track x:Name="PART_Track"
+                                       IsDirectionReversed="true"
+                                       Minimum="0"
+                                       Maximum="{TemplateBinding Maximum}"
+                                       Value="{TemplateBinding Value}"
+                                       ViewportSize="{TemplateBinding ViewportSize}">
+                                    <Track.Thumb>
+                                        <Thumb>
+                                            <Thumb.Template>
+                                                <ControlTemplate TargetType="Thumb">
+                                                    <Border Background="{DynamicResource Brush.BorderAlt}" CornerRadius="3" Margin="0"/>
+                                                </ControlTemplate>
+                                            </Thumb.Template>
+                                        </Thumb>
+                                    </Track.Thumb>
+                                    <Track.DecreaseRepeatButton>
+                                        <RepeatButton Visibility="Collapsed" IsTabStop="False"/>
+                                    </Track.DecreaseRepeatButton>
+                                    <Track.IncreaseRepeatButton>
+                                        <RepeatButton Visibility="Collapsed" IsTabStop="False"/>
+                                    </Track.IncreaseRepeatButton>
+                                </Track>
+                            </Grid>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+            
+        </ResourceDictionary>
     </Application.Resources>
 </Application>

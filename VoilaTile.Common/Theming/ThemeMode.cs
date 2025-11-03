@@ -1,4 +1,4 @@
-namespace VoilaTile.Settings.Theming
+namespace VoilaTile.Common.Theming
 {
     /// <summary>
     /// Specifies how the application selects its base theme.

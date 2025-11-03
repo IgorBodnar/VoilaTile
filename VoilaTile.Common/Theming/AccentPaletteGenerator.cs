@@ -1,4 +1,4 @@
-namespace VoilaTile.Settings.Theming
+namespace VoilaTile.Common.Theming
 {
     using System;
     using System.Collections.Generic;
@@ -134,10 +134,10 @@ namespace VoilaTile.Settings.Theming
                 return;
             }
 
-            // Build theme-aware accent scale
+            // 1) Build theme-aware accent scale
             var scale = GenerateScale(baseColor, effectiveTheme);
 
-            // Replace each accent brush outright (do not mutate existing brushes; they may be frozen)
+            // 2) Replace each accent brush outright
             foreach (var kv in scale)
             {
                 var key = $"Brush.Accent.{kv.Key}";
@@ -146,13 +146,34 @@ namespace VoilaTile.Settings.Theming
                 app.Resources[key] = brush;
             }
 
-            // Compute readable foreground over a representative accent surface (use 600 as "primary")
+            // 3) On-accent (foreground over accent)
             var onAccentColor = ChooseOnAccent(scale["600"], effectiveTheme);
-            const string onAccentKey = "Brush.OnAccent";
             var onAccentBrush = new SolidColorBrush(onAccentColor);
             onAccentBrush.Freeze();
-            app.Resources[onAccentKey] = onAccentBrush;
+            app.Resources["Brush.OnAccent"] = onAccentBrush;
+
+            // 4) Translucent overlays for primary accent (600)
+            var primary = scale["600"];
+            var translucentSteps = new (string Suffix, byte A)[]
+            {
+                ("T04", (byte)Math.Round(255 * 0.04)),
+                ("T08", (byte)Math.Round(255 * 0.08)),
+                ("T12", (byte)Math.Round(255 * 0.12)),
+                ("T16", (byte)Math.Round(255 * 0.16)),
+                ("T24", (byte)Math.Round(255 * 0.24)),
+                ("T32", (byte)Math.Round(255 * 0.32)),
+                ("T48", (byte)Math.Round(255 * 0.48)),
+            };
+
+            foreach (var step in translucentSteps)
+            {
+                var c = Color.FromArgb(step.A, primary.R, primary.G, primary.B);
+                var b = new SolidColorBrush(c);
+                b.Freeze();
+                app.Resources[$"Brush.Accent.600.{step.Suffix}"] = b;
+            }
         }
+
 
         /// <summary>
         /// Picks black or white text over the given accent color based on WCAG contrast,

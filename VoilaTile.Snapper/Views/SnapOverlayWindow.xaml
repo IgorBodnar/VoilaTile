@@ -5,7 +5,7 @@
         xmlns:cv="clr-namespace:VoilaTile.Snapper.Converters"
         AllowsTransparency="True"
         WindowStyle="None"
-        Background="{StaticResource BackgroundDarkGray}"
+        Background="{DynamicResource Brush.App.Background.Translucent}"
         Topmost="True"
         ShowInTaskbar="False"
         ResizeMode="NoResize"
@@ -15,7 +15,7 @@
         <cv:HalfNegativeConverter x:Key="HalfNegativeConverter"/>
 
         <Style TargetType="Rectangle" x:Key="TileRectangleStyle">
-            <Setter Property="Stroke" Value="{StaticResource TextWhite}" />
+            <Setter Property="Stroke" Value="{DynamicResource Brush.App.Foreground}" />
             <Setter Property="Fill" Value="Transparent" />
             <Setter Property="StrokeThickness" Value="1" />
             <Setter Property="SnapsToDevicePixels" Value="True" />
@@ -24,12 +24,12 @@
             <Style.Triggers>
                 <!-- Partial match (highlighted) -->
                 <DataTrigger Binding="{Binding IsHighlighted}" Value="True">
-                    <Setter Property="Fill" Value="{StaticResource AccentRedFaint}" />
+                    <Setter Property="Fill" Value="{DynamicResource Brush.Accent.600.T16}" />
                 </DataTrigger>
 
                 <!-- Exact match (stronger) -->
                 <DataTrigger Binding="{Binding IsMatched}" Value="True">
-                    <Setter Property="Fill" Value="{StaticResource AccentRedTranslucent}" />
+                    <Setter Property="Fill" Value="{DynamicResource Brush.Accent.600.T32}" />
                 </DataTrigger>
             </Style.Triggers>
         </Style>
@@ -38,8 +38,8 @@
             <Setter Property="CornerRadius" Value="6"/>
             <Setter Property="BorderThickness" Value="1.8"/>
             <Setter Property="Padding" Value="6,4"/>
-            <Setter Property="Background" Value="{StaticResource BackgroundDarkGray}"/>
-            <Setter Property="BorderBrush" Value="{StaticResource BackgroundLightestGray}"/>
+            <Setter Property="Background" Value="{DynamicResource Brush.SurfaceAlt}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource Brush.BorderAlt}"/>
             <Setter Property="Effect">
                 <Setter.Value>
                     <DropShadowEffect BlurRadius="10" ShadowDepth="0" Opacity="0.45"/>
@@ -48,8 +48,8 @@
             <Style.Triggers>
                 <!-- Selected: stronger background/border and a tiny scale-up -->
                 <DataTrigger Binding="{Binding IsMatched}" Value="True">
-                    <Setter Property="Background" Value="{StaticResource BackgroundDarkestGray}"/>
-                    <Setter Property="BorderBrush" Value="{StaticResource AccentRed}"/>
+                    <Setter Property="Background" Value="{DynamicResource Brush.SurfaceAlt2}"/>
+                    <Setter Property="BorderBrush" Value="{DynamicResource Brush.Accent.500}"/>
                     <Setter Property="RenderTransform">
                         <Setter.Value>
                             <ScaleTransform ScaleX="1.08" ScaleY="1.08"/>
@@ -115,7 +115,7 @@
                                     <TextBlock Text="{Binding Hint}"
                                                FontSize="18"
                                                FontWeight="Bold"
-                                               Foreground="{StaticResource TextWhite}"
+                                               Foreground="{DynamicResource Brush.App.Foreground}"
                                                HorizontalAlignment="Center"
                                                VerticalAlignment="Center"
                                                TextOptions.TextFormattingMode="Display"
@@ -133,8 +133,8 @@
         <TextBlock Text="{Binding CurrentInput}"
                    FontFamily="Consolas"
                    FontSize="18"
-                   Foreground="{StaticResource TextWhite}"
-                   Background="{StaticResource BackgroundDarkGray}"
+                   Foreground="{DynamicResource Brush.App.Foreground}"
+                   Background="{DynamicResource Brush.App.Background.Translucent}"
                    HorizontalAlignment="Stretch"
                    VerticalAlignment="Bottom"
                    Padding="10" />

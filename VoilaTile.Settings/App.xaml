@@ -30,6 +30,15 @@
             <SolidColorBrush x:Key="Brush.Accent.900" Color="#FF24467F"/>
             <SolidColorBrush x:Key="Brush.OnAccent"   Color="#FFFFFFFF"/>
 
+            <!-- Translucent accents -->
+            <SolidColorBrush x:Key="Brush.Accent.600.T04" Color="#0A3E78E0"/> <!-- 4% -->
+            <SolidColorBrush x:Key="Brush.Accent.600.T08" Color="#143E78E0"/> <!-- 8% -->
+            <SolidColorBrush x:Key="Brush.Accent.600.T12" Color="#1F3E78E0"/> <!-- 12% -->
+            <SolidColorBrush x:Key="Brush.Accent.600.T16" Color="#293E78E0"/> <!-- 16% -->
+            <SolidColorBrush x:Key="Brush.Accent.600.T24" Color="#3D3E78E0"/> <!-- 24% -->
+            <SolidColorBrush x:Key="Brush.Accent.600.T32" Color="#523E78E0"/> <!-- 32% -->
+            <SolidColorBrush x:Key="Brush.Accent.600.T48" Color="#7A3E78E0"/> <!-- 48% -->
+
             <!-- Common utilities -->
             <BooleanToVisibilityConverter x:Key="BooleanToVisibility" />
             <FontFamily x:Key="Font.MDL2">Segoe MDL2 Assets</FontFamily>

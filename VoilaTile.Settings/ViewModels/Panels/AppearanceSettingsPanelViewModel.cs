@@ -2,6 +2,7 @@ using System.Collections.ObjectModel;
 using System.Windows.Media;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using VoilaTile.Common.Theming;
 using VoilaTile.Settings.Theming;
 
 namespace VoilaTile.Settings.ViewModels.Panels
@@ -60,10 +61,6 @@ namespace VoilaTile.Settings.ViewModels.Panels
         }
 
         #endregion Constructors
-
-        #region Events
-        // No public events.
-        #endregion Events
 
         #region Properties
 

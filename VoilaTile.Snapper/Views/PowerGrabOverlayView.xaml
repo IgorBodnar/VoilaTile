@@ -10,7 +10,7 @@
         ResizeMode="NoResize"
         ShowInTaskbar="False"
         Topmost="True"
-        Background="{StaticResource BackgroundDarkestGray}">
+        Background="{DynamicResource Brush.App.Background.SemiTranslucent}">
     <Window.Resources>
         <FontFamily x:Key="IconFont">Segoe Fluent Icons, Segoe MDL2 Assets</FontFamily>
     </Window.Resources>
@@ -25,14 +25,14 @@
         <!-- Header -->
         <DockPanel x:Name="Header" Grid.Row="0" Margin="0,0,0,12">
             <views:VoilaTileIcon Width="36" Margin="0,0,12,0"/>
-            <Border Background="{StaticResource BackgroundLightGray}"
+            <Border Background="{DynamicResource Brush.SurfaceAlt}"
                     CornerRadius="8"
                     Padding="8,4"
                     Margin="0,0,0,0">
                 <TextBlock Text="{Binding HintBuffer}"
                            FontFamily="Consolas"
                            FontSize="14"
-                           Foreground="{StaticResource TextWhite}"/>
+                           Foreground="{DynamicResource Brush.App.Foreground}"/>
             </Border>
         </DockPanel>
 
@@ -47,7 +47,7 @@
                 <TextBlock Text="Type hints to select respective windows    |    Press 'Enter' or 'Space' to switch to the selected window    |    Hold 'Tab' to see a preview of the selected window    |    Press '+' key without holding 'Shift' to scroll down    |    Press '-' key without holding 'Shift' to scroll up    |    Press 'Esc' to close the overlay"
                    FontSize="12"
                    FontWeight="SemiBold"
-                   Foreground="#44FFFFFF"
+                   Foreground="{DynamicResource Brush.BorderAlt}"
                    TextWrapping="NoWrap"/>
             </Viewbox>
         </DockPanel>
@@ -78,13 +78,13 @@
               Grid.RowSpan="3"
               Visibility="{Binding IsPreviewVisible, Converter={StaticResource BoolToVisibilityConverter}}"
               Panel.ZIndex="999">
-            <Border Background="#DD000000"/>
+            <Border Background="{DynamicResource Brush.App.Background}"/>
             <Border HorizontalAlignment="Stretch"
                     VerticalAlignment="Stretch"
                     Margin="24"
                     CornerRadius="12"
                     Padding="16"
-                    Background="{StaticResource BackgroundLightGray}">
+                    Background="{DynamicResource Brush.Surface}">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
@@ -108,14 +108,14 @@
                                    Margin="0,0,0,8"
                                    FontSize="20"
                                    FontWeight="SemiBold"
-                                   Foreground="{StaticResource TextWhite}"/>
+                                   Foreground="{DynamicResource Brush.App.Foreground}"/>
 
                         <TextBlock Text="{Binding PreviewTarget.TypeLabel}"
                                    Grid.Row="1"
                                    Grid.Column="0"
                                    DockPanel.Dock="Left"
                                    FontSize="12"
-                                   Foreground="{StaticResource TextWhiteTranslucent}"/>
+                                   Foreground="{DynamicResource Brush.App.Foreground}"/>
 
                         <WrapPanel Grid.Row="1"
                                    Grid.Column="1"
@@ -126,86 +126,86 @@
                                    Margin="0">
 
                                 <!-- CPU% -->
-                                <Border Background="{StaticResource BackgroundDarkGray}"
+                                <Border Background="{DynamicResource Brush.SurfaceAlt3}"
                                         CornerRadius="12"
                                         Padding="6,2"
                                         Margin="6,0,0,0">
 
                                     <TextBlock Text="{Binding PreviewStats.CpuPercent, StringFormat={}{0:F1}% CPU}"
                                                FontSize="12"
-                                               Foreground="{StaticResource TextWhiteTranslucent}"/>
+                                               Foreground="{DynamicResource Brush.App.Foreground}"/>
                                 </Border>
 
                                 <!-- WS-Private -->
-                                <Border Background="{StaticResource BackgroundDarkGray}"
+                                <Border Background="{DynamicResource Brush.SurfaceAlt3}"
                                         CornerRadius="12"
                                         Padding="6,2"
                                         Margin="6,0,0,0">
-                                    <TextBlock Foreground="{StaticResource TextWhiteTranslucent}">
+                                    <TextBlock Foreground="{DynamicResource Brush.App.Foreground}">
                                         <Run Text="WS:"/>
                                         <Run Text="{Binding PreviewStats.WorkingSetPrivateBytes, Converter={StaticResource BytesToHumanConverter}}"/>
                                     </TextBlock>
                                 </Border>
 
                                 <!-- Private Bytes (commit) -->
-                                <Border Background="{StaticResource BackgroundDarkGray}"
+                                <Border Background="{DynamicResource Brush.SurfaceAlt3}"
                                         CornerRadius="12"
                                         Padding="6,2"
                                         Margin="6,0,0,0">
-                                    <TextBlock Foreground="{StaticResource TextWhiteTranslucent}">
+                                    <TextBlock Foreground="{DynamicResource Brush.App.Foreground}">
                                         <Run Text="Commit:"/>
                                         <Run Text="{Binding PreviewStats.PrivateBytes, Converter={StaticResource BytesToHumanConverter}}"/>
                                     </TextBlock>
                                 </Border>
 
                                 <!-- WS share among all processes -->
-                                <Border Background="{StaticResource BackgroundDarkGray}"
+                                <Border Background="{DynamicResource Brush.SurfaceAlt3}"
                                         CornerRadius="12"
                                         Padding="6,2"
                                         Margin="6,0,0,0">
                                     <TextBlock Text="{Binding PreviewStats.WsShareOfProcessesPercent, StringFormat={}{0:F1}% WS share}"
                                                FontSize="12"
-                                               Foreground="{StaticResource TextWhiteTranslucent}"/>
+                                               Foreground="{DynamicResource Brush.App.Foreground}"/>
                                 </Border>
 
                                 <!-- Commit share of system -->
-                                <Border Background="{StaticResource BackgroundDarkGray}"
+                                <Border Background="{DynamicResource Brush.SurfaceAlt3}"
                                         CornerRadius="12"
                                         Padding="6,2"
                                         Margin="6,0,0,0">
                                     <TextBlock Text="{Binding PreviewStats.CommitShareOfSystemPercent, StringFormat={}{0:F1}% commit share}"
                                                FontSize="12"
-                                               Foreground="{StaticResource TextWhiteTranslucent}"/>
+                                               Foreground="{DynamicResource Brush.App.Foreground}"/>
                                 </Border>
 
                                 <!-- Threads -->
-                                <Border Background="{StaticResource BackgroundDarkGray}"
+                                <Border Background="{DynamicResource Brush.SurfaceAlt3}"
                                         CornerRadius="12"
                                         Padding="6,2"
                                         Margin="6,0,0,0">
                                     <TextBlock Text="{Binding PreviewStats.ThreadCount, StringFormat={}{0:N0} threads}"
                                                FontSize="12"
-                                               Foreground="{StaticResource TextWhiteTranslucent}"/>
+                                               Foreground="{DynamicResource Brush.App.Foreground}"/>
                                 </Border>
 
                                 <!-- Handles -->
-                                <Border Background="{StaticResource BackgroundDarkGray}"
+                                <Border Background="{DynamicResource Brush.SurfaceAlt3}"
                                         CornerRadius="12"
                                         Padding="6,2"
                                         Margin="6,0,0,0">
                                     <TextBlock Text="{Binding PreviewStats.HandleCount, StringFormat={}{0:N0} handles}"
                                                FontSize="12"
-                                               Foreground="{StaticResource TextWhiteTranslucent}"/>
+                                               Foreground="{DynamicResource Brush.App.Foreground}"/>
                                 </Border>
 
                                 <!-- Process count -->
-                                <Border Background="{StaticResource BackgroundDarkGray}"
+                                <Border Background="{DynamicResource Brush.SurfaceAlt3}"
                                         CornerRadius="12"
                                         Padding="6,2"
                                         Margin="6,0,0,0">
                                     <TextBlock Text="{Binding PreviewStats.ProcessCount, StringFormat={}{0:N0} procs}"
                                                FontSize="12"
-                                               Foreground="{StaticResource TextWhiteTranslucent}"/>
+                                               Foreground="{DynamicResource Brush.App.Foreground}"/>
                                 </Border>
                             </WrapPanel>
 
@@ -215,7 +215,7 @@
                     <Border x:Name="PreviewThumbnailSlot"
                             Grid.Row="2"
                             CornerRadius="8"
-                            Background="{StaticResource BackgroundDarkGray}"/>
+                            Background="{DynamicResource Brush.App.Background.Translucent}"/>
                 </Grid>
             </Border>
         </Grid>

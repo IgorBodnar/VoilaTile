@@ -8,6 +8,7 @@ namespace VoilaTile.Settings.Theming
     using System.Windows.Media;
     using VoilaTile.Common.DTO;
     using VoilaTile.Common.Helpers;
+    using VoilaTile.Common.Theming;
 
     /// <summary>
     /// Loads and saves theme settings to a JSON file, and maps them to/from <see cref="ThemeManager"/>.

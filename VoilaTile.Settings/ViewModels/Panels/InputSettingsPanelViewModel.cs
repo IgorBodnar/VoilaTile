@@ -16,6 +16,9 @@ namespace VoilaTile.Settings.ViewModels.Panels
     {
         #region Fields
 
+        /// <summary>
+        /// The model for this panel.
+        /// </summary>
         private readonly InputSettingsPanelModel model;
 
         /// <summary>
@@ -36,9 +39,14 @@ namespace VoilaTile.Settings.ViewModels.Panels
 
         #region Constructors
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="InputSettingsPanelViewModel"/> class.
+        /// </summary>
+        /// <param name="model">The input settings panel model.</param>
+        /// <exception cref="ArgumentNullException">Thrown if the provided model is null.</exception>
         public InputSettingsPanelViewModel(InputSettingsPanelModel model)
         {
-            this.Title = "Input";
+            this.Title = "Hints and Shortcuts";
 
             this.model = model ?? throw new ArgumentNullException(nameof(model));
             
@@ -134,6 +142,10 @@ namespace VoilaTile.Settings.ViewModels.Panels
 
         #region Methods
 
+        /// <summary>
+        /// Saves the current settings asynchronously.
+        /// </summary>
+        /// <returns>An instance of <see cref="Task"/> representing an asynchronous operation.</returns>
         public async Task SaveSettingsAsync()
         {
             SettingsDTO settingsDTO = new SettingsDTO()
