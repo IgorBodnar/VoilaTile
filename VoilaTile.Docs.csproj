@@ -1,0 +1,37 @@
+<Project>
+	<PropertyGroup>
+		<ImportDirectoryBuildProps>false</ImportDirectoryBuildProps>
+		<ImportDirectoryBuildTargets>false</ImportDirectoryBuildTargets>
+	</PropertyGroup>
+
+	<Sdk Name="Microsoft.NET.Sdk" />
+
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<EnableDefaultItems>false</EnableDefaultItems>
+		<IsPackable>false</IsPackable>
+		<OutputType>Exe</OutputType>
+		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+
+		<EnableNETAnalyzers>false</EnableNETAnalyzers>
+		<RunAnalyzers>false</RunAnalyzers>
+		<RunAnalyzersDuringBuild>false</RunAnalyzersDuringBuild>
+		<RunAnalyzersDuringLiveAnalysis>false</RunAnalyzersDuringLiveAnalysis>
+		<EnforceCodeStyleInBuild>false</EnforceCodeStyleInBuild>
+		<TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<!-- Surface the docs tree -->
+		<None Include="docs\**\*.*" />
+		<None Remove="docs\site\**\*.*" />
+		<None Remove="docs\.mkdocs-cache\**\*.*" />
+		<None Remove="docs\.cache\**\*.*" />
+
+		<PackageReference Remove="StyleCop.Analyzers" />
+		<PackageReference Remove="Roslynator.Analyzers" />
+
+		<Analyzer Remove="@(Analyzer)" />
+	</ItemGroup>
+</Project>
+

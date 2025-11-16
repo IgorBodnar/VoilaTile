@@ -9,6 +9,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
 		Directory.Build.props = Directory.Build.props
+		mkdocs.yml = mkdocs.yml
 		README.md = README.md
 		stylecop.json = stylecop.json
 	EndProjectSection
@@ -20,6 +21,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VoilaTile.Installer", "VoilaTile.Installer\VoilaTile.Installer.csproj", "{F35DA505-D224-4901-9F46-FFC3E4A8D777}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VoilaTile.Settings", "VoilaTile.Settings\VoilaTile.Settings.csproj", "{F1C1BA1C-0328-4281-AF35-1B70D3B56918}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VoilaTile.Docs", "VoilaTile.Docs.csproj", "{7198849D-7C86-9566-206C-14EF61028794}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -88,6 +91,18 @@ Global
 		{F1C1BA1C-0328-4281-AF35-1B70D3B56918}.Release|x64.Build.0 = Release|Any CPU
 		{F1C1BA1C-0328-4281-AF35-1B70D3B56918}.Release|x86.ActiveCfg = Release|Any CPU
 		{F1C1BA1C-0328-4281-AF35-1B70D3B56918}.Release|x86.Build.0 = Release|Any CPU
+		{7198849D-7C86-9566-206C-14EF61028794}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7198849D-7C86-9566-206C-14EF61028794}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7198849D-7C86-9566-206C-14EF61028794}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{7198849D-7C86-9566-206C-14EF61028794}.Debug|x64.Build.0 = Debug|Any CPU
+		{7198849D-7C86-9566-206C-14EF61028794}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{7198849D-7C86-9566-206C-14EF61028794}.Debug|x86.Build.0 = Debug|Any CPU
+		{7198849D-7C86-9566-206C-14EF61028794}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7198849D-7C86-9566-206C-14EF61028794}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7198849D-7C86-9566-206C-14EF61028794}.Release|x64.ActiveCfg = Release|Any CPU
+		{7198849D-7C86-9566-206C-14EF61028794}.Release|x64.Build.0 = Release|Any CPU
+		{7198849D-7C86-9566-206C-14EF61028794}.Release|x86.ActiveCfg = Release|Any CPU
+		{7198849D-7C86-9566-206C-14EF61028794}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

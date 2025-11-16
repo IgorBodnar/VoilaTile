@@ -1,0 +1,26 @@
+/* Hide footer nav ONLY on section/index pages (…/index/) */
+html[data-md-page$="/index/"] .md-footer {
+    display: none;
+}
+
+/* Full-width hero banner inside the content column */
+.hero-banner {
+  /* stretch to the edges of the text column */
+  margin-left: calc(-1 * var(--md-typeset-spacing));
+  margin-right: calc(-1 * var(--md-typeset-spacing));
+}
+
+/* Banner image behaviour */
+.hero-banner img {
+  display: block;
+  width: 100%;
+  max-width: none;
+
+  /* fixed visual height, crop sides as needed */
+  height: 220px;            /* tweak this to taste */
+  object-fit: cover;        /* fill width, don’t distort */
+
+  /* make sure it doesn't become a “clickable” thing */
+  pointer-events: none;     /* ignore clicks */
+}
+

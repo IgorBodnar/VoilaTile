@@ -1,0 +1,121 @@
+/* Light mode */
+[data-md-color-scheme="default"] {
+    --md-primary-fg-color: #ff4d4d; /* primary color */
+    --md-accent-fg-color: #ff8c00; /* accent color (buttons etc.) */
+    --md-default-bg-color: #ffffff; /* page background */
+    --md-default-fg-color: #222222; /* body text */
+
+    --md-primary-bg-color: #000000;
+    --md-code-bg-color: #f5f5f5;
+}
+
+/* Dark mode */
+[data-md-color-scheme="slate"] {
+    --md-primary-fg-color: #ff4d4d; /* primary color */
+    --md-accent-fg-color: #ff8c00; /* accent color */
+    --md-default-bg-color: #0b0b0b; /* background */
+    --md-default-fg-color: #e0e0e0; /* text */
+
+    --md-primary-bg-color: #1a1a1a;
+    --md-code-bg-color: #111111;
+}
+
+[data-md-color-scheme="default"] .md-typeset a,
+[data-md-color-scheme="default"] .md-typeset a:visited,
+[data-md-color-scheme="slate"] .md-typeset a,
+[data-md-color-scheme="slate"] .md-typeset a:visited {
+    color: #ff4d4d;
+}
+
+[data-md-color-scheme="default"] .md-typeset a:hover,
+[data-md-color-scheme="default"] .md-typeset a:active,
+[data-md-color-scheme="slate"] .md-typeset a:hover,
+[data-md-color-scheme="slate"] .md-typeset a:active {
+    color: #ff6b6b;
+}
+
+/* ===== Custom header + tabs color ===== */
+
+/* Background for header (top bar) and tabs bar */
+[data-md-color-scheme="default"] .md-header,
+[data-md-color-scheme="default"] .md-tabs,
+[data-md-color-scheme="slate"] .md-header,
+[data-md-color-scheme="slate"] .md-tabs {
+    background-color: #262626 !important;
+    color: #ffffff !important;
+}
+
+/* Logo text, repo link, icons */
+[data-md-color-scheme="default"] .md-header a,
+[data-md-color-scheme="default"] .md-header .md-icon,
+[data-md-color-scheme="slate"] .md-header a,
+[data-md-color-scheme="slate"] .md-header .md-icon {
+    color: #ffffff !important;
+}
+
+/* Tabs text (top nav items) */
+[data-md-color-scheme="default"] .md-tabs__link,
+[data-md-color-scheme="slate"] .md-tabs__link {
+    color: #ffffff !important;
+}
+
+/* Active tab underline + state */
+[data-md-color-scheme="default"] .md-tabs__item--active > .md-tabs__link,
+[data-md-color-scheme="slate"] .md-tabs__item--active > .md-tabs__link {
+    color: #ffffff !important;
+    box-shadow: inset 0 -2px 0 #ffffff; /* underline */
+}
+
+/* Search input inside header */
+[data-md-color-scheme="default"] .md-search__input,
+[data-md-color-scheme="slate"] .md-search__input {
+    background-color: #262626 !important;
+    color: #ffffff !important;
+}
+
+[data-md-color-scheme="default"] .md-search__input::placeholder,
+[data-md-color-scheme="slate"] .md-search__input::placeholder {
+    color: #bfbfbf !important;
+}
+
+/* ───────────────────────────────────────────── */
+/*   Sidebar navigation link color overrides     */
+/* ───────────────────────────────────────────── */
+
+/* Hovered nav item */
+[data-md-color-scheme="default"] .md-nav__link:hover,
+[data-md-color-scheme="slate"] .md-nav__link:hover {
+    color: #ff6b6b !important;
+}
+
+/* Active nav item (the highlighted one) */
+[data-md-color-scheme="default"] .md-nav__item--active > .md-nav__link,
+[data-md-color-scheme="slate"] .md-nav__item--active > .md-nav__link {
+    color: #ff4d4d !important;
+    font-weight: 600 !important;
+}
+
+/* Active nav item indicator (left vertical bar) */
+[data-md-color-scheme="default"] .md-nav__item--active::before,
+[data-md-color-scheme="slate"] .md-nav__item--active::before {
+    background-color: #ff4d4d !important;
+}
+
+/* Section titles ("Getting Started", "Installation", etc.) */
+[data-md-color-scheme="default"] .md-nav__title,
+[data-md-color-scheme="slate"] .md-nav__title {
+    color: #ff4d4d !important;
+}
+/* Active nav link text (desktop + mobile drawer) */
+[data-md-color-scheme="default"] .md-nav--primary .md-nav__link--active,
+[data-md-color-scheme="slate"] .md-nav--primary .md-nav__link--active {
+    color: #ff4d4d !important;
+    font-weight: 600 !important;
+}
+
+/* Also catch section headers that are labels, not <a> */
+[data-md-color-scheme="default"] .md-nav--primary label.md-nav__link--active,
+[data-md-color-scheme="slate"] .md-nav--primary label.md-nav__link--active {
+    color: #ff4d4d !important;
+}
+

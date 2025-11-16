@@ -1,9 +1,23 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project>
+	<PropertyGroup>
+		<ImportDirectoryBuildProps>false</ImportDirectoryBuildProps>
+		<ImportDirectoryBuildTargets>false</ImportDirectoryBuildTargets>
+	</PropertyGroup>
+
+	<Sdk Name="Microsoft.NET.Sdk" />
+
 	<PropertyGroup>
 		<TargetFramework>net8.0</TargetFramework>
 		<SnapperTargetDir>$(MSBuildProjectDirectory)\..\VoilaTile.Snapper\bin\Release\net8.0-windows\publish</SnapperTargetDir>
 		<SettingsTargetDir>$(MSBuildProjectDirectory)\..\VoilaTile.Settings\bin\Release\net8.0-windows\publish</SettingsTargetDir>
 		<InstallerOutputDir>$(MSBuildProjectDirectory)\Output</InstallerOutputDir>
+
+		<EnableNETAnalyzers>false</EnableNETAnalyzers>
+		<RunAnalyzers>false</RunAnalyzers>
+		<RunAnalyzersDuringBuild>false</RunAnalyzersDuringBuild>
+		<RunAnalyzersDuringLiveAnalysis>false</RunAnalyzersDuringLiveAnalysis>
+		<EnforceCodeStyleInBuild>false</EnforceCodeStyleInBuild>
+		<TreatWarningsAsErrors>false</TreatWarningsAsErrors>
 	</PropertyGroup>
 
 	<Target Name="PublishApps" BeforeTargets="Build">
@@ -14,6 +28,13 @@
 	<Target Name="BuildInstaller" AfterTargets="Build">
 		<Exec Command="&quot;C:\Program Files (x86)\Inno Setup 6\ISCC.exe&quot; installer.iss" />
 	</Target>
+
+	<ItemGroup>
+		<PackageReference Remove="StyleCop.Analyzers" />
+		<PackageReference Remove="Roslynator.Analyzers" />
+
+		<Analyzer Remove="@(Analyzer)" />
+	</ItemGroup>
 
 	<ItemGroup>
 	  <Compile Remove="Output\**" />

@@ -1,16 +1,23 @@
 site_name: VoilaTile Docs
-site_description: Keyboard-first window snapping for Windows — VoilaTile user & developer guide
+site_description: Keyboard-first window snapping for Windows — user & developer guide
 site_url: https://IgorBodnar.github.io/VoilaTile
 repo_url: https://github.com/IgorBodnar/VoilaTile
 repo_name: IgorBodnar/VoilaTile
 edit_uri: edit/develop/docs/
+extra_css:
+  - stylesheets/extra.css
+  - stylesheets/theme.css
 
 theme:
   name: material
   features:
-    - navigation.instant
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.path
+    - navigation.expand
+    - navigation.indexes
     - navigation.tracking
-    - navigation.sections
+    - navigation.footer
     - content.code.copy
     - toc.integrate
     - search.suggest
@@ -20,31 +27,46 @@ theme:
     - scheme: default
       primary: indigo
       accent: indigo
+      toggle:
+        icon: material/weather-night
+        name: Switch to dark mode
     - scheme: slate
       primary: indigo
       accent: indigo
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to light mode
   logo: assets/images/hero.png
   favicon: assets/images/hero.png
 
 nav:
-  - Overview: index.md
-  - Getting Started: getting-started.md
+  - Getting Started:
+      - getting-started/index.md
+      - Installation: getting-started/installation.md
+      - Setup: getting-started/setup.md
+      - First Snap: getting-started/first-snap.md
+
   - Features:
-      - Snapper Overlay: features/snapper.md
-      - Configurator: features/configurator.md
-      - Power Grab: features/power-grab.md
-      - Shortcuts: features/shortcuts.md
-      - Theming: features/theming.md
-  - Guides:
-      - Multi-Monitor: guides/multi-monitor.md
-      - Custom Templates: guides/custom-templates.md
-      - Startup Behavior: guides/startup-behavior.md
-      - Troubleshooting: guides/troubleshooting.md
+      - features/index.md
+      - Settings:
+          - features/settings/index.md
+          - Layouts: features/settings/layouts.md
+          - Hints & Shortcuts: features/settings/hints-and-shortcuts.md
+          - Appearance: features/settings/appearance.md
+      - Snap Mode: features/snap-mode.md
+      - Jump Mode: features/jump-mode.md
+      - Look Mode: features/look-mode.md
+
+  - Release Notes:
+      - release-notes/index.md
+
   - Development:
+      - development/index.md
       - Contributing: development/contributing.md
       - Architecture: development/architecture.md
-      - Style Guide: development/styleguide.md
+      - Style Guide: development/style-guide.md
       - Roadmap: development/roadmap.md
+
   - FAQ: faq.md
 
 plugins:
@@ -61,11 +83,15 @@ markdown_extensions:
   - md_in_html
   - toc:
       permalink: true
+  - pymdownx.keys
   - pymdownx.superfences
   - pymdownx.details
-  - pymdownx.emoji
+  - pymdownx.highlight
+  - pymdownx.inlinehilite
   - pymdownx.tasklist:
       custom_checkbox: true
-  - pymdownx.highlight
-  - pymdownx.keys
-  - pymdownx.inlinehilite
+  - pymdownx.emoji:
+      emoji_index: !!python/name:materialx.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+
+
